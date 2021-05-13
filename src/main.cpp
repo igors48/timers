@@ -17,7 +17,7 @@ void setup() {
     watch->tft->setTextSize(1);
     watch->tft->setTextColor(TFT_GREEN);
     watch->tft->setCursor(0, 0);
-    watch->tft->println(F("Hello T-World"));
+    watch->tft->println(F("Hello T-World (battery percentage)"));
 }
 
 void loop() {}
