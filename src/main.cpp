@@ -12,22 +12,25 @@ void setup()
     watch->begin();
     watch->openBL();
 
-    // Use SPI_eTFT library to display text on screen
-    // watch->tft->fillScreen(TFT_BLACK);
-    // watch->tft->setTextFont(2);
-    // watch->tft->setTextSize(1);
-    // watch->tft->setTextColor(TFT_GREEN);
-    // watch->tft->setCursor(0, 0);
-    // watch->tft->println(F("Hello T-World (battery percentage)"));
-    //watch->power->
+    // Turn off unused power
+    watch->power->setPowerOutPut(AXP202_EXTEN, AXP202_OFF);
+    watch->power->setPowerOutPut(AXP202_DCDC2, AXP202_OFF);
+    watch->power->setPowerOutPut(AXP202_LDO3, AXP202_OFF); // audio device
+    watch->power->setPowerOutPut(AXP202_LDO4, AXP202_OFF);
+}
 
+void showBattState()
+{
     uint8_t per;
     float vbus_v, vbus_c, batt_v;
     vbus_v = watch->power->getVbusVoltage();
     vbus_c = watch->power->getVbusCurrent();
     batt_v = watch->power->getBattVoltage();
     per = watch->power->getBattPercentage();
-    watch->tft->setCursor(0, 230);
+    watch->tft->setCursor(0, 180);
+    watch->tft->setTextSize(1);
+    watch->tft->setTextFont(1);
+    //watch->tft->setTextColor(TFT_GREEN);
     if (watch->power->isVBUSPlug())
     {
         watch->tft->print("P ");
@@ -36,7 +39,7 @@ void setup()
     {
         watch->tft->print("U ");
     }
-    //watch->tft->setCursor(0, 70);
+    watch->tft->setCursor(0, 190);
     if (watch->power->isChargeing())
     {
         watch->tft->print("C: ");
@@ -51,22 +54,26 @@ void setup()
     watch->tft->print(" mA ");
 
     // Print the values
-    //watch->tft->setCursor(0, 100);
+    watch->tft->setCursor(0, 200);
     watch->tft->print("BV: ");
     watch->tft->print(vbus_v);
     watch->tft->print(" mV ");
-    //watch->tft->setCursor(0, 130);
+    watch->tft->setCursor(0, 210);
     watch->tft->print("BC: ");
     watch->tft->print(vbus_c);
     watch->tft->print(" mA ");
-    //watch->tft->setCursor(0, 160);
+    watch->tft->setCursor(0, 220);
     watch->tft->print("Vbat: ");
     watch->tft->print(batt_v);
     watch->tft->print(" mV ");
-    //watch->tft->setCursor(0, 190);
+    watch->tft->setCursor(0, 230);
     //watch->tft->print("Percent: ");
     watch->tft->print(per);
     watch->tft->print(" %");
 }
 
-void loop() {}
+void loop()
+{
+    showBattState();
+    delay(1000);
+}
