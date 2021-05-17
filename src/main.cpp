@@ -73,8 +73,17 @@ void showBattState()
     watch->tft->print(" %");
 }
 
+void showClock() {
+    auto tnow = watch->rtc->formatDateTime(PCF_TIMEFORMAT_HMS);
+    watch->tft->setCursor(8, 8);
+    watch->tft->setTextSize(4);
+    watch->tft->setTextFont(2);
+    watch->tft->print(tnow);
+}
+
 void loop()
 {
     showBattState();
-    delay(1000);
+    showClock();
+    delay(250);
 }
