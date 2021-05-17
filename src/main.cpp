@@ -11,6 +11,7 @@ void setup()
     watch = TTGOClass::getWatch();
     watch->begin();
     watch->openBL();
+    watch->setBrightness(8);
 
     // Turn off unused power
     watch->power->setPowerOutPut(AXP202_EXTEN, AXP202_OFF);
