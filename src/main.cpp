@@ -1,6 +1,7 @@
 #include <Arduino.h>
 // Select you T-Watch in the platformio.ini file
 #include <LilyGoWatch.h>
+#include <WiFi.h>
 
 // C++ object which will allow access to the functions of the Watch
 TTGOClass *watch;
@@ -96,6 +97,13 @@ void setup()
     watch->begin();
     watch->openBL();
     watch->setBrightness(8);
+
+    //Check if the RTC clock matches, if not, use compile time
+    watch->rtc->check();
+    //Synchronize time to system time
+    watch->rtc->syncToSystem();
+
+    WiFi.mode(WIFI_OFF);
 
     // Turn off unused power
     watch->power->setPowerOutPut(AXP202_EXTEN, AXP202_OFF);
