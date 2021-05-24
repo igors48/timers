@@ -70,7 +70,7 @@ void showClock(void *pvParameters)
     {
         auto tnow = watch->rtc->formatDateTime(PCF_TIMEFORMAT_HMS);
         watch->tft->setCursor(8, 8);
-        watch->tft->setTextSize(4);
+        watch->tft->setTextSize(3);
         watch->tft->setTextFont(2);
         watch->tft->print(tnow);
 
@@ -81,17 +81,32 @@ void showClock(void *pvParameters)
 void showTouch(void *pvParameters)
 {
     int16_t x, y;
+    x = 0;
+    y = 0;
     while (true)
     {
-        watch->getTouch(x, y); 
-        watch->tft->fillCircle(x, y, 5, TFT_WHITE);  
+        if (watch->getTouch(x, y))
+        {
+            watch->tft->fillCircle(x, y, 5, TFT_WHITE);
+        }
 
         vTaskDelay(250 / portTICK_PERIOD_MS);
     }
 }
 
+struct ScreenMonitorParameters 
+{
+    
+};
+
+void touchScreenMonitor(void *pvParameters)
+{
+
+} 
+
 void setup()
 {
+    Serial.begin(115200);
     // Get Watch object and set up the display
     watch = TTGOClass::getWatch();
     watch->begin();
