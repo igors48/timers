@@ -94,15 +94,73 @@ void showTouch(void *pvParameters)
     }
 }
 
-struct ScreenMonitorParameters 
-{
-    
-};
+SemaphoreHandle_t lastTouchTimestampMutex = NULL;
+long lastTouchTimestamp = 0;
 
 void touchScreenMonitor(void *pvParameters)
 {
+    while (true)
+    {
+        if (lastTouchTimestampMutex == NULL)
+        {
+            Serial.println("lastTouchTimestampMutex = NULL");
+        }
+        else
+        {
+            bool touched = watch->touch->getTouched();
+            if (touched)
+            {
+                long timestamp = time(NULL);
+                if (xSemaphoreTake(lastTouchTimestampMutex, (TickType_t)10) == pdTRUE)
+                {
+                    lastTouchTimestamp = timestamp;
+                    xSemaphoreGive(lastTouchTimestampMutex);
+                    Serial.printf("lastTouchTimestamp set to %lu \r\n", lastTouchTimestamp);
+                }
+                else
+                {
+                    Serial.println("lastTouchTimestampMutex couldnt obtain from touchScreenMonitor");
+                }
+            }
+        }
+        vTaskDelay(250 / portTICK_PERIOD_MS);
+    }
+}
 
-} 
+void noEventsMonitor(void *pvParameters)
+{
+    while (true)
+    {
+        if (lastTouchTimestampMutex == NULL)
+        {
+            Serial.println("lastTouchTimestampMutex = NULL");
+        }
+        else
+        {
+            if (xSemaphoreTake(lastTouchTimestampMutex, (TickType_t)10) == pdTRUE)
+            {
+                long last = lastTouchTimestamp;
+                xSemaphoreGive(lastTouchTimestampMutex);
+                long current = time(NULL);
+                long diff = current - last;
+                if (diff < 5)
+                {
+                    watch->setBrightness(128);
+                }
+                else
+                {
+                    watch->setBrightness(8);
+                }
+                Serial.printf("lastTouchTimestamp set to %lu \r\n", lastTouchTimestamp);
+            }
+            else
+            {
+                Serial.println("lastTouchTimestampMutex couldnt obtain from noEventsMonitor");
+            }
+        }
+        vTaskDelay(500 / portTICK_PERIOD_MS);
+    }
+}
 
 void setup()
 {
@@ -120,15 +178,19 @@ void setup()
 
     WiFi.mode(WIFI_OFF);
 
+    lastTouchTimestampMutex = xSemaphoreCreateMutex();
+
     // Turn off unused power
     watch->power->setPowerOutPut(AXP202_EXTEN, AXP202_OFF);
     watch->power->setPowerOutPut(AXP202_DCDC2, AXP202_OFF);
     watch->power->setPowerOutPut(AXP202_LDO3, AXP202_OFF); // audio device
     watch->power->setPowerOutPut(AXP202_LDO4, AXP202_OFF);
 
-    xTaskCreate(showBattState, "showBattState", 2048, NULL, 1, NULL);
+    //xTaskCreate(showBattState, "showBattState", 2048, NULL, 1, NULL);
     xTaskCreate(showClock, "showClock", 2048, NULL, 1, NULL);
-    xTaskCreate(showTouch, "showTouch", 2048, NULL, 1, NULL);
+    //xTaskCreate(showTouch, "showTouch", 2048, NULL, 1, NULL);
+    xTaskCreate(touchScreenMonitor, "touchScreenMonitor", 2048, NULL, 1, NULL);
+    xTaskCreate(noEventsMonitor, "noEventsMonitor", 2048, NULL, 1, NULL);
 }
 
 void loop()
