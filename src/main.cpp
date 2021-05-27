@@ -177,20 +177,28 @@ void noEventsMonitor(void *pvParameters)
 
 typedef struct
 {
-    SemaphoreHandle_t *backlightLevelMutex;
+    SemaphoreHandle_t backlightLevelMutex;
     uint8_t *backlightLevel;
     TTGOClass *watch;
 } BackligthControllerParameters;
 
-void backlightController(BackligthControllerParameters *pvParameters)
+void backlightController(void *pvParameters)
 {
+    Serial.println("controller started");
+    BackligthControllerParameters *parameters = (BackligthControllerParameters *)pvParameters;
+    uint8_t *level = parameters->backlightLevel;
+    //SemaphoreHandle_t backlightLevelMutex = parameters->backlightLevelMutex;
+    TTGOClass *watch = parameters->watch;
+    Serial.println("parameters started");
     while (true)
     {
+        Serial.println("before take");
         if (xSemaphoreTake(backlightLevelMutex, (TickType_t)10) == pdTRUE)
         {
-            uint8_t level = pvParameters.backlightLevel;
+            Serial.println("before give");
             xSemaphoreGive(backlightLevelMutex);
-            watch->setBrightness(level);
+            Serial.println("before set");
+            watch->setBrightness(backlightLevel);
             Serial.printf("brightness set to %d \r\n", level);
         }
         else
@@ -201,9 +209,13 @@ void backlightController(BackligthControllerParameters *pvParameters)
     }
 }
 
+BackligthControllerParameters backlightControllerParameters;
+
 void setup()
 {
     Serial.begin(115200);
+    vTaskDelay(2000 / portTICK_PERIOD_MS);
+
     // Get Watch object and set up the display
     watch = TTGOClass::getWatch();
     watch->begin();
@@ -230,9 +242,15 @@ void setup()
     xTaskCreate(showClock, "showClock", 2048, NULL, 1, NULL);
     //xTaskCreate(showTouch, "showTouch", 2048, NULL, 1, NULL);
     xTaskCreate(touchScreenMonitor, "touchScreenMonitor", 2048, NULL, 1, NULL);
-    xTaskCreate(noEventsMonitor, "noEventsMonitor", 2048, NULL, 1, NULL);    
+    xTaskCreate(noEventsMonitor, "noEventsMonitor", 2048, NULL, 1, NULL);
 
-    xTaskCreate(backlightController, "backlightController", 2048, NULL, 1, NULL);
+    backlightControllerParameters = {
+        .backlightLevelMutex = backlightLevelMutex,
+        .backlightLevel = &backlightLevel,
+        .watch = watch};
+
+    xTaskCreate(backlightController, "backlightController", 2048, (void *)&backlightControllerParameters, 1, NULL);
+    Serial.println("tasks started");
 }
 
 void loop()
