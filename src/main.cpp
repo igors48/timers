@@ -181,11 +181,17 @@ void noEventsMonitorTask(void *pvParameters)
     }
 }
 
+typedef void (*SetBrightnessFunc)(uint8_t level);
+
+void setBrightness(uint8_t level) {
+    watch->setBrightness(level);    
+}
+
 typedef struct
 {
     SemaphoreHandle_t *backlightLevelMutex;
     uint8_t *backlightLevel;
-    TTGOClass *watch;
+    SetBrightnessFunc setBrightness;
 } BackligthControllerParameters;
 
 void backlightController(BackligthControllerParameters *p)
@@ -195,7 +201,7 @@ void backlightController(BackligthControllerParameters *p)
         uint8_t current = *p->backlightLevel;
         xSemaphoreGive(*p->backlightLevelMutex);
         //todo - mutex needed here?
-        p->watch->setBrightness(current);
+        p->setBrightness(current);
         Serial.printf("brightness set to %d \r\n", current);
     }
     else
@@ -257,9 +263,9 @@ void setup()
     backlightControllerParameters = {
         .backlightLevelMutex = &backlightLevelMutex,
         .backlightLevel = &backlightLevel,
-        .watch = watch};
-
+        .setBrightness = setBrightness};
     xTaskCreate(backlightControllerTask, "backlightControllerTask", 2048, (void *)&backlightControllerParameters, 1, NULL);
+    
     Serial.println("tasks started");
 }
 
