@@ -138,49 +138,45 @@ typedef struct
     uint8_t *backlightLevel;
 } NoEventsMonitorParameters;
 
-void noEventsMonitorTask(void *pvParameters)
+void noEventsMonitor(NoEventsMonitorParameters *p)
 {
-    NoEventsMonitorParameters *parameters = (NoEventsMonitorParameters *)pvParameters;
-    
-    SemaphoreHandle_t *lastTouchTimestampMutex = parameters->lastTouchTimestampMutex;
-    time_t *lastTouchTimestamp = parameters->lastTouchTimestamp;
-    SemaphoreHandle_t *backlightLevelMutex = parameters->backlightLevelMutex;
-    uint8_t *backlightLevel = parameters->backlightLevel;
-
-    while (true)
+    if (xSemaphoreTake(*p->lastTouchTimestampMutex, (TickType_t)10) == pdTRUE)
     {
-
-        if (xSemaphoreTake(*lastTouchTimestampMutex, (TickType_t)10) == pdTRUE)
+        time_t last = *p->lastTouchTimestamp;
+        xSemaphoreGive(*p->lastTouchTimestampMutex);
+        time_t current = time(NULL);
+        time_t diff = current - last;
+        uint8_t level = 0;
+        if (diff < 5)
         {
-            time_t last = *lastTouchTimestamp;
-            xSemaphoreGive(*lastTouchTimestampMutex);
-            time_t current = time(NULL);
-            time_t diff = current - last;
-            uint8_t level = 0;
-            if (diff < 5)
-            {
-                level = 128;
-            }
-            else
-            {
-                level = 8;
-            }
-            if (xSemaphoreTake(*backlightLevelMutex, (TickType_t)10) == pdTRUE)
-            {
-                *backlightLevel = level;
-                xSemaphoreGive(*backlightLevelMutex);
-                Serial.printf("backlightLevel set to %d \r\n", level);
-            }
-            else
-            {
-                Serial.println("backlightLevelMutex couldnt obtain from noEventsMonitor");
-            }
+            level = 128;
         }
         else
         {
-            Serial.println("lastTouchTimestampMutex couldnt obtain from noEventsMonitor");
+            level = 8;
         }
+        if (xSemaphoreTake(*p->backlightLevelMutex, (TickType_t)10) == pdTRUE)
+        {
+            *p->backlightLevel = level;
+            xSemaphoreGive(*p->backlightLevelMutex);
+            Serial.printf("backlightLevel set to %d \r\n", level);
+        }
+        else
+        {
+            Serial.println("backlightLevelMutex couldnt obtain from noEventsMonitor");
+        }
+    }
+    else
+    {
+        Serial.println("lastTouchTimestampMutex couldnt obtain from noEventsMonitor");
+    }
+}
 
+void noEventsMonitorTask(void *pvParameters)
+{
+    while (true)
+    {
+        noEventsMonitor((NoEventsMonitorParameters *)pvParameters);
         vTaskDelay(250 / portTICK_PERIOD_MS);
     }
 }
@@ -192,14 +188,14 @@ typedef struct
     TTGOClass *watch;
 } BackligthControllerParameters;
 
-void backlightController(SemaphoreHandle_t *backlightLevelMutex, uint8_t *level, TTGOClass *watch)
+void backlightController(BackligthControllerParameters *p)
 {
-    if (xSemaphoreTake(*backlightLevelMutex, (TickType_t)10) == pdTRUE)
+    if (xSemaphoreTake(*p->backlightLevelMutex, (TickType_t)10) == pdTRUE)
     {
-        uint8_t current = *level;
-        xSemaphoreGive(*backlightLevelMutex);
+        uint8_t current = *p->backlightLevel;
+        xSemaphoreGive(*p->backlightLevelMutex);
         //todo - mutex needed here?
-        watch->setBrightness(current);
+        p->watch->setBrightness(current);
         Serial.printf("brightness set to %d \r\n", current);
     }
     else
@@ -208,17 +204,11 @@ void backlightController(SemaphoreHandle_t *backlightLevelMutex, uint8_t *level,
     }
 }
 
-void backlightControllerTask(void *pvParameters)
+void backlightControllerTask(void *p)
 {
-    BackligthControllerParameters *parameters = (BackligthControllerParameters *)pvParameters;
-    
-    uint8_t *level = parameters->backlightLevel;
-    SemaphoreHandle_t *backlightLevelMutex = parameters->backlightLevelMutex;
-    TTGOClass *watch = parameters->watch;
-
     while (true)
     {
-        backlightController(backlightLevelMutex, level, watch);
+        backlightController((BackligthControllerParameters *)p);
         vTaskDelay(250 / portTICK_PERIOD_MS);
     }
 }
