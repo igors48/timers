@@ -175,13 +175,20 @@ void noEventsMonitor(void *pvParameters)
     }
 }
 
-void backlightController(void *pvParameters)
+typedef struct
+{
+    SemaphoreHandle_t *backlightLevelMutex;
+    uint8_t *backlightLevel;
+    TTGOClass *watch;
+} BackligthControllerParameters;
+
+void backlightController(BackligthControllerParameters *pvParameters)
 {
     while (true)
     {
         if (xSemaphoreTake(backlightLevelMutex, (TickType_t)10) == pdTRUE)
         {
-            uint8_t level = backlightLevel;
+            uint8_t level = pvParameters.backlightLevel;
             xSemaphoreGive(backlightLevelMutex);
             watch->setBrightness(level);
             Serial.printf("brightness set to %d \r\n", level);
@@ -224,6 +231,7 @@ void setup()
     //xTaskCreate(showTouch, "showTouch", 2048, NULL, 1, NULL);
     xTaskCreate(touchScreenMonitor, "touchScreenMonitor", 2048, NULL, 1, NULL);
     xTaskCreate(noEventsMonitor, "noEventsMonitor", 2048, NULL, 1, NULL);    
+
     xTaskCreate(backlightController, "backlightController", 2048, NULL, 1, NULL);
 }
 
