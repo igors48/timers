@@ -95,7 +95,7 @@ void showTouch(void *pvParameters)
 }
 
 SemaphoreHandle_t lastTouchTimestampMutex = NULL;
-long lastTouchTimestamp = 0;
+time_t lastTouchTimestamp = 0;
 
 void touchScreenMonitor(void *pvParameters)
 {
@@ -107,10 +107,10 @@ void touchScreenMonitor(void *pvParameters)
         }
         else
         {
-            bool touched = watch->touch->getTouched();
+            uint8_t touched = watch->touch->getTouched();
             if (touched)
             {
-                long timestamp = time(NULL);
+                time_t timestamp = time(NULL);
                 if (xSemaphoreTake(lastTouchTimestampMutex, (TickType_t)10) == pdTRUE)
                 {
                     lastTouchTimestamp = timestamp;
@@ -126,6 +126,9 @@ void touchScreenMonitor(void *pvParameters)
         vTaskDelay(250 / portTICK_PERIOD_MS);
     }
 }
+
+SemaphoreHandle_t backlightLevelMutex = NULL;
+uint8_t backlightLevel = 8;
 
 void noEventsMonitor(void *pvParameters)
 {
@@ -143,22 +146,51 @@ void noEventsMonitor(void *pvParameters)
                 xSemaphoreGive(lastTouchTimestampMutex);
                 long current = time(NULL);
                 long diff = current - last;
+                uint8_t level = 0;
                 if (diff < 5)
                 {
-                    watch->setBrightness(128);
+                    level = 128;
                 }
                 else
                 {
-                    watch->setBrightness(8);
+                    level = 8;
                 }
-                Serial.printf("lastTouchTimestamp set to %lu \r\n", lastTouchTimestamp);
+                if (xSemaphoreTake(backlightLevelMutex, (TickType_t)10) == pdTRUE)
+                {
+                    backlightLevel = level;
+                    xSemaphoreGive(backlightLevelMutex);
+                    Serial.printf("backlightLevel set to %d \r\n", backlightLevel);
+                }
+                else
+                {
+                    Serial.println("backlightLevelMutex couldnt obtain from noEventsMonitor");
+                }
             }
             else
             {
                 Serial.println("lastTouchTimestampMutex couldnt obtain from noEventsMonitor");
             }
         }
-        vTaskDelay(500 / portTICK_PERIOD_MS);
+        vTaskDelay(250 / portTICK_PERIOD_MS);
+    }
+}
+
+void backlightController(void *pvParameters)
+{
+    while (true)
+    {
+        if (xSemaphoreTake(backlightLevelMutex, (TickType_t)10) == pdTRUE)
+        {
+            uint8_t level = backlightLevel;
+            xSemaphoreGive(backlightLevelMutex);
+            watch->setBrightness(level);
+            Serial.printf("brightness set to %d \r\n", level);
+        }
+        else
+        {
+            Serial.println("backlightLevelMutex couldnt obtain from noEventsMonitor");
+        }
+        vTaskDelay(250 / portTICK_PERIOD_MS);
     }
 }
 
@@ -179,6 +211,7 @@ void setup()
     WiFi.mode(WIFI_OFF);
 
     lastTouchTimestampMutex = xSemaphoreCreateMutex();
+    backlightLevelMutex = xSemaphoreCreateMutex();
 
     // Turn off unused power
     watch->power->setPowerOutPut(AXP202_EXTEN, AXP202_OFF);
@@ -190,7 +223,8 @@ void setup()
     xTaskCreate(showClock, "showClock", 2048, NULL, 1, NULL);
     //xTaskCreate(showTouch, "showTouch", 2048, NULL, 1, NULL);
     xTaskCreate(touchScreenMonitor, "touchScreenMonitor", 2048, NULL, 1, NULL);
-    xTaskCreate(noEventsMonitor, "noEventsMonitor", 2048, NULL, 1, NULL);
+    xTaskCreate(noEventsMonitor, "noEventsMonitor", 2048, NULL, 1, NULL);    
+    xTaskCreate(backlightController, "backlightController", 2048, NULL, 1, NULL);
 }
 
 void loop()
