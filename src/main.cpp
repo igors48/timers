@@ -3,6 +3,8 @@
 #include <LilyGoWatch.h>
 #include <WiFi.h>
 
+#include "backlightController.hpp"
+
 // C++ object which will allow access to the functions of the Watch
 TTGOClass *watch;
 
@@ -181,33 +183,8 @@ void noEventsMonitorTask(void *pvParameters)
     }
 }
 
-typedef void (*SetBrightnessFunc)(uint8_t level);
-
 void setBrightness(uint8_t level) {
     watch->setBrightness(level);    
-}
-
-typedef struct
-{
-    SemaphoreHandle_t *backlightLevelMutex;
-    uint8_t *backlightLevel;
-    SetBrightnessFunc setBrightness;
-} BackligthControllerParameters;
-
-void backlightController(BackligthControllerParameters *p)
-{
-    if (xSemaphoreTake(*p->backlightLevelMutex, (TickType_t)10) == pdTRUE)
-    {
-        uint8_t current = *p->backlightLevel;
-        xSemaphoreGive(*p->backlightLevelMutex);
-        //todo - mutex needed here?
-        p->setBrightness(current);
-        Serial.printf("brightness set to %d \r\n", current);
-    }
-    else
-    {
-        Serial.println("backlightLevelMutex couldnt obtain from noEventsMonitor");
-    }
 }
 
 void backlightControllerTask(void *p)
