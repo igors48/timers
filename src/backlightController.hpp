@@ -1,12 +1,14 @@
-#include <Arduino.h>
-
-typedef void (*SetBrightnessFunc)(uint8_t level);
+#include <freertos.hpp>
+#include <twatch.hpp>
 
 typedef struct
 {
-    SemaphoreHandle_t *backlightLevelMutex;
-    uint8_t *backlightLevel;
+    void *backlightLevelMutex;
+    unsigned char *backlightLevel;
     SetBrightnessFunc setBrightness;
+    Take take;
+    Give give;
+    Log log;
 } BackligthControllerParameters;
 
 void backlightController(BackligthControllerParameters *p);

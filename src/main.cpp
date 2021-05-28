@@ -4,6 +4,7 @@
 #include <WiFi.h>
 
 #include "backlightController.hpp"
+#include "freertos.hpp"
 
 // C++ object which will allow access to the functions of the Watch
 TTGOClass *watch;
@@ -240,7 +241,10 @@ void setup()
     backlightControllerParameters = {
         .backlightLevelMutex = &backlightLevelMutex,
         .backlightLevel = &backlightLevel,
-        .setBrightness = setBrightness};
+        .setBrightness = setBrightness,
+        .take = take,
+        .give = give,
+        .log = log};
     xTaskCreate(backlightControllerTask, "backlightControllerTask", 2048, (void *)&backlightControllerParameters, 1, NULL);
     
     Serial.println("tasks started");

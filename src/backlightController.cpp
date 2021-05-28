@@ -2,16 +2,18 @@
 
 void backlightController(BackligthControllerParameters *p)
 {
-    if (xSemaphoreTake(*p->backlightLevelMutex, (TickType_t)10) == pdTRUE)
+    p->log("bl started");
+    if (p->take(p->backlightLevelMutex, 10) == 1)
     {
-        uint8_t current = *p->backlightLevel;
-        xSemaphoreGive(*p->backlightLevelMutex);
+        p->log("bl taken");
+        unsigned char current = *p->backlightLevel;
+        p->give(p->backlightLevelMutex);
         //todo - mutex needed here?
         p->setBrightness(current);
-        Serial.printf("brightness set to %d \r\n", current);
+        p->log("brightness set to " + current);
     }
     else
     {
-        Serial.println("backlightLevelMutex couldnt obtain from noEventsMonitor");
+        p->log("backlightLevelMutex couldnt obtain from noEventsMonitor");
     }
 }
