@@ -4,6 +4,7 @@
 #include <WiFi.h>
 
 #include "backlightController.hpp"
+#include "noEventsMonitor.hpp"
 #include "freertos.hpp"
 
 // C++ object which will allow access to the functions of the Watch
@@ -133,48 +134,6 @@ void touchScreenMonitor(void *pvParameters)
 SemaphoreHandle_t backlightLevelMutex = NULL;
 uint8_t backlightLevel = 8;
 
-typedef struct
-{
-    SemaphoreHandle_t *lastTouchTimestampMutex;
-    time_t *lastTouchTimestamp;
-    SemaphoreHandle_t *backlightLevelMutex;
-    uint8_t *backlightLevel;
-} NoEventsMonitorParameters;
-
-void noEventsMonitor(NoEventsMonitorParameters *p)
-{
-    if (xSemaphoreTake(*p->lastTouchTimestampMutex, (TickType_t)10) == pdTRUE)
-    {
-        time_t last = *p->lastTouchTimestamp;
-        xSemaphoreGive(*p->lastTouchTimestampMutex);
-        time_t current = time(NULL);
-        time_t diff = current - last;
-        uint8_t level = 0;
-        if (diff < 5)
-        {
-            level = 128;
-        }
-        else
-        {
-            level = 8;
-        }
-        if (xSemaphoreTake(*p->backlightLevelMutex, (TickType_t)10) == pdTRUE)
-        {
-            *p->backlightLevel = level;
-            xSemaphoreGive(*p->backlightLevelMutex);
-            Serial.printf("backlightLevel set to %d \r\n", level);
-        }
-        else
-        {
-            Serial.println("backlightLevelMutex couldnt obtain from noEventsMonitor");
-        }
-    }
-    else
-    {
-        Serial.println("lastTouchTimestampMutex couldnt obtain from noEventsMonitor");
-    }
-}
-
 void noEventsMonitorTask(void *pvParameters)
 {
     while (true)
@@ -184,8 +143,9 @@ void noEventsMonitorTask(void *pvParameters)
     }
 }
 
-void setBrightness(uint8_t level) {
-    watch->setBrightness(level);    
+void setBrightness(uint8_t level)
+{
+    watch->setBrightness(level);
 }
 
 void backlightControllerTask(void *p)
@@ -235,7 +195,12 @@ void setup()
         .lastTouchTimestampMutex = &lastTouchTimestampMutex,
         .lastTouchTimestamp = &lastTouchTimestamp,
         .backlightLevelMutex = &backlightLevelMutex,
-        .backlightLevel = &backlightLevel};
+        .backlightLevel = &backlightLevel,
+        .take = take,
+        .give = give,
+        .time = time,
+        .log = log};
+
     xTaskCreate(noEventsMonitorTask, "noEventsMonitorTask", 2048, (void *)&noEventsMonitorParameters, 1, NULL);
 
     backlightControllerParameters = {
@@ -246,13 +211,11 @@ void setup()
         .give = give,
         .log = log};
     xTaskCreate(backlightControllerTask, "backlightControllerTask", 2048, (void *)&backlightControllerParameters, 1, NULL);
-    
+
     Serial.println("tasks started");
 }
 
 void loop()
 {
-    // showBattState();
-    // showClock();
-    // delay(250);
+    // empty
 }
