@@ -2,10 +2,8 @@
 
 void backlightController(BackligthControllerParameters *p)
 {
-    p->log("bl started");
     if (p->take(p->backlightLevelMutex, 10) == 1)
     {
-        p->log("bl taken");
         unsigned char current = *p->backlightLevel;
         p->give(p->backlightLevelMutex);
         //todo - mutex needed here?
