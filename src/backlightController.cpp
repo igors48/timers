@@ -1,3 +1,4 @@
+#include <cstdio>
 #include "backlightController.hpp"
 
 void backlightController(BackligthControllerParameters *p)
@@ -8,10 +9,10 @@ void backlightController(BackligthControllerParameters *p)
         p->give(p->backlightLevelMutex);
         //todo - mutex needed here?
         p->setBrightness(current);
-        p->log("brightness set to " + current);
+        p->log("backlightController", "brightness set to %d", current);
     }
     else
     {
-        p->log("backlightLevelMutex couldnt obtain from noEventsMonitor");
+        p->log("backlightController", "failed to take backlightLevelMutex");
     }
 }

@@ -1,3 +1,4 @@
+#include <stdarg.h>
 #include <cstdio>
 #include <unity.h>
 #include "backlightController.cpp"
@@ -14,9 +15,14 @@ void setBrightness(unsigned char level) {
     brightnessLevel = level;
 }
 
-void log(const char *message) {
+void log(const char *source, const char *message, ...) {
     logCount++;
-    printf("%s \r", message);
+    char buf[256];
+    va_list args;
+    va_start(args, message);
+    vsprintf(buf, message, args);
+    va_end(args);
+    printf("%s: %s \r\n", source, buf);
 }
 
 bool give(void *semaphore) {
