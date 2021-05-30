@@ -11,11 +11,13 @@ bool takeResult;
 unsigned char brightnessLevel;
 BackligthControllerParameters parameters;
 
-void setBrightness(unsigned char level) {
+void setBrightness(unsigned char level)
+{
     brightnessLevel = level;
 }
 
-void log(const char *source, const char *message, ...) {
+void log(const char *source, const char *message, ...)
+{
     logCount++;
     char buf[256];
     va_list args;
@@ -25,15 +27,18 @@ void log(const char *source, const char *message, ...) {
     printf("%s: %s \r\n", source, buf);
 }
 
-bool give(void *semaphore) {
+bool give(void *semaphore)
+{
     return giveResult;
 }
 
-bool take(void *semaphore, unsigned int blockTime) {
+bool take(void *semaphore, unsigned int blockTime)
+{
     return takeResult;
 }
 
-void setUp(void) {
+void setUp(void)
+{
     backlightLevelMutex = 0;
     backlightLevel = 8;
     logCount = 0;
@@ -50,21 +55,24 @@ void setUp(void) {
         .log = log};
 }
 
-void happyFlow() {
+void happyFlow()
+{
     backlightController(&parameters);
-    TEST_ASSERT_EQUAL_INT(1, logCount); // message logged
-    TEST_ASSERT_EQUAL_UINT8(8, brightnessLevel); // brightness level set to backlight level 
+    TEST_ASSERT_EQUAL_INT(1, logCount);          // message logged
+    TEST_ASSERT_EQUAL_UINT8(8, brightnessLevel); // brightness level set to backlight level
 }
 
-void whenBacklightLevelMutexCouldNotBeTaken() {
+void whenBacklightLevelMutexCouldNotBeTaken()
+{
     takeResult = false;
     brightnessLevel = 48;
     backlightController(&parameters);
-    TEST_ASSERT_EQUAL_INT(1, logCount); // message logged
-    TEST_ASSERT_EQUAL_UINT8(48, brightnessLevel); // brightness level does not change 
+    TEST_ASSERT_EQUAL_INT(1, logCount);           // message logged
+    TEST_ASSERT_EQUAL_UINT8(48, brightnessLevel); // brightness level does not change
 }
 
-int main() {
+int main()
+{
     UNITY_BEGIN();
     RUN_TEST(happyFlow);
     RUN_TEST(whenBacklightLevelMutexCouldNotBeTaken);
