@@ -15,20 +15,6 @@ unsigned char backlightLevel;
 
 NoEventsMonitorParameters parameters;
 
-/*
-typedef struct
-{
-    void *lastTouchTimestampMutex;
-    long *lastTouchTimestamp;
-    void *backlightLevelMutex;
-    unsigned char *backlightLevel;
-    Take take;
-    Give give;
-    Time time;
-    Log log;
-
-} NoEventsMonitorParameters;
-*/
 void log(const char *source, const char *message, ...)
 {
     logCount++;
@@ -73,14 +59,26 @@ void setUp(void)
     .log = log};
 }
 
-void happyFlow()
+void whenTimeSinceLastTouchLesserThan5Sec()
 {
+    lastTouchTimestamp = 5;
+    timeResult = 7;
     noEventsMonitor(&parameters);
+    TEST_ASSERT_EQUAL_UINT8(128, backlightLevel); // backlight level set to max
+}
+
+void whenTimeSinceLastTouchBiggerThan5Sec()
+{
+    lastTouchTimestamp = 5;
+    timeResult = 18;
+    noEventsMonitor(&parameters);
+    TEST_ASSERT_EQUAL_UINT8(8, backlightLevel); // backlight level set to min
 }
 
 int main()
 {
     UNITY_BEGIN();
-    RUN_TEST(happyFlow);
+    RUN_TEST(whenTimeSinceLastTouchLesserThan5Sec);
+    RUN_TEST(whenTimeSinceLastTouchBiggerThan5Sec);
     UNITY_END();
 }

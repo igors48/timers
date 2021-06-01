@@ -5,6 +5,7 @@
 
 #include "backlightController.hpp"
 #include "noEventsMonitor.hpp"
+#include "touchScreenMonitor.hpp"
 #include "freertos.hpp"
 
 // C++ object which will allow access to the functions of the Watch
@@ -98,54 +99,14 @@ void showTouch(void *pvParameters)
     }
 }
 
-SemaphoreHandle_t lastTouchTimestampMutex = NULL;
-time_t lastTouchTimestamp = 0;
-
-void touchScreenMonitor(void *pvParameters)
-{
-    while (true)
-    {
-        if (lastTouchTimestampMutex == NULL)
-        {
-            Serial.println("lastTouchTimestampMutex = NULL");
-        }
-        else
-        {
-            uint8_t touched = watch->touch->getTouched();
-            if (touched)
-            {
-                time_t timestamp = time(NULL);
-                if (xSemaphoreTake(lastTouchTimestampMutex, (TickType_t)10) == pdTRUE)
-                {
-                    lastTouchTimestamp = timestamp;
-                    xSemaphoreGive(lastTouchTimestampMutex);
-                    Serial.printf("lastTouchTimestamp set to %lu \r\n", lastTouchTimestamp);
-                }
-                else
-                {
-                    Serial.println("lastTouchTimestampMutex couldnt obtain from touchScreenMonitor");
-                }
-            }
-        }
-        vTaskDelay(250 / portTICK_PERIOD_MS);
-    }
-}
-
-SemaphoreHandle_t backlightLevelMutex = NULL;
-uint8_t backlightLevel = 8;
-
-void noEventsMonitorTask(void *pvParameters)
-{
-    while (true)
-    {
-        noEventsMonitor((NoEventsMonitorParameters *)pvParameters);
-        vTaskDelay(250 / portTICK_PERIOD_MS);
-    }
-}
-
 void setBrightness(uint8_t level)
 {
     watch->setBrightness(level);
+}
+
+bool getTouched()
+{
+    return watch->touch->getTouched();
 }
 
 void backlightControllerTask(void *p)
@@ -157,8 +118,34 @@ void backlightControllerTask(void *p)
     }
 }
 
+void touchScreenMonitorTask(void *p)
+{
+    while (true)
+    {
+        touchScreenMonitor((TouchScreenMonitorParameters *) p);
+        vTaskDelay(250 / portTICK_PERIOD_MS);
+    }
+}
+
+void noEventsMonitorTask(void *p)
+{
+    while (true)
+    {
+        noEventsMonitor((NoEventsMonitorParameters *)p);
+        vTaskDelay(250 / portTICK_PERIOD_MS);
+    }
+}
+
 BackligthControllerParameters backlightControllerParameters;
 NoEventsMonitorParameters noEventsMonitorParameters;
+TouchScreenMonitorParameters touchScreenMonitorParameters;
+
+SemaphoreHandle_t lastTouchTimestampMutex = NULL;
+time_t lastTouchTimestamp = 0;
+
+
+SemaphoreHandle_t backlightLevelMutex = NULL;
+uint8_t backlightLevel = 8;
 
 void setup()
 {
@@ -189,7 +176,17 @@ void setup()
     //xTaskCreate(showBattState, "showBattState", 2048, NULL, 1, NULL);
     xTaskCreate(showClock, "showClock", 2048, NULL, 1, NULL);
     //xTaskCreate(showTouch, "showTouch", 2048, NULL, 1, NULL);
-    xTaskCreate(touchScreenMonitor, "touchScreenMonitor", 2048, NULL, 1, NULL);
+
+    touchScreenMonitorParameters = {
+        .lastTouchTimestampMutex = &lastTouchTimestampMutex,
+        .lastTouchTimestamp = &lastTouchTimestamp,
+        .getTouched = getTouched,
+        .time = time,
+        .take = take,
+        .give = give,
+        .log = log};
+
+    xTaskCreate(touchScreenMonitorTask, "touchScreenMonitorTask", 2048, (void *)&touchScreenMonitorParameters, 1, NULL);
 
     noEventsMonitorParameters = {
         .lastTouchTimestampMutex = &lastTouchTimestampMutex,

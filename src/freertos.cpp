@@ -14,8 +14,7 @@ bool give(void *semaphore) {
 }
 
 bool take(void *semaphore, unsigned int blockTime) {
-    Serial.println("take");
-    return xSemaphoreTake(*(SemaphoreHandle_t *)semaphore, ( TickType_t )blockTime/* / portTICK_PERIOD_MS*/);
+    return xSemaphoreTake(*(SemaphoreHandle_t *)semaphore, ( TickType_t )blockTime / portTICK_PERIOD_MS);
 }
 
 long time() {
