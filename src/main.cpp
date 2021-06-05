@@ -11,6 +11,8 @@
 // C++ object which will allow access to the functions of the Watch
 TTGOClass *watch;
 
+bool irq_axp202 = false;
+
 void showClock(void *pvParameters)
 {
     while (true)
@@ -73,6 +75,12 @@ time_t lastTouchTimestamp = 0;
 SemaphoreHandle_t backlightLevelMutex = NULL;
 uint8_t backlightLevel = 8;
 
+void IRAM_ATTR isr() {
+    Serial.println("AXP202 interrupt");
+    watch->power->readIRQ();
+    watch->power->clearIRQ();
+}
+
 void setup()
 {
     Serial.begin(115200);
@@ -93,11 +101,23 @@ void setup()
     lastTouchTimestampMutex = xSemaphoreCreateMutex();
     backlightLevelMutex = xSemaphoreCreateMutex();
 
+    // Turn on the IRQ used
+    //watch->power->adc1Enable(AXP202_BATT_VOL_ADC1 | AXP202_BATT_CUR_ADC1 | AXP202_VBUS_VOL_ADC1 | AXP202_VBUS_CUR_ADC1, AXP202_ON);
+    //watch->power->enableIRQ(AXP202_VBUS_REMOVED_IRQ | AXP202_VBUS_CONNECT_IRQ | AXP202_CHARGING_FINISHED_IRQ, AXP202_ON);
+    //watch->power->clearIRQ();
+
+    // Interrupt that allows you to lightly sleep or wake up the screen
+    pinMode(AXP202_INT, INPUT);
+    attachInterrupt(AXP202_INT, isr, FALLING);
+    watch->power->enableIRQ(AXP202_PEK_SHORTPRESS_IRQ /*| AXP202_VBUS_REMOVED_IRQ | AXP202_VBUS_CONNECT_IRQ | AXP202_CHARGING_IRQ*/, true);
+    watch->power->clearIRQ();
+
     // Turn off unused power
     watch->power->setPowerOutPut(AXP202_EXTEN, AXP202_OFF);
     watch->power->setPowerOutPut(AXP202_DCDC2, AXP202_OFF);
     watch->power->setPowerOutPut(AXP202_LDO3, AXP202_OFF); // audio device
     watch->power->setPowerOutPut(AXP202_LDO4, AXP202_OFF);
+
 
     xTaskCreate(showClock, "showClock", 2048, NULL, 1, NULL);
 
