@@ -1,4 +1,5 @@
-#include <freertos.hpp>
+#include "freertos.hpp"
+#include "twatch.hpp"
 
 typedef struct
 {
@@ -6,6 +7,7 @@ typedef struct
     long *lastTouchTimestamp;
     void *backlightLevelMutex;
     unsigned char *backlightLevel;
+    LightSleep lightSleep;
     Take take;
     Give give;
     Time time;

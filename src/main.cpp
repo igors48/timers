@@ -11,8 +11,6 @@
 // C++ object which will allow access to the functions of the Watch
 TTGOClass *watch;
 
-bool irq_axp202 = false;
-
 void showClock(void *pvParameters)
 {
     while (true)
@@ -35,6 +33,18 @@ void setBrightness(uint8_t level)
 bool getTouched()
 {
     return watch->touch->getTouched();
+}
+
+void lightSleep()
+{
+    //setCpuFrequencyMhz(20);
+    delay(100);
+    gpio_wakeup_enable((gpio_num_t)AXP202_INT, GPIO_INTR_LOW_LEVEL); 
+    esp_sleep_enable_gpio_wakeup();
+    Serial.println("before light sleep");
+    esp_err_t lightSleepResult = esp_light_sleep_start();
+
+    Serial.printf("light sleep %d \r", lightSleepResult);
 }
 
 void backlightControllerTask(void *p)
@@ -75,14 +85,16 @@ time_t lastTouchTimestamp = 0;
 SemaphoreHandle_t backlightLevelMutex = NULL;
 uint8_t backlightLevel = 8;
 
-void IRAM_ATTR isr() {
-    Serial.println("AXP202 interrupt");
-    watch->power->readIRQ();
-    watch->power->clearIRQ();
-}
+// void IRAM_ATTR isr() {
+//     Serial.println("AXP202 interrupt");
+//     watch->power->readIRQ();
+//     watch->power->clearIRQ();
+// }
 
 void setup()
 {
+    //setCpuFrequencyMhz(20);
+
     Serial.begin(115200);
 
     // Get Watch object and set up the display
@@ -107,10 +119,10 @@ void setup()
     //watch->power->clearIRQ();
 
     // Interrupt that allows you to lightly sleep or wake up the screen
-    pinMode(AXP202_INT, INPUT);
-    attachInterrupt(AXP202_INT, isr, FALLING);
-    watch->power->enableIRQ(AXP202_PEK_SHORTPRESS_IRQ /*| AXP202_VBUS_REMOVED_IRQ | AXP202_VBUS_CONNECT_IRQ | AXP202_CHARGING_IRQ*/, true);
-    watch->power->clearIRQ();
+    // pinMode(AXP202_INT, INPUT);
+    // attachInterrupt(AXP202_INT, isr, FALLING);
+    // watch->power->enableIRQ(AXP202_PEK_SHORTPRESS_IRQ | AXP202_VBUS_REMOVED_IRQ | AXP202_VBUS_CONNECT_IRQ | AXP202_CHARGING_IRQ, true);
+    // watch->power->clearIRQ();
 
     // Turn off unused power
     watch->power->setPowerOutPut(AXP202_EXTEN, AXP202_OFF);
@@ -137,6 +149,7 @@ void setup()
         .lastTouchTimestamp = &lastTouchTimestamp,
         .backlightLevelMutex = &backlightLevelMutex,
         .backlightLevel = &backlightLevel,
+        .lightSleep = lightSleep,
         .take = take,
         .give = give,
         .time = time,
@@ -154,9 +167,15 @@ void setup()
     xTaskCreate(backlightControllerTask, "backlightControllerTask", 2048, (void *)&backlightControllerParameters, 1, NULL);
 
     Serial.println("tasks started");
+    //lightSleep();
+
 }
 
 void loop()
 {
     // empty
+    //exit(0);
+    // uint32_t freq = getCpuFrequencyMhz();
+    // float current = watch->power->getBattDischargeCurrent();
+    // Serial.printf("freq %d current %.2f \r", freq, current);
 }
