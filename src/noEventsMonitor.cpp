@@ -35,7 +35,7 @@ void noEventsMonitor(NoEventsMonitorParameters *p)
         else
         {
             p->log(NO_EVENTS_MONITOR, "go to light sleep");
-            p->lightSleep();
+            p->sleep();
         }
     }
     else

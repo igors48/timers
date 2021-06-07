@@ -35,7 +35,7 @@ bool getTouched()
     return watch->touch->getTouched();
 }
 
-void lightSleep()
+void sleep()
 {
     //setCpuFrequencyMhz(20);
     delay(100);
@@ -149,7 +149,7 @@ void setup()
         .lastTouchTimestamp = &lastTouchTimestamp,
         .backlightLevelMutex = &backlightLevelMutex,
         .backlightLevel = &backlightLevel,
-        .lightSleep = lightSleep,
+        .sleep = sleep,
         .take = take,
         .give = give,
         .time = time,

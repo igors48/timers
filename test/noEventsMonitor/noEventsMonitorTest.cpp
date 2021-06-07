@@ -7,7 +7,7 @@ int logCount;
 bool giveResult;
 bool takeResult;
 long timeResult;
-bool lightSleepCalled;
+bool sleepCalled;
 
 int lastTouchTimestampMutex;
 long lastTouchTimestamp;
@@ -42,8 +42,8 @@ long time()
     return timeResult;
 }
 
-void lightSleep() {
-    lightSleepCalled = true;
+void sleep() {
+    sleepCalled = true;
 }
 
 void setUp(void)
@@ -52,14 +52,14 @@ void setUp(void)
     giveResult = true;
     takeResult = true;
     timeResult = 0;
-    lightSleepCalled = false;
+    sleepCalled = false;
 
     parameters = {
     .lastTouchTimestampMutex = &lastTouchTimestampMutex,
     .lastTouchTimestamp = &lastTouchTimestamp,
     .backlightLevelMutex = &backlightLevelMutex,
     .backlightLevel = &backlightLevel,
-    .lightSleep = lightSleep,
+    .sleep = sleep,
     .take = take,
     .give = give,
     .time = time,
@@ -72,7 +72,7 @@ void whenTimeSinceLastTouchLesserThan5Sec()
     timeResult = 7;
     noEventsMonitor(&parameters);
     TEST_ASSERT_EQUAL_UINT8(128, backlightLevel); // backlight level set to max
-    TEST_ASSERT_EQUAL_UINT8(0, lightSleepCalled); // lightSleep not called
+    TEST_ASSERT_EQUAL_UINT8(0,sleepCalled); // sleep not called
 }
 
 void whenTimeSinceLastTouchBiggerThan5Sec()
@@ -81,7 +81,7 @@ void whenTimeSinceLastTouchBiggerThan5Sec()
     timeResult = 12;
     noEventsMonitor(&parameters);
     TEST_ASSERT_EQUAL_UINT8(8, backlightLevel); // backlight level set to min
-    TEST_ASSERT_EQUAL_UINT8(0, lightSleepCalled); // lightSleep not called
+    TEST_ASSERT_EQUAL_UINT8(0, sleepCalled); // sleep not called
 }
 
 void whenTimeSinceLastTouchBiggerThan10Sec()
@@ -89,7 +89,7 @@ void whenTimeSinceLastTouchBiggerThan10Sec()
     lastTouchTimestamp = 5;
     timeResult = 21;
     noEventsMonitor(&parameters);
-    TEST_ASSERT_EQUAL_UINT8(1, lightSleepCalled); // lightSleep not called
+    TEST_ASSERT_EQUAL_UINT8(1, sleepCalled); // sleep not called
 }
 
 int main()

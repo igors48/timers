@@ -7,7 +7,7 @@ typedef struct
     long *lastTouchTimestamp;
     void *backlightLevelMutex;
     unsigned char *backlightLevel;
-    LightSleep lightSleep;
+    Sleep sleep;
     Take take;
     Give give;
     Time time;
