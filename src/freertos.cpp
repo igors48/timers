@@ -10,11 +10,11 @@ void log(const char *source, const char *message, ...) {
 }
 
 bool give(void *semaphore) {
-    return xSemaphoreGive(*(SemaphoreHandle_t *)semaphore);
+    return xSemaphoreGive((SemaphoreHandle_t *)semaphore);
 }
 
 bool take(void *semaphore, unsigned int blockTime) {
-    return xSemaphoreTake(*(SemaphoreHandle_t *)semaphore, ( TickType_t )blockTime / portTICK_PERIOD_MS);
+    return xSemaphoreTake((SemaphoreHandle_t *)semaphore, ( TickType_t )blockTime / portTICK_PERIOD_MS);
 }
 
 long time() {
