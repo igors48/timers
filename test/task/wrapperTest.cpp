@@ -60,13 +60,27 @@ void setUp(void)
     .take = take,
     .give = give,
     .delay = NULL,
-    .log = log
+    .log = NULL
     };
+}
+
+void whenTerminationFlagIsTrue() {
+    parameters.termination = true;
+    wrapper(&parameters);
+    TEST_ASSERT_EQUAL_INT(1, parameters.canBeSuspended); // THEN canBeSuspended set to true
+    TEST_ASSERT_EQUAL_INT(0, funcCalled); // THEN task function did not called
+}
+
+void whenTerminationFlagIsFalse() {
+    wrapper(&parameters);
+    TEST_ASSERT_EQUAL_INT(0, parameters.canBeSuspended); // THEN canBeSuspended set to false
+    TEST_ASSERT_EQUAL_INT(1, funcCalled); // THEN task function called
 }
 
 int main()
 {
     UNITY_BEGIN();
-    //RUN_TEST(whenTimeSinceLastTouchLesserThan5Sec);
+    RUN_TEST(whenTerminationFlagIsTrue);
+    RUN_TEST(whenTerminationFlagIsFalse);
     UNITY_END();
 }
