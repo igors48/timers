@@ -1,3 +1,5 @@
+#pragma once
+
 #include "freertos.hpp"
 #include "twatch.hpp"
 

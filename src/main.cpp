@@ -39,7 +39,7 @@ void sleep()
 {
     //setCpuFrequencyMhz(20);
     delay(100);
-    gpio_wakeup_enable((gpio_num_t)AXP202_INT, GPIO_INTR_LOW_LEVEL); 
+    gpio_wakeup_enable((gpio_num_t)AXP202_INT, GPIO_INTR_LOW_LEVEL);
     esp_sleep_enable_gpio_wakeup();
     Serial.println("before light sleep");
     esp_err_t lightSleepResult = esp_light_sleep_start();
@@ -60,7 +60,7 @@ void touchScreenMonitorTask(void *p)
 {
     while (true)
     {
-        touchScreenMonitor((TouchScreenMonitorParameters *) p);
+        touchScreenMonitor((TouchScreenMonitorParameters *)p);
         vTaskDelay(250 / portTICK_PERIOD_MS);
     }
 }
@@ -80,7 +80,6 @@ TouchScreenMonitorParameters touchScreenMonitorParameters;
 
 SemaphoreHandle_t lastTouchTimestampMutex = NULL;
 time_t lastTouchTimestamp = 0;
-
 
 SemaphoreHandle_t backlightLevelMutex = NULL;
 uint8_t backlightLevel = 8;
@@ -130,7 +129,6 @@ void setup()
     watch->power->setPowerOutPut(AXP202_LDO3, AXP202_OFF); // audio device
     watch->power->setPowerOutPut(AXP202_LDO4, AXP202_OFF);
 
-
     xTaskCreate(showClock, "showClock", 2048, NULL, 1, NULL);
 
     touchScreenMonitorParameters = {
@@ -168,7 +166,6 @@ void setup()
 
     Serial.println("tasks started");
     //lightSleep();
-
 }
 
 void loop()
