@@ -10,7 +10,7 @@ typedef long (*Time)();
 long time();
 
 typedef void (*Delay)(unsigned int time);
-void delay(unsigned int time);
+void frDelay(unsigned int time);
 
 typedef void (*Log)(const char *source, const char *message, ...);
 void log(const char *source, const char *message, ...);

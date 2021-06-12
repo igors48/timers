@@ -14,4 +14,4 @@ typedef struct
     Log log;
 } TouchScreenMonitorParameters;
 
-void touchScreenMonitor(TouchScreenMonitorParameters *p);
+void touchScreenMonitor(void *p);

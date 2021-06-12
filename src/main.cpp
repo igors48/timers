@@ -7,6 +7,7 @@
 #include "noEventsMonitor.hpp"
 #include "touchScreenMonitor.hpp"
 #include "freertos.hpp"
+#include "task.hpp"
 
 // C++ object which will allow access to the functions of the Watch
 TTGOClass *watch;
@@ -90,6 +91,9 @@ uint8_t backlightLevel = 8;
 //     watch->power->clearIRQ();
 // }
 
+SemaphoreHandle_t touchScreenMonitorTaskMutex = NULL;
+TaskParameters touchScreenMonitorTaskParameters;
+
 void setup()
 {
     //setCpuFrequencyMhz(20);
@@ -139,8 +143,9 @@ void setup()
         .take = take,
         .give = give,
         .log = log};
-
-    xTaskCreate(touchScreenMonitorTask, "touchScreenMonitorTask", 2048, (void *)&touchScreenMonitorParameters, 1, NULL);
+    touchScreenMonitorTaskMutex = xSemaphoreCreateMutex();
+    touchScreenMonitorTaskParameters = create(touchScreenMonitor, &touchScreenMonitorParameters, &touchScreenMonitorTaskMutex, 250);
+    xTaskCreate(task, "touchScreenMonitorTask", 2048, (void *)&touchScreenMonitorTaskParameters, 1, NULL);
 
     noEventsMonitorParameters = {
         .lastTouchTimestampMutex = &lastTouchTimestampMutex,
@@ -170,6 +175,8 @@ void setup()
 
 void loop()
 {
+    Serial.println("loop");
+    vTaskSuspend(NULL);
     // empty
     //exit(0);
     // uint32_t freq = getCpuFrequencyMhz();

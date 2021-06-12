@@ -18,3 +18,6 @@ typedef struct
     Log log;
 } TaskParameters;
 
+void task(void *p);
+
+TaskParameters create(Func func, void *parameters, void *mutex, unsigned int taskDelay);

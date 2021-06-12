@@ -14,11 +14,30 @@ void wrapper(TaskParameters *p)
     }
 }
 
-void task(TaskParameters *p)
+void task(void *p)
 {
+    TaskParameters *t = (TaskParameters *)p;
     while (true)
     {
-        wrapper(p);
-        p->delay(p->taskDelay);
+        wrapper(t);
+        t->delay(t->taskDelay);
     }
+}
+
+TaskParameters create(Func func, void *parameters, void *mutex, unsigned int taskDelay)
+{
+    TaskParameters result = {
+        .func = func,
+        .parameters = parameters,
+        .mutex = mutex,
+        .termination = false,
+        .canBeSuspended = false,
+        .taskDelay = taskDelay,
+        .take = take,
+        .give = give,
+        .delay = frDelay,
+        .log = log
+    };
+
+    return result;
 }
