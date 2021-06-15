@@ -2,11 +2,11 @@
 
 void wrapper(TaskParameters *p)
 {
-    if (p->take(p->mutex, 0))
+    if (p->take(p->terminationMutex, 0))
     {
         bool termination = p->termination;
         p->canBeSuspended = termination;
-        p->give(p->mutex);
+        p->give(p->terminationMutex);
         if (!termination)
         {
             p->func(p->parameters);
@@ -24,12 +24,12 @@ void task(void *p)
     }
 }
 
-TaskParameters create(Func func, void *parameters, void *mutex, unsigned int taskDelay)
+TaskParameters create(Func func, void *parameters, void *terminationMutex, unsigned int taskDelay)
 {
     TaskParameters result = {
         .func = func,
         .parameters = parameters,
-        .mutex = mutex,
+        .terminationMutex = terminationMutex,
         .termination = false,
         .canBeSuspended = false,
         .taskDelay = taskDelay,
