@@ -8,8 +8,10 @@ typedef struct
 {
     Func func;
     void *parameters;
+    void *actionMutex;
+    bool *action;
     void *terminationMutex;
-    bool termination;
+    bool *termination;
     bool canBeSuspended;
     unsigned int taskDelay;
     Take take;
