@@ -1,10 +1,36 @@
 #include "task.hpp"
 
-void wrapper(TaskParameters *p)
+void _actionMode(TaskParameters *p)
+{
+    if (p->take(p->actionMutex, 0))
+    {
+        bool action = *p->action;
+        p->give(p->actionMutex);
+        if (action)
+        {
+            p->func(p->parameters);
+        }
+    }
+}
+
+void _sleepMode(TaskParameters *p)
+{
+    if (p->take(p->actionMutex, 0))
+    {
+        bool sleep = !(*p->action);
+        p->give(p->actionMutex);
+        if (sleep)
+        {
+            p->func(p->parameters);
+        }
+    }
+}
+
+void _wrapper(TaskParameters *p)
 {
     if (p->take(p->terminationMutex, 0))
     {
-        bool termination = *p->termination;
+        bool termination = p->termination;
         p->canBeSuspended = termination;
         p->give(p->terminationMutex);
         if (!termination)
@@ -14,28 +40,30 @@ void wrapper(TaskParameters *p)
     }
 }
 
-void actionModeWrapper(TaskParameters *p)
+void _actionModeWrapper(TaskParameters *p)
 {
-    if (p->take(p->actionMutex, 0))
+    if (p->take(p->terminationMutex, 0))
     {
-        bool action = *p->action;
-        p->give(p->actionMutex);
-        if (action)
+        bool termination = p->termination;
+        p->canBeSuspended = termination;
+        p->give(p->terminationMutex);
+        if (!termination)
         {
-            wrapper(p);
+            _actionMode(p);
         }
     }
 }
 
-void sleepModeWrapper(TaskParameters *p)
+void _sleepModeWrapper(TaskParameters *p)
 {
-    if (p->take(p->actionMutex, 0))
+    if (p->take(p->terminationMutex, 0))
     {
-        bool sleep = !(*p->action);
-        p->give(p->actionMutex);
-        if (sleep)
+        bool termination = p->termination;
+        p->canBeSuspended = termination;
+        p->give(p->terminationMutex);
+        if (!termination)
         {
-            wrapper(p);
+            _sleepMode(p);
         }
     }
 }
@@ -45,7 +73,7 @@ void task(void *p)
     TaskParameters *t = (TaskParameters *)p;
     while (true)
     {
-        wrapper(t);
+        _wrapper(t);
         t->delay(t->taskDelay);
     }
 }
@@ -55,7 +83,7 @@ void actionModeTask(void *p)
     TaskParameters *t = (TaskParameters *)p;
     while (true)
     {
-        actionModeWrapper(t);
+        _actionModeWrapper(t);
         t->delay(t->taskDelay);
     }
 }
@@ -65,7 +93,7 @@ void sleepModeTask(void *p)
     TaskParameters *t = (TaskParameters *)p;
     while (true)
     {
-        sleepModeWrapper(t);
+        _sleepModeWrapper(t);
         t->delay(t->taskDelay);
     }
 }
