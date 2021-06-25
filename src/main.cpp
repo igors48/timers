@@ -145,7 +145,7 @@ void setup()
         .log = log};
     touchScreenMonitorTaskMutex = xSemaphoreCreateMutex();
     touchScreenMonitorTaskParameters = create(touchScreenMonitor, &touchScreenMonitorParameters, &touchScreenMonitorTaskMutex, 250);
-    xTaskCreate(task, "touchScreenMonitorTask", 2048, (void *)&touchScreenMonitorTaskParameters, 1, NULL);
+    xTaskCreate(task, "touchScreenMonitorTask", 2048, (void *)&touchScreenMonitorTaskParameters, 1, (TaskHandle_t *)touchScreenMonitorTaskParameters.handle);
 
     noEventsMonitorParameters = {
         .lastTouchTimestampMutex = &lastTouchTimestampMutex,

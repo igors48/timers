@@ -6,6 +6,7 @@ typedef void (*Func)(void *p);
 
 typedef struct
 {
+    void *handle;
     Func func;
     void *parameters;
     void *actionMutex;
