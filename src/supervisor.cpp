@@ -14,14 +14,14 @@ void supervisor(SupervisorParameters *p)
             p->give(p->lastEventTimestamp);
             long current = p->time();
             long diff = current - lastEventTimestamp;
-            bool sleep = action && (diff > p->goToSleepTime);
+            bool sleep = action && (diff >= p->goToSleepTime);
             if (sleep)
             {
                 p->goToSleep(p);
             }
             else
             {
-                bool wakeUp = !action && (diff < p->wakeUpTime);
+                bool wakeUp = !action && (diff <= p->wakeUpTime);
                 if (wakeUp)
                 {
                     p->wakeUp(p);

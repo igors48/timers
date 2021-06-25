@@ -72,7 +72,7 @@ void whenTimeSinceLastTouchLesserThan5Sec()
     timeResult = 7;
     noEventsMonitor(&parameters);
     TEST_ASSERT_EQUAL_UINT8(128, backlightLevel); // backlight level set to max
-    TEST_ASSERT_EQUAL_UINT8(0,sleepCalled); // sleep not called
+    TEST_ASSERT_EQUAL_UINT8(0, sleepCalled); // sleep not called
 }
 
 void whenTimeSinceLastTouchBiggerThan5Sec()
