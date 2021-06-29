@@ -19,4 +19,5 @@ typedef struct
     Log log;
 } SupervisorParameters;
 
+
 void supervisor(SupervisorParameters *p);

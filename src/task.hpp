@@ -12,8 +12,8 @@ typedef struct
     void *actionMutex;
     bool *action;
     void *terminationMutex;
-    bool termination;
-    bool canBeSuspended;
+    bool termination; // guarded by terminationMutex
+    bool canBeSuspended; // guarded by terminationMutex
     unsigned int taskDelay;
     Take take;
     Give give;

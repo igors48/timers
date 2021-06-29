@@ -38,3 +38,70 @@ void supervisor(SupervisorParameters *p)
         p->log(SUPERVISOR, "failed to take action mutex");
     }
 }
+
+bool setTermination(TaskParameters *tasks[], int count)
+{
+    bool notDone = true;
+    int triesLeft = 10;
+    while (notDone && triesLeft > 0)
+    {
+        notDone = false;
+        for (int i = 0; i < count; i++)
+        {
+            auto current = tasks[i];
+            auto mutex = current->terminationMutex;
+            if (current->take(mutex, 1))
+            {
+                current->termination = true;
+                current->give(mutex);
+            }
+            else
+            {
+                current->log("", "");
+                notDone = true;
+            }
+        }
+        triesLeft--;
+    }
+    return !notDone;
+}
+
+bool waitForSuspend(TaskParameters *tasks[], int count)
+{
+    bool notDone = true;
+    int triesLeft = 10;
+    while (notDone && triesLeft > 0)
+    {
+        notDone = false;
+        for (int i = 0; i < count; i++)
+        {
+            auto current = tasks[i];
+            auto mutex = current->terminationMutex;
+            if (current->take(mutex, 1))
+            {
+                bool canBeSuspended = current->canBeSuspended;
+                current->give(mutex);
+                if (!canBeSuspended)
+                {
+                    current->log("", "");
+                    notDone = true;
+                }
+            }
+            else
+            {
+                current->log("", "");
+                notDone = true;
+            }
+        }
+        triesLeft--;
+    }
+    return !notDone;
+}
+
+void suspendTasks(TaskParameters *tasks[], int count, Suspend suspend)
+{
+    for (int i = 0; i < count; i++)
+    {
+        suspend(tasks[i]);
+    }
+}
