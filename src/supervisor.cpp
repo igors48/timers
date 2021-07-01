@@ -39,10 +39,10 @@ void supervisor(SupervisorParameters *p)
     }
 }
 
-bool setTermination(TaskParameters *tasks[], int count)
+bool setTermination(TaskParameters *tasks[], int count, int tryCount)
 {
     bool notDone = true;
-    int triesLeft = 10;
+    int triesLeft = tryCount;
     while (notDone && triesLeft > 0)
     {
         notDone = false;
@@ -57,7 +57,6 @@ bool setTermination(TaskParameters *tasks[], int count)
             }
             else
             {
-                current->log("", "");
                 notDone = true;
             }
         }
@@ -66,10 +65,10 @@ bool setTermination(TaskParameters *tasks[], int count)
     return !notDone;
 }
 
-bool waitForSuspend(TaskParameters *tasks[], int count)
+bool waitForSuspend(TaskParameters *tasks[], int count, int tryCount)
 {
     bool notDone = true;
-    int triesLeft = 10;
+    int triesLeft = tryCount;
     while (notDone && triesLeft > 0)
     {
         notDone = false;
@@ -83,13 +82,11 @@ bool waitForSuspend(TaskParameters *tasks[], int count)
                 current->give(mutex);
                 if (!canBeSuspended)
                 {
-                    current->log("", "");
                     notDone = true;
                 }
             }
             else
             {
-                current->log("", "");
                 notDone = true;
             }
         }

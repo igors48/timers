@@ -9,9 +9,9 @@ typedef struct
     void *handle;
     Func func;
     void *parameters;
-    void *actionMutex;
+    void *actionMutex; // common for all tasks
     bool *action;
-    void *terminationMutex;
+    void *terminationMutex; // individual for each tasks
     bool termination; // guarded by terminationMutex
     bool canBeSuspended; // guarded by terminationMutex
     unsigned int taskDelay;
