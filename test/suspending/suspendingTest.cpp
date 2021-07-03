@@ -33,13 +33,13 @@ void setUp(void)
     giveCount = 0;
     p1 = {
         .terminationMutex = &terminationMutex1,
-        .termination = false,
+        .canBeSuspended = true,
         .take = take,
         .give = give
     }; 
     p2 = {
         .terminationMutex = &terminationMutex2,
-        .termination = false,
+        .canBeSuspended = true,
         .take = take,
         .give = give
     }; 
@@ -48,32 +48,29 @@ void setUp(void)
 void whenHappyFlow()
 {
     TaskParameters *tasks[] = {&p1, &p2};
-    bool result = setTermination(tasks, 2, 2); 
+    
+    bool result = waitForSuspend(tasks, 2, 2); 
 
     TEST_ASSERT_EQUAL_UINT8(1, result); // THEN returns true
-    TEST_ASSERT_EQUAL_UINT8(1, p1.termination); // THEN first task has termination flag set
-    TEST_ASSERT_EQUAL_UINT8(1, p2.termination); // THEN second task has termination flag set
     TEST_ASSERT_EQUAL_UINT8(2, takeCount); // THEN only one take for each task
     TEST_ASSERT_EQUAL_UINT8(2, giveCount); // THEN only one give for each task
 }
 
-void whenCouldntTakeMutex()
+void whenOneTaskCanNotBeSuspended()
 {
     TaskParameters *tasks[] = {&p1, &p2};
-    p2.take = takeFail;
-    bool result = setTermination(tasks, 2, 2); 
+    p1.canBeSuspended = false;
 
-    TEST_ASSERT_EQUAL_UINT8(0, result); // THEN returns false
-    TEST_ASSERT_EQUAL_UINT8(1, p1.termination); // THEN first task has termination flag set
-    TEST_ASSERT_EQUAL_UINT8(0, p2.termination); // THEN second task has termination flag not set
-    TEST_ASSERT_EQUAL_UINT8(4, takeCount); // THEN +2 additional failed takes compare to happy flow
-    TEST_ASSERT_EQUAL_UINT8(2, giveCount); // THEN only one give for each task
+    bool result = waitForSuspend(tasks, 2, 2); 
+
+    TEST_ASSERT_EQUAL_UINT8(0, result); // THEN returns true
+    TEST_ASSERT_EQUAL_UINT8(4, takeCount); // THEN 2 tries performed for each task
+    TEST_ASSERT_EQUAL_UINT8(4, giveCount); // THEN 2 gives performed for each task
 }
 
 int main()
 {
     UNITY_BEGIN();
     RUN_TEST(whenHappyFlow);
-    RUN_TEST(whenCouldntTakeMutex);
     UNITY_END();
 }
