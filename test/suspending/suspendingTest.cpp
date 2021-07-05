@@ -63,14 +63,28 @@ void whenOneTaskCanNotBeSuspended()
 
     bool result = waitForSuspend(tasks, 2, 2); 
 
-    TEST_ASSERT_EQUAL_UINT8(0, result); // THEN returns true
+    TEST_ASSERT_EQUAL_UINT8(0, result); // THEN returns false
     TEST_ASSERT_EQUAL_UINT8(4, takeCount); // THEN 2 tries performed for each task
     TEST_ASSERT_EQUAL_UINT8(4, giveCount); // THEN 2 gives performed for each task
+}
+
+void whenCouldntTakeMutex()
+{
+    TaskParameters *tasks[] = {&p1, &p2};
+    p2.take = takeFail;
+
+    bool result = waitForSuspend(tasks, 2, 2); 
+
+    TEST_ASSERT_EQUAL_UINT8(0, result); // THEN returns false
+    TEST_ASSERT_EQUAL_UINT8(4, takeCount); // THEN 2 tries performed for each task
+    TEST_ASSERT_EQUAL_UINT8(2, giveCount); // THEN 2 gives performed for p1 task
 }
 
 int main()
 {
     UNITY_BEGIN();
     RUN_TEST(whenHappyFlow);
+    RUN_TEST(whenOneTaskCanNotBeSuspended);
+    RUN_TEST(whenCouldntTakeMutex);
     UNITY_END();
 }

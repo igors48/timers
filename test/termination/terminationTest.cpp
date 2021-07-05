@@ -67,7 +67,7 @@ void whenCouldntTakeMutex()
     TEST_ASSERT_EQUAL_UINT8(1, p1.termination); // THEN first task has termination flag set
     TEST_ASSERT_EQUAL_UINT8(0, p2.termination); // THEN second task has termination flag not set
     TEST_ASSERT_EQUAL_UINT8(4, takeCount); // THEN +2 additional failed takes compare to happy flow
-    TEST_ASSERT_EQUAL_UINT8(2, giveCount); // THEN only one give for each task
+    TEST_ASSERT_EQUAL_UINT8(2, giveCount); // THEN only one give for p1 task
 }
 
 int main()

@@ -13,6 +13,12 @@ typedef struct
     Func wakeUp;
     long goToSleepTime;
     Func goToSleep;
+    TaskParameters *actionModeTasks[10];
+    int actionModeTasksCount;
+    TaskParameters *sleepModeTasks[10];
+    int sleepModeTasksCount;
+    Suspend suspend;
+    Resume resume;
     Time time;
     Take take;
     Give give;
