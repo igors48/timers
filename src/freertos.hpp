@@ -20,3 +20,9 @@ void frSuspend(void *handle);
 
 typedef void (*Log)(const char *source, const char *message, ...);
 void log(const char *source, const char *message, ...);
+
+typedef struct
+{
+    Take take;
+    Give give;
+} FreeRtosApi;

@@ -24,19 +24,66 @@ void showClock(void *p)
     watch->tft->print(tnow);
 }
 
-void buttonListener(void *p)
+typedef void (*VoidFunc)();
+typedef bool (*BoolFunc)();
+
+typedef struct
+{
+    VoidFunc readIRQ;
+    BoolFunc isPEKShortPressIRQ;
+    VoidFunc clearIRQ;
+} PowerApi;
+
+void powerReadIRQ()
+{
+    watch->power->readIRQ();
+}
+
+bool powerIsPEKShortPressIRQ()
+{
+    return watch->power->isPEKShortPressIRQ();
+}
+
+void powerClearIRQ()
+{
+    watch->power->clearIRQ();
+}
+
+PowerApi powerApi;
+FreeRtosApi freeRtosApi;
+
+typedef struct
+{
+    void *lastShortPressTimestampMutex;
+    long *lastShortPressTimestamp;
+    PowerApi *powerApi;
+    FreeRtosApi *freeRtosApi;
+} ButtonListenerParameters;
+
+ButtonListenerParameters buttonListenerParameters;
+
+void buttonListener(ButtonListenerParameters *p)
+{
+    p->powerApi->readIRQ();
+    if (p->powerApi->isPEKShortPressIRQ())
+    {
+        Serial.println("PowerKey Press");
+    }
+    p->powerApi->clearIRQ();
+}
+
+void buttonListenerTask(void *p)
 {
     while (true)
     {
         vTaskSuspend(NULL);
-        watch->power->readIRQ();
-        if (watch->power->isPEKShortPressIRQ())
-        {
-
-            Serial.println("PowerKey Press");
-        }
-        watch->power->clearIRQ();
+        buttonListener((ButtonListenerParameters *)p);
     }
+}
+
+void buttonInterruptHandler(void)
+{
+    vTaskResume(buttonListenerHandle);
 }
 
 void setup()
@@ -53,7 +100,18 @@ void setup()
 
     WiFi.mode(WIFI_OFF);
 
-    xTaskCreate(buttonListener, "buttonListener", 2048, NULL, 1, &buttonListenerHandle);
+    powerApi = {
+        .readIRQ = powerReadIRQ,
+        .isPEKShortPressIRQ = powerIsPEKShortPressIRQ,
+        .clearIRQ = powerClearIRQ};
+
+    buttonListenerParameters = {
+        .lastShortPressTimestampMutex = &lastShortPressTimestampMutex,
+        .lastShortPressTimestamp = &lastShortPressTimestamp,
+        .powerApi = &powerApi,
+        .freeRtosApi = NULL};
+
+    xTaskCreate(buttonListenerTask, "buttonListenerTask", 2048, (void *)&buttonListenerParameters, 1, &buttonListenerHandle);
 
     watch->power->setPowerOutPut(AXP202_EXTEN, AXP202_OFF);
     watch->power->setPowerOutPut(AXP202_DCDC2, AXP202_OFF);

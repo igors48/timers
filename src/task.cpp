@@ -97,7 +97,7 @@ void sleepModeTask(void *p)
         t->delay(t->taskDelay);
     }
 }
-
+/*
 TaskParameters create(
     Func func,
     void *parameters,
@@ -123,3 +123,4 @@ TaskParameters create(
 
     return result;
 }
+*/
