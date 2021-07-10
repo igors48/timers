@@ -1,6 +1,6 @@
 #include <Arduino.h>
 // Select you T-Watch in the platformio.ini file
-#include <LilyGoWatch.h>
+//#include <LilyGoWatch.h>
 #include <WiFi.h>
 
 #include "backlightController.hpp"
@@ -9,8 +9,9 @@
 #include "freertos.hpp"
 #include "task.hpp"
 
-// C++ object which will allow access to the functions of the Watch
-TTGOClass *watch;
+#include "watch/watch.hpp"
+#include "watch/power.hpp"
+
 TaskHandle_t buttonListenerHandle = NULL;
 SemaphoreHandle_t lastShortPressTimestampMutex = NULL;
 time_t lastShortPressTimestamp = 0;
@@ -24,30 +25,6 @@ void showClock(void *p)
     watch->tft->print(tnow);
 }
 
-typedef void (*VoidFunc)();
-typedef bool (*BoolFunc)();
-
-typedef struct
-{
-    VoidFunc readIRQ;
-    BoolFunc isPEKShortPressIRQ;
-    VoidFunc clearIRQ;
-} PowerApi;
-
-void powerReadIRQ()
-{
-    watch->power->readIRQ();
-}
-
-bool powerIsPEKShortPressIRQ()
-{
-    return watch->power->isPEKShortPressIRQ();
-}
-
-void powerClearIRQ()
-{
-    watch->power->clearIRQ();
-}
 
 PowerApi powerApi;
 FreeRtosApi freeRtosApi;
@@ -74,14 +51,10 @@ void buttonListener(ButtonListenerParameters *p)
 
 void buttonListenerTask(void *p)
 {
-    UBaseType_t uxHighWaterMark = uxTaskGetStackHighWaterMark(NULL);
-    Serial.printf("initial water mark %d \r\n", uxHighWaterMark);
     while (true)
     {
         vTaskSuspend(NULL);
         buttonListener((ButtonListenerParameters *)p);
-        UBaseType_t uxHighWaterMark = uxTaskGetStackHighWaterMark(NULL);
-        Serial.printf("current water mark %d \r\n", uxHighWaterMark);
     }
 }
 
@@ -104,11 +77,12 @@ void setup()
 
     WiFi.mode(WIFI_OFF);
 
-    powerApi = {
-        .readIRQ = powerReadIRQ,
-        .isPEKShortPressIRQ = powerIsPEKShortPressIRQ,
-        .clearIRQ = powerClearIRQ};
+    // powerApi = {
+    //     .readIRQ = powerReadIRQ,
+    //     .isPEKShortPressIRQ = powerIsPEKShortPressIRQ,
+    //     .clearIRQ = powerClearIRQ};
 
+    powerApi = defaultPowerApi();
     buttonListenerParameters = {
         .lastShortPressTimestampMutex = &lastShortPressTimestampMutex,
         .lastShortPressTimestamp = &lastShortPressTimestamp,
