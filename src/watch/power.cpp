@@ -1,6 +1,7 @@
 #include "power.hpp"
 #include "watch.hpp"
 
+// took power from header file name
 void powerReadIRQ()
 {
     watch->power->readIRQ();
@@ -16,11 +17,11 @@ void powerClearIRQ()
     watch->power->clearIRQ();
 }
 
-PowerApi defaultPowerApi()
+// took watch from package name
+PowerApi watchPowerApi()
 {
-    PowerApi powerApi = {
-
-    };
-
-    return powerApi;
+    return {
+        .readIRQ = powerReadIRQ,
+        .isPEKShortPressIRQ = powerIsPEKShortPressIRQ,
+        .clearIRQ = powerClearIRQ};
 }

@@ -2,5 +2,5 @@
 
 #include <LilyGoWatch.h>
 
-TTGOClass *watch;
+extern TTGOClass *watch;
 

@@ -1,6 +1,4 @@
 #include <Arduino.h>
-// Select you T-Watch in the platformio.ini file
-//#include <LilyGoWatch.h>
 #include <WiFi.h>
 
 #include "backlightController.hpp"
@@ -12,7 +10,9 @@
 #include "watch/watch.hpp"
 #include "watch/power.hpp"
 
-TaskHandle_t buttonListenerHandle = NULL;
+TTGOClass *watch;
+
+TaskHandle_t buttonListenerTaskHandle = NULL;
 SemaphoreHandle_t lastShortPressTimestampMutex = NULL;
 time_t lastShortPressTimestamp = 0;
 
@@ -60,7 +60,7 @@ void buttonListenerTask(void *p)
 
 void buttonInterruptHandler(void)
 {
-    vTaskResume(buttonListenerHandle);
+    vTaskResume(buttonListenerTaskHandle);
 }
 
 void setup()
@@ -77,19 +77,14 @@ void setup()
 
     WiFi.mode(WIFI_OFF);
 
-    // powerApi = {
-    //     .readIRQ = powerReadIRQ,
-    //     .isPEKShortPressIRQ = powerIsPEKShortPressIRQ,
-    //     .clearIRQ = powerClearIRQ};
-
-    powerApi = defaultPowerApi();
+    powerApi = watchPowerApi();
     buttonListenerParameters = {
         .lastShortPressTimestampMutex = &lastShortPressTimestampMutex,
         .lastShortPressTimestamp = &lastShortPressTimestamp,
         .powerApi = &powerApi,
         .freeRtosApi = NULL};
 
-    xTaskCreate(buttonListenerTask, "buttonListenerTask", 2048, (void *)&buttonListenerParameters, 1, &buttonListenerHandle);
+    xTaskCreate(buttonListenerTask, "buttonListenerTask", 2048, (void *)&buttonListenerParameters, 1, &buttonListenerTaskHandle);
 
     watch->power->setPowerOutPut(AXP202_EXTEN, AXP202_OFF);
     watch->power->setPowerOutPut(AXP202_DCDC2, AXP202_OFF);
