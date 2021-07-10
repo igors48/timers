@@ -13,4 +13,5 @@ typedef struct
     VoidFunc clearIRQ;
 } PowerApi;
 
-PowerApi defaultPowerApi();
+// took watch from package name
+PowerApi watchPowerApi();
