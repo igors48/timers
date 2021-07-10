@@ -74,10 +74,14 @@ void buttonListener(ButtonListenerParameters *p)
 
 void buttonListenerTask(void *p)
 {
+    UBaseType_t uxHighWaterMark = uxTaskGetStackHighWaterMark(NULL);
+    Serial.printf("initial water mark %d \r\n", uxHighWaterMark);
     while (true)
     {
         vTaskSuspend(NULL);
         buttonListener((ButtonListenerParameters *)p);
+        UBaseType_t uxHighWaterMark = uxTaskGetStackHighWaterMark(NULL);
+        Serial.printf("current water mark %d \r\n", uxHighWaterMark);
     }
 }
 
