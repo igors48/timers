@@ -1,5 +1,5 @@
 #include <Arduino.h>
-#include "freertos.hpp"
+#include "system.hpp"
 
 void log(const char *source, const char *message, ...)
 {
@@ -11,14 +11,16 @@ void log(const char *source, const char *message, ...)
     Serial.printf("%s: %s \r\n", source, buf);
 }
 
-bool freeRtosGive(void *semaphore)
+bool systemGive(void *semaphore)
 {
     return xSemaphoreGive(*(SemaphoreHandle_t *)semaphore); // should be exactly *(SemaphoreHandle_t *)semaphore
+    //return xSemaphoreGive((SemaphoreHandle_t *)semaphore);
 }
 
-bool freeRtosTake(void *semaphore, unsigned int blockTime)
+bool systemTake(void *semaphore, unsigned int blockTime)
 {
     return xSemaphoreTake(*(SemaphoreHandle_t *)semaphore, (TickType_t)blockTime / portTICK_PERIOD_MS); // should be exactly *(SemaphoreHandle_t *)semaphore
+    //return xSemaphoreTake((SemaphoreHandle_t *)semaphore, (TickType_t)blockTime / portTICK_PERIOD_MS);
 }
 
 long time()
@@ -31,9 +33,9 @@ void frDelay(unsigned int time)
     vTaskDelay(time / portTICK_PERIOD_MS);
 }
 
-FreeRtosApi freeRtosApi()
+SystemApi defaultSystemApi()
 {
     return {
-        .take = freeRtosTake,
-        .give = freeRtosGive};
+        .take = systemTake,
+        .give = systemGive};
 }

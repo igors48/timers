@@ -4,3 +4,4 @@
 
 extern TTGOClass *watch;
 
+void watchInit();

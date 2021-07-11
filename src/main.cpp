@@ -1,7 +1,4 @@
-#include <Arduino.h>
-#include <WiFi.h>
-
-#include "freertos/freertos.hpp"
+#include "system/system.hpp"
 
 #include "watch/watch.hpp"
 #include "watch/power.hpp"
@@ -21,16 +18,15 @@ void showClock(void *p)
     watch->tft->print(tnow);
 }
 
-
 PowerApi powerApi;
-FreeRtosApi freeRtosApi;
+SystemApi systemApi;
 
 typedef struct
 {
     void *lastShortPressTimestampMutex;
     long *lastShortPressTimestamp;
     PowerApi *powerApi;
-    FreeRtosApi *freeRtosApi;
+    SystemApi *systemApi;
 } ButtonListenerParameters;
 
 ButtonListenerParameters buttonListenerParameters;
@@ -40,7 +36,11 @@ void buttonListener(ButtonListenerParameters *p)
     p->powerApi->readIRQ();
     if (p->powerApi->isPEKShortPressIRQ())
     {
-        Serial.println("PowerKey Press");
+        if (p->systemApi->take(p->lastShortPressTimestampMutex, 100))
+        {
+            Serial.println("PowerKey Press");
+            p->systemApi->give(p->lastShortPressTimestampMutex);
+        }
     }
     p->powerApi->clearIRQ();
 }
@@ -63,35 +63,23 @@ void setup()
 {
     Serial.begin(115200);
 
-    watch = TTGOClass::getWatch();
-    watch->begin();
-    watch->openBL();
-    watch->setBrightness(8);
-
-    watch->rtc->check();
-    watch->rtc->syncToSystem();
-
-    WiFi.mode(WIFI_OFF);
+    watchInit();
 
     powerApi = watchPowerApi();
-    freeRtosApi = freeRtosApi();
+    systemApi = defaultSystemApi();
 
+    lastShortPressTimestampMutex = xSemaphoreCreateMutex();
+    
     buttonListenerParameters = {
         .lastShortPressTimestampMutex = &lastShortPressTimestampMutex,
         .lastShortPressTimestamp = &lastShortPressTimestamp,
         .powerApi = &powerApi,
-        .freeRtosApi = &freeRtosApi};
+        .systemApi = &systemApi};
 
     xTaskCreate(buttonListenerTask, "buttonListenerTask", 2048, (void *)&buttonListenerParameters, 1, &buttonListenerTaskHandle);
 
-    watch->power->setPowerOutPut(AXP202_EXTEN, AXP202_OFF);
-    watch->power->setPowerOutPut(AXP202_DCDC2, AXP202_OFF);
-    watch->power->setPowerOutPut(AXP202_LDO3, AXP202_OFF);
-    watch->power->setPowerOutPut(AXP202_LDO4, AXP202_OFF);
-
     pinMode(AXP202_INT, INPUT_PULLUP);
     attachInterrupt(AXP202_INT, buttonInterruptHandler, FALLING);
-
     watch->power->enableIRQ(AXP202_PEK_SHORTPRESS_IRQ | AXP202_VBUS_REMOVED_IRQ | AXP202_VBUS_CONNECT_IRQ | AXP202_CHARGING_IRQ, true);
     watch->power->clearIRQ();
 
@@ -100,6 +88,5 @@ void setup()
 
 void loop()
 {
-    Serial.println("loop");
     vTaskSuspend(NULL);
 }

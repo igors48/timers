@@ -25,6 +25,6 @@ typedef struct
 {
     Take take;
     Give give;
-} FreeRtosApi;
+} SystemApi;
 
-FreeRtosApi freeRtosApi();
+SystemApi defaultSystemApi();

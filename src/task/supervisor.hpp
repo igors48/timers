@@ -1,6 +1,6 @@
 #pragma once
 
-#include "freertos.hpp"
+#include "../system/system.hpp"
 #include "task.hpp"
 
 typedef struct
