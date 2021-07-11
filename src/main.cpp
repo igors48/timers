@@ -1,11 +1,7 @@
 #include <Arduino.h>
 #include <WiFi.h>
 
-#include "backlightController.hpp"
-#include "noEventsMonitor.hpp"
-#include "touchScreenMonitor.hpp"
-#include "freertos.hpp"
-#include "task.hpp"
+#include "freertos/freertos.hpp"
 
 #include "watch/watch.hpp"
 #include "watch/power.hpp"
@@ -78,11 +74,13 @@ void setup()
     WiFi.mode(WIFI_OFF);
 
     powerApi = watchPowerApi();
+    freeRtosApi = freeRtosApi();
+
     buttonListenerParameters = {
         .lastShortPressTimestampMutex = &lastShortPressTimestampMutex,
         .lastShortPressTimestamp = &lastShortPressTimestamp,
         .powerApi = &powerApi,
-        .freeRtosApi = NULL};
+        .freeRtosApi = &freeRtosApi};
 
     xTaskCreate(buttonListenerTask, "buttonListenerTask", 2048, (void *)&buttonListenerParameters, 1, &buttonListenerTaskHandle);
 

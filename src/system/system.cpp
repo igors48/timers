@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include "freertos.hpp"
 
 void log(const char *source, const char *message, ...)
 {
@@ -10,12 +11,12 @@ void log(const char *source, const char *message, ...)
     Serial.printf("%s: %s \r\n", source, buf);
 }
 
-bool give(void *semaphore)
+bool freeRtosGive(void *semaphore)
 {
     return xSemaphoreGive(*(SemaphoreHandle_t *)semaphore); // should be exactly *(SemaphoreHandle_t *)semaphore
 }
 
-bool take(void *semaphore, unsigned int blockTime)
+bool freeRtosTake(void *semaphore, unsigned int blockTime)
 {
     return xSemaphoreTake(*(SemaphoreHandle_t *)semaphore, (TickType_t)blockTime / portTICK_PERIOD_MS); // should be exactly *(SemaphoreHandle_t *)semaphore
 }
@@ -28,4 +29,11 @@ long time()
 void frDelay(unsigned int time)
 {
     vTaskDelay(time / portTICK_PERIOD_MS);
+}
+
+FreeRtosApi freeRtosApi()
+{
+    return {
+        .take = freeRtosTake,
+        .give = freeRtosGive};
 }
