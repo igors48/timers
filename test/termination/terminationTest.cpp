@@ -1,5 +1,5 @@
 #include <unity.h>
-#include "task/supervisor.cpp"
+#include "supervisor/supervisor.cpp"
 
 int terminationMutex1;
 int terminationMutex2;

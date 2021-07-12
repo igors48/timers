@@ -1,7 +1,7 @@
 #include <stdarg.h>
 #include <cstdio>
 #include <unity.h>
-#include "task/supervisor.cpp"
+#include "supervisor/supervisor.cpp"
 
 long timeResult;
 bool goToSleepCalled;
