@@ -25,6 +25,8 @@ typedef struct
 {
     Take take;
     Give give;
+    Log log;
+    Time time;
 } SystemApi;
 
 SystemApi defaultSystemApi();

@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include "system.hpp"
 
-void log(const char *source, const char *message, ...)
+void systemLog(const char *source, const char *message, ...)
 {
     char buf[256];
     va_list args;
@@ -23,7 +23,7 @@ bool systemTake(void *semaphore, unsigned int blockTime)
     //return xSemaphoreTake((SemaphoreHandle_t *)semaphore, (TickType_t)blockTime / portTICK_PERIOD_MS);
 }
 
-long time()
+long systemTime()
 {
     return time(NULL);
 }
@@ -37,5 +37,7 @@ SystemApi defaultSystemApi()
 {
     return {
         .take = systemTake,
-        .give = systemGive};
+        .give = systemGive,
+        .log = systemLog,
+        .time = systemTime};
 }

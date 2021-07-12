@@ -3,6 +3,8 @@
 #include "watch/watch.hpp"
 #include "watch/power.hpp"
 
+#include "task/buttonListener.hpp"
+
 TTGOClass *watch;
 
 TaskHandle_t buttonListenerTaskHandle = NULL;
@@ -21,29 +23,7 @@ void showClock(void *p)
 PowerApi powerApi;
 SystemApi systemApi;
 
-typedef struct
-{
-    void *lastShortPressTimestampMutex;
-    long *lastShortPressTimestamp;
-    PowerApi *powerApi;
-    SystemApi *systemApi;
-} ButtonListenerParameters;
-
 ButtonListenerParameters buttonListenerParameters;
-
-void buttonListener(ButtonListenerParameters *p)
-{
-    p->powerApi->readIRQ();
-    if (p->powerApi->isPEKShortPressIRQ())
-    {
-        if (p->systemApi->take(p->lastShortPressTimestampMutex, 100))
-        {
-            Serial.println("PowerKey Press");
-            p->systemApi->give(p->lastShortPressTimestampMutex);
-        }
-    }
-    p->powerApi->clearIRQ();
-}
 
 void buttonListenerTask(void *p)
 {
