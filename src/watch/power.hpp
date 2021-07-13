@@ -1,10 +1,8 @@
 #pragma once
 
+#include "tools/func.hpp"
+
 // no watch or freertos specific here. we should be able to use it in the native env
-
-typedef void (*VoidFunc)();
-
-typedef bool (*BoolFunc)();
 
 typedef struct
 {

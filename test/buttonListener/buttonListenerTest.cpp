@@ -3,56 +3,47 @@
 #include "watch/power.hpp"
 #include "system/system.hpp"
 
-#include "task/buttonListener.hpp"
+#include "../powerMock.hpp"
+#include "../systemMock.hpp"
 
-void lastShortPressTimestampMutex;
+#include "task/buttonListener.cpp"
+
+int lastShortPressTimestampMutex;
 long lastShortPressTimestamp;
 PowerApi powerApi;
 SystemApi systemApi;
 
 ButtonListenerParameters p;
 
-void emptyVoid()
+long time()
 {
+    return 48;
 }
-
-bool boolTrue()
-{
-    return true;
-}
-
-bool boolFalse()
-{
-    return false;
-}
-
-/*
-typedef struct
-{
-    void *lastShortPressTimestampMutex;
-    long *lastShortPressTimestamp;
-    PowerApi *powerApi;
-    SystemApi *systemApi;
-} ButtonListenerParameters;
-*/
 
 void setUp(void)
 {
-    powerApi = {
-    .readIRQ = emptyVoid,
-    .isPEKShortPressIRQ = boolTrue,
-    .clearIRQ = emptyVoid};
+    powerApi = powerApiMock();
+    systemApi = systemApiMock();
+    systemApi.time = time;
 
-    systemApi = {
-        .take = systemTake,
-        .give = systemGive,
-        .log = systemLog,
-        .time = systemTime};
+    lastShortPressTimestamp = 0;
+
+    p = {
+        .lastShortPressTimestampMutex = &lastShortPressTimestampMutex,
+        .lastShortPressTimestamp = &lastShortPressTimestamp,
+        .powerApi = &powerApi,
+        .systemApi = &systemApi};
+}
+
+void smoke() 
+{
+    buttonListener(&p);
+    TEST_ASSERT_EQUAL_UINT32(48, lastShortPressTimestamp);
 }
 
 int main()
 {
     UNITY_BEGIN();
-    //RUN_TEST(whenActionModeAndIdleTimePassed);
+    RUN_TEST(smoke);
     UNITY_END();
 }
