@@ -1,10 +1,15 @@
 #include <unity.h>
+
+#include "../systemMock.hpp"
+
 #include "supervisor/supervisor.cpp"
 
 int terminationMutex1;
 int terminationMutex2;
 int takeCount;
 int giveCount;
+
+SystemApi systemApi;
 
 TaskParameters p1;
 TaskParameters p2;
@@ -31,17 +36,20 @@ void setUp(void)
 {
     takeCount = 0;
     giveCount = 0;
+
+    systemApi = systemApiMock();
+    systemApi.take = take;
+    systemApi.give = give;
+
     p1 = {
         .terminationMutex = &terminationMutex1,
         .termination = false,
-        .take = take,
-        .give = give
+        .systemApi = &systemApi
     }; 
     p2 = {
         .terminationMutex = &terminationMutex2,
         .termination = false,
-        .take = take,
-        .give = give
+        .systemApi = &systemApi
     }; 
 }
 
@@ -60,7 +68,7 @@ void whenHappyFlow()
 void whenCouldntTakeMutex()
 {
     TaskParameters *tasks[] = {&p1, &p2};
-    p2.take = takeFail;
+    p2.systemApi->take = takeFail;
     bool result = setTermination(tasks, 2, 2); 
 
     TEST_ASSERT_EQUAL_UINT8(0, result); // THEN returns false

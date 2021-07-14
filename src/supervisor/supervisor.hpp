@@ -17,12 +17,7 @@ typedef struct
     int actionModeTasksCount;
     TaskParameters *sleepModeTasks[10];
     int sleepModeTasksCount;
-    Suspend suspend;
-    Resume resume;
-    Time time;
-    Take take;
-    Give give;
-    Log log;
+    SystemApi *systemApi;
 } SupervisorParameters;
 
 

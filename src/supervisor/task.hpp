@@ -15,12 +15,9 @@ typedef struct
     bool termination; // guarded by terminationMutex
     bool canBeSuspended; // guarded by terminationMutex
     unsigned int taskDelay;
-    Take take;
-    Give give;
-    Delay delay;
-    Log log;
+    SystemApi *systemApi;
 } TaskParameters;
 
-void task(void *p);
+//void task(void *p);
 
-TaskParameters create(Func func, void *parameters, void *mutex, unsigned int taskDelay);
+//TaskParameters create(Func func, void *parameters, void *mutex, unsigned int taskDelay);

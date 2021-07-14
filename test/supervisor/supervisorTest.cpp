@@ -1,6 +1,7 @@
-#include <stdarg.h>
-#include <cstdio>
 #include <unity.h>
+
+#include "../systemMock.hpp"
+
 #include "supervisor/supervisor.cpp"
 
 long timeResult;
@@ -14,8 +15,11 @@ long goToSleepTime;
 int actionMutex;
 int lastEventTimestampMutex;
 
+SystemApi systemApi;
+
 SupervisorParameters p;
 
+/*
 bool give(void *semaphore)
 {
     return true;
@@ -25,16 +29,16 @@ bool take(void *semaphore, unsigned int blockTime)
 {
     return true;
 }
-
+*/
 long time()
 {
     return timeResult;
 }
-
+/*
 void log(const char *source, const char *message, ...)
 {
 }
-
+*/
 void wakeUp(void *p)
 {
     wakeUpCalled = true;
@@ -55,6 +59,8 @@ void setUp(void)
     wakeUpTime = 1;
     goToSleepTime = 10;
 
+    systemApi = systemApiMock();
+
     p = {
         .actionMutex = &actionMutex,
         .action = &action,
@@ -64,11 +70,7 @@ void setUp(void)
         .wakeUp = wakeUp,
         .goToSleepTime = goToSleepTime,
         .goToSleep = goToSleep,
-        .time = time,
-        .take = take,
-        .give = give,
-        .log =log
-    };
+        .systemApi = &systemApi};
 }
 
 void whenActionModeAndIdleTimePassed()
@@ -78,6 +80,7 @@ void whenActionModeAndIdleTimePassed()
     timeResult = 15;
 
     supervisor(&p);
+
     TEST_ASSERT_EQUAL_UINT8(1, goToSleepCalled); // THEN go to sleep
     TEST_ASSERT_EQUAL_UINT8(0, wakeUpCalled);
 }
@@ -89,6 +92,7 @@ void whenActionModeAndIdleTimeNotPassed()
     timeResult = 5;
 
     supervisor(&p);
+
     TEST_ASSERT_EQUAL_UINT8(0, goToSleepCalled); // THEN stay in action
     TEST_ASSERT_EQUAL_UINT8(0, wakeUpCalled);
 }
@@ -100,6 +104,7 @@ void whenSleepModeAndNoEvent()
     timeResult = 15;
 
     supervisor(&p);
+
     TEST_ASSERT_EQUAL_UINT8(0, goToSleepCalled); // THEN stay sleep
     TEST_ASSERT_EQUAL_UINT8(0, wakeUpCalled);
 }
@@ -111,6 +116,7 @@ void whenSleepModeAndEvent()
     timeResult = 2;
 
     supervisor(&p);
+
     TEST_ASSERT_EQUAL_UINT8(0, goToSleepCalled); // THEN wake up
     TEST_ASSERT_EQUAL_UINT8(1, wakeUpCalled);
 }

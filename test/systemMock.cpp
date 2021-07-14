@@ -20,13 +20,29 @@ void logMock(const char *source, const char *message, ...)
     // empty
 }
 
+void delayMock(unsigned int time)
+{
+    // empty
+}
+
+void suspendMock(void *handle)
+{
+    // empty
+}
+
+void resumeMock(void *handle)
+{
+    // empty
+}
+
 SystemApi systemApiMock()
 {
-    return
-    {
+    return {
         .take = takeMock,
         .give = giveMock,
         .log = logMock,
-        .time = timeMock
-    };
+        .time = timeMock,
+        .delay = delayMock,
+        .suspend = suspendMock,
+        .resume = resumeMock};
 }

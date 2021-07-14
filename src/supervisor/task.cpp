@@ -2,10 +2,10 @@
 
 void _actionMode(TaskParameters *p)
 {
-    if (p->take(p->actionMutex, 0))
+    if (p->systemApi->take(p->actionMutex, 0))
     {
         bool action = *p->action;
-        p->give(p->actionMutex);
+        p->systemApi->give(p->actionMutex);
         if (action)
         {
             p->func(p->parameters);
@@ -15,10 +15,10 @@ void _actionMode(TaskParameters *p)
 
 void _sleepMode(TaskParameters *p)
 {
-    if (p->take(p->actionMutex, 0))
+    if (p->systemApi->take(p->actionMutex, 0))
     {
         bool sleep = !(*p->action);
-        p->give(p->actionMutex);
+        p->systemApi->give(p->actionMutex);
         if (sleep)
         {
             p->func(p->parameters);
@@ -28,11 +28,11 @@ void _sleepMode(TaskParameters *p)
 
 void _wrapper(TaskParameters *p)
 {
-    if (p->take(p->terminationMutex, 0))
+    if (p->systemApi->take(p->terminationMutex, 0))
     {
         bool termination = p->termination;
         p->canBeSuspended = termination;
-        p->give(p->terminationMutex);
+        p->systemApi->give(p->terminationMutex);
         if (!termination)
         {
             p->func(p->parameters);
@@ -42,11 +42,11 @@ void _wrapper(TaskParameters *p)
 
 void _actionModeWrapper(TaskParameters *p)
 {
-    if (p->take(p->terminationMutex, 0))
+    if (p->systemApi->take(p->terminationMutex, 0))
     {
         bool termination = p->termination;
         p->canBeSuspended = termination;
-        p->give(p->terminationMutex);
+        p->systemApi->give(p->terminationMutex);
         if (!termination)
         {
             _actionMode(p);
@@ -56,11 +56,11 @@ void _actionModeWrapper(TaskParameters *p)
 
 void _sleepModeWrapper(TaskParameters *p)
 {
-    if (p->take(p->terminationMutex, 0))
+    if (p->systemApi->take(p->terminationMutex, 0))
     {
         bool termination = p->termination;
         p->canBeSuspended = termination;
-        p->give(p->terminationMutex);
+        p->systemApi->give(p->terminationMutex);
         if (!termination)
         {
             _sleepMode(p);
@@ -74,7 +74,7 @@ void task(void *p)
     while (true)
     {
         _wrapper(t);
-        t->delay(t->taskDelay);
+        t->systemApi->delay(t->taskDelay);
     }
 }
 
@@ -84,7 +84,7 @@ void actionModeTask(void *p)
     while (true)
     {
         _actionModeWrapper(t);
-        t->delay(t->taskDelay);
+        t->systemApi->delay(t->taskDelay);
     }
 }
 
@@ -94,7 +94,7 @@ void sleepModeTask(void *p)
     while (true)
     {
         _sleepModeWrapper(t);
-        t->delay(t->taskDelay);
+        t->systemApi->delay(t->taskDelay);
     }
 }
 /*

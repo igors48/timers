@@ -28,9 +28,19 @@ long systemTime()
     return time(NULL);
 }
 
-void frDelay(unsigned int time)
+void systemDelay(unsigned int time)
 {
     vTaskDelay(time / portTICK_PERIOD_MS);
+}
+
+void systemSuspend(void *handle)
+{
+    // empty
+}
+
+void systemResume(void *handle)
+{
+    // empty
 }
 
 SystemApi defaultSystemApi()
@@ -39,5 +49,8 @@ SystemApi defaultSystemApi()
         .take = systemTake,
         .give = systemGive,
         .log = systemLog,
-        .time = systemTime};
+        .time = systemTime,
+        .delay = systemDelay,
+        .suspend = systemSuspend,
+        .resume = systemResume};
 }
