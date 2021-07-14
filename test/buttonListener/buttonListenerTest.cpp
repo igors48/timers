@@ -20,6 +20,11 @@ long time()
     return 48;
 }
 
+bool notShortPress()
+{
+    return false;
+}
+
 void setUp(void)
 {
     powerApi = powerApiMock();
@@ -35,15 +40,26 @@ void setUp(void)
         .systemApi = &systemApi};
 }
 
-void smoke() 
+void whenItIsShortPress() 
 {
     buttonListener(&p);
-    TEST_ASSERT_EQUAL_UINT32(48, lastShortPressTimestamp);
+
+    TEST_ASSERT_EQUAL_UINT32(48, lastShortPressTimestamp); // THEN last short press timestamp changed
+}
+
+void whenItIsNotShortPress() 
+{
+    powerApi.isPEKShortPressIRQ = notShortPress;    
+
+    buttonListener(&p);
+
+    TEST_ASSERT_EQUAL_UINT32(0, lastShortPressTimestamp); // THEN last short press timestamp not changed
 }
 
 int main()
 {
     UNITY_BEGIN();
-    RUN_TEST(smoke);
+    RUN_TEST(whenItIsShortPress);
+    RUN_TEST(whenItIsNotShortPress);
     UNITY_END();
 }
