@@ -4,6 +4,7 @@
 #include "watch/power.hpp"
 
 #include "task/buttonListener.hpp"
+#include "task/showClock.hpp"
 
 TTGOClass *watch;
 
@@ -11,19 +12,11 @@ TaskHandle_t buttonListenerTaskHandle = NULL;
 SemaphoreHandle_t lastShortPressTimestampMutex = NULL;
 time_t lastShortPressTimestamp = 0;
 
-void showClock(void *p)
-{
-    auto tnow = watch->rtc->formatDateTime(PCF_TIMEFORMAT_HMS);
-    watch->tft->setCursor(8, 8);
-    watch->tft->setTextSize(3);
-    watch->tft->setTextFont(2);
-    watch->tft->print(tnow);
-}
-
 PowerApi powerApi;
 SystemApi systemApi;
 
 ButtonListenerParameters buttonListenerParameters;
+ShowClockParameters showClockParameters;
 
 void buttonListenerTask(void *p)
 {
@@ -49,7 +42,7 @@ void setup()
     systemApi = defaultSystemApi();
 
     lastShortPressTimestampMutex = xSemaphoreCreateMutex();
-    
+
     buttonListenerParameters = {
         .lastShortPressTimestampMutex = &lastShortPressTimestampMutex,
         .lastShortPressTimestamp = &lastShortPressTimestamp,
@@ -57,6 +50,8 @@ void setup()
         .systemApi = &systemApi};
 
     xTaskCreate(buttonListenerTask, "buttonListenerTask", 2048, (void *)&buttonListenerParameters, 1, &buttonListenerTaskHandle);
+
+    showClockParameters = {.watch = watch};
 
     pinMode(AXP202_INT, INPUT_PULLUP);
     attachInterrupt(AXP202_INT, buttonInterruptHandler, FALLING);

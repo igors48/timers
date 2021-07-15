@@ -35,12 +35,12 @@ void systemDelay(unsigned int time)
 
 void systemSuspend(void *handle)
 {
-    // empty
+    vTaskSuspend(handle);
 }
 
 void systemResume(void *handle)
 {
-    // empty
+    vTaskResume(handle);
 }
 
 SystemApi defaultSystemApi()
