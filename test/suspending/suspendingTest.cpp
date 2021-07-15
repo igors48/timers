@@ -8,6 +8,7 @@ int terminationMutex1;
 int terminationMutex2;
 int takeCount;
 int giveCount;
+bool takeResult;
 
 SystemApi systemApi;
 
@@ -26,18 +27,29 @@ bool take(void *semaphore, unsigned int blockTime)
     return true;
 }
 
-bool takeFail(void *semaphore, unsigned int blockTime)
+// bool takeFail(void *semaphore, unsigned int blockTime)
+// {
+//     takeCount++;
+//     return false;
+// }
+
+bool takeBlink(void *semaphore, unsigned int blockTime)
 {
     takeCount++;
-    return false;
+    bool result = takeResult;
+    takeResult = !takeResult;
+    return result;
 }
 
 void setUp(void)
 {
     takeCount = 0;
     giveCount = 0;
+    takeResult = true;
 
     systemApi = systemApiMock();
+    systemApi.give = give;
+    systemApi.take = take;
 
     p1 = {
         .terminationMutex = &terminationMutex1,
@@ -75,7 +87,7 @@ void whenOneTaskCanNotBeSuspended()
 void whenCouldntTakeMutex()
 {
     TaskParameters *tasks[] = {&p1, &p2};
-    p2.systemApi->take = takeFail;
+    p2.systemApi->take = takeBlink;
 
     bool result = waitForSuspend(tasks, 2, 2);
 

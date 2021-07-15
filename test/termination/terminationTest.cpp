@@ -8,6 +8,7 @@ int terminationMutex1;
 int terminationMutex2;
 int takeCount;
 int giveCount;
+bool takeResult;
 
 SystemApi systemApi;
 
@@ -26,16 +27,19 @@ bool take(void *semaphore, unsigned int blockTime)
     return true;
 }
 
-bool takeFail(void *semaphore, unsigned int blockTime)
+bool takeBlink(void *semaphore, unsigned int blockTime)
 {
     takeCount++;
-    return false;
+    bool result = takeResult;
+    takeResult = !takeResult;
+    return result;
 }
 
 void setUp(void)
 {
     takeCount = 0;
     giveCount = 0;
+    takeResult = true;
 
     systemApi = systemApiMock();
     systemApi.take = take;
@@ -65,10 +69,10 @@ void whenHappyFlow()
     TEST_ASSERT_EQUAL_UINT8(2, giveCount); // THEN only one give for each task
 }
 
-void whenCouldntTakeMutex()
+void whenCouldntTakeMutexOnSecondTask()
 {
     TaskParameters *tasks[] = {&p1, &p2};
-    p2.systemApi->take = takeFail;
+    p2.systemApi->take = takeBlink;
     bool result = setTermination(tasks, 2, 2); 
 
     TEST_ASSERT_EQUAL_UINT8(0, result); // THEN returns false
@@ -82,6 +86,6 @@ int main()
 {
     UNITY_BEGIN();
     RUN_TEST(whenHappyFlow);
-    RUN_TEST(whenCouldntTakeMutex);
+    RUN_TEST(whenCouldntTakeMutexOnSecondTask);
     UNITY_END();
 }

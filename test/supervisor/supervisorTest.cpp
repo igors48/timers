@@ -60,6 +60,7 @@ void setUp(void)
     goToSleepTime = 10;
 
     systemApi = systemApiMock();
+    systemApi.time = time;
 
     p = {
         .actionMutex = &actionMutex,
