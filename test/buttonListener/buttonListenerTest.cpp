@@ -1,8 +1,5 @@
 #include <unity.h>
 
-#include "watch/power.hpp"
-#include "system/system.hpp"
-
 #include "../powerMock.hpp"
 #include "../systemMock.hpp"
 

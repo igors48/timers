@@ -19,26 +19,11 @@ SystemApi systemApi;
 
 SupervisorParameters p;
 
-/*
-bool give(void *semaphore)
-{
-    return true;
-}
-
-bool take(void *semaphore, unsigned int blockTime)
-{
-    return true;
-}
-*/
 long time()
 {
     return timeResult;
 }
-/*
-void log(const char *source, const char *message, ...)
-{
-}
-*/
+
 void wakeUp(void *p)
 {
     wakeUpCalled = true;

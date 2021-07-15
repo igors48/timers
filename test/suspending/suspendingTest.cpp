@@ -27,12 +27,6 @@ bool take(void *semaphore, unsigned int blockTime)
     return true;
 }
 
-// bool takeFail(void *semaphore, unsigned int blockTime)
-// {
-//     takeCount++;
-//     return false;
-// }
-
 bool takeBlink(void *semaphore, unsigned int blockTime)
 {
     takeCount++;
