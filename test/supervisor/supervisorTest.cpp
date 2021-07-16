@@ -19,17 +19,17 @@ SystemApi systemApi;
 
 SupervisorParameters p;
 
-long time()
+long time() // todo name convention for common and local mock funcs
 {
     return timeResult;
 }
 
-void wakeUp(void *p)
+void wakeUpMock(void *p)
 {
     wakeUpCalled = true;
 }
 
-void goToSleep(void *p)
+void goToSleepMock(void *p)
 {
     goToSleepCalled = true;
 }
@@ -53,9 +53,9 @@ void setUp(void)
         .lastEventTimestampMutex = &lastEventTimestampMutex,
         .lastEventTimestamp = &lastEventTimestamp,
         .wakeUpTime = wakeUpTime,
-        .wakeUp = wakeUp,
+        .wakeUp = wakeUpMock,
         .goToSleepTime = goToSleepTime,
-        .goToSleep = goToSleep,
+        .goToSleep = goToSleepMock,
         .systemApi = &systemApi};
 }
 

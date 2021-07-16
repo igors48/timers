@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../system/system.hpp"
+#include "../tools/func.hpp"
 #include "task.hpp"
 
 typedef struct
@@ -13,12 +14,13 @@ typedef struct
     Func wakeUp;
     long goToSleepTime;
     Func goToSleep;
-    TaskParameters *actionModeTasks[10];
+    TaskParameters **actionModeTasks;
     int actionModeTasksCount;
-    TaskParameters *sleepModeTasks[10];
+    TaskParameters **sleepModeTasks;
     int sleepModeTasksCount;
     SystemApi *systemApi;
 } SupervisorParameters;
 
-
 void supervisor(SupervisorParameters *p);
+void goToSleep(void *p);
+void wakeUp(void *p);

@@ -111,8 +111,9 @@ void resumeTasks(TaskParameters *tasks[], int count, Resume resume)
     }
 }
 
-void goToSleep(SupervisorParameters *p)
+void goToSleep(void *v)
 {
+    SupervisorParameters *p = (SupervisorParameters *)v;
     if (p->systemApi->take(p->actionMutex, 10))
     {
         *p->action = false;
@@ -126,8 +127,9 @@ void goToSleep(SupervisorParameters *p)
     }
 }
 
-void wakeUp(SupervisorParameters *p)
+void wakeUp(void *v)
 {
+    SupervisorParameters *p = (SupervisorParameters *)v;
     if (p->systemApi->take(p->actionMutex, 10))
     {
         *p->action = true;

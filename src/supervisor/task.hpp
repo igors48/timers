@@ -1,8 +1,7 @@
 #pragma once
 
 #include "../system/system.hpp"
-
-typedef void (*Func)(void *p);
+#include "../tools/func.hpp"
 
 typedef struct
 {
