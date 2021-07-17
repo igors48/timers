@@ -8,15 +8,18 @@ void supervisor(SupervisorParameters *p)
     {
         bool action = *p->action;
         p->systemApi->give(p->actionMutex);
-        if (p->systemApi->take(p->lastEventTimestamp, 10))
+        p->systemApi->log(SUPERVISOR, "action mode %d", action);
+        if (p->systemApi->take(p->lastEventTimestampMutex, 10)) // todo there was missprint lastEventTimestamp vs lastEventTimestampMutex - tests dont see
         {
             long lastEventTimestamp = *p->lastEventTimestamp;
-            p->systemApi->give(p->lastEventTimestamp);
+            p->systemApi->give(p->lastEventTimestampMutex);
             long current = p->systemApi->time();
             long diff = current - lastEventTimestamp;
+            p->systemApi->log(SUPERVISOR, "diff %d", diff);
             bool sleep = action && (diff >= p->goToSleepTime);
             if (sleep)
             {
+                p->systemApi->log(SUPERVISOR, "before go to sleep");
                 p->goToSleep(p);
             }
             else
@@ -24,6 +27,7 @@ void supervisor(SupervisorParameters *p)
                 bool wakeUpNow = !action && (diff <= p->wakeUpTime);
                 if (wakeUpNow)
                 {
+                    p->systemApi->log(SUPERVISOR, "before wake up");
                     p->wakeUp(p);
                 }
             }
@@ -114,9 +118,10 @@ void resumeTasks(TaskParameters *tasks[], int count, Resume resume)
 void goToSleep(void *v)
 {
     SupervisorParameters *p = (SupervisorParameters *)v;
+    p->systemApi->log(SUPERVISOR, "go to sleep");
     if (p->systemApi->take(p->actionMutex, 10))
     {
-        *p->action = false;
+        *p->action = false; // todo cover by test 
         p->systemApi->give(p->actionMutex);
 
         setTermination(p->actionModeTasks, p->actionModeTasksCount, 3);
@@ -130,9 +135,10 @@ void goToSleep(void *v)
 void wakeUp(void *v)
 {
     SupervisorParameters *p = (SupervisorParameters *)v;
+    p->systemApi->log(SUPERVISOR, "wake up");
     if (p->systemApi->take(p->actionMutex, 10))
     {
-        *p->action = true;
+        *p->action = true; // todo cover by test 
         p->systemApi->give(p->actionMutex);
 
         setTermination(p->sleepModeTasks, p->sleepModeTasksCount, 3);

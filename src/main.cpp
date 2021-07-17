@@ -14,7 +14,7 @@ bool actionMode = true;
 
 TaskHandle_t buttonListenerTaskHandle = NULL;
 SemaphoreHandle_t lastShortPressTimestampMutex = NULL;
-time_t lastShortPressTimestamp = 0;
+time_t lastShortPressTimestamp;
 
 PowerApi powerApi;
 SystemApi systemApi;
@@ -22,8 +22,8 @@ SystemApi systemApi;
 ButtonListenerParameters buttonListenerParameters;
 ShowClockParameters showClockParameters;
 
-TaskParameters *actionModeTasks[10];
-TaskParameters *sleepModeTasks[10];
+TaskParameters *actionModeTasks[1];
+TaskParameters *sleepModeTasks[1];
 SupervisorParameters supervisorParameters;
 
 void buttonListenerTask(void *p)
@@ -59,7 +59,8 @@ void setup()
     systemApi = defaultSystemApi();
 
     lastShortPressTimestampMutex = xSemaphoreCreateMutex();
-
+    lastShortPressTimestamp = systemApi.time();
+    
     buttonListenerParameters = {
         .lastShortPressTimestampMutex = &lastShortPressTimestampMutex,
         .lastShortPressTimestamp = &lastShortPressTimestamp,
@@ -73,9 +74,9 @@ void setup()
     actionModeMutex = xSemaphoreCreateMutex();
 
     supervisorParameters = {
-        .actionMutex = actionModeMutex,
+        .actionMutex = &actionModeMutex,
         .action = &actionMode,
-        .lastEventTimestampMutex = lastShortPressTimestampMutex,
+        .lastEventTimestampMutex = &lastShortPressTimestampMutex,
         .lastEventTimestamp = &lastShortPressTimestamp,
         .wakeUpTime = 1,
         .wakeUp = wakeUp,
