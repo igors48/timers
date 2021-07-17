@@ -1,7 +1,8 @@
 #include "showClock.hpp"
 
-void showClock(ShowClockParameters *p)
+void showClock(void *v)
 {
+    ShowClockParameters *p = (ShowClockParameters *)v;
     auto tnow = p->watch->rtc->formatDateTime(PCF_TIMEFORMAT_HMS);
     p->watch->tft->setCursor(8, 8);
     p->watch->tft->setTextSize(3);

@@ -1,5 +1,7 @@
 #include "supervisor.hpp"
 
+#include <Arduino.h> // todo remove
+
 static const char SUPERVISOR[] = "supervisor";
 
 void supervisor(SupervisorParameters *p)
@@ -43,17 +45,19 @@ void supervisor(SupervisorParameters *p)
     }
 }
 
-bool setTermination(TaskParameters *tasks[], int count, int tryCount)
+bool setTermination(TaskParameters **tasks, int count, int tryCount)
 {
     bool notDone = true;
     int triesLeft = tryCount;
     while (notDone && triesLeft > 0)
-    {
+    {        
         notDone = false;
         for (int i = 0; i < count; i++)
         {
             TaskParameters* current = tasks[i];
+            
             void* mutex = current->terminationMutex;
+            Serial.println("after mutex assignment");
             if (current->systemApi->take(mutex, 1))
             {
                 current->termination = true;
@@ -69,7 +73,7 @@ bool setTermination(TaskParameters *tasks[], int count, int tryCount)
     return !notDone;
 }
 
-bool waitForSuspend(TaskParameters *tasks[], int count, int tryCount)
+bool waitForSuspend(TaskParameters **tasks, int count, int tryCount)
 {
     bool notDone = true;
     int triesLeft = tryCount;

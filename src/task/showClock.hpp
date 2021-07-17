@@ -7,4 +7,4 @@ typedef struct
     TTGOClass *watch;
 } ShowClockParameters;
 
-void showClock(ShowClockParameters *p);
+void showClock(void *p);

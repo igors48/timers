@@ -9,11 +9,11 @@
 
 TTGOClass *watch;
 
-SemaphoreHandle_t actionModeMutex = NULL;
-bool actionMode = true;
+SemaphoreHandle_t actionModeMutex;
+bool actionMode;
 
-TaskHandle_t buttonListenerTaskHandle = NULL;
-SemaphoreHandle_t lastShortPressTimestampMutex = NULL;
+TaskHandle_t buttonListenerTaskHandle;
+SemaphoreHandle_t lastShortPressTimestampMutex;
 time_t lastShortPressTimestamp;
 
 PowerApi powerApi;
@@ -23,8 +23,12 @@ ButtonListenerParameters buttonListenerParameters;
 ShowClockParameters showClockParameters;
 
 TaskParameters *actionModeTasks[1];
-TaskParameters *sleepModeTasks[1];
+TaskParameters *sleepModeTasks[0];
+
 SupervisorParameters supervisorParameters;
+
+TaskParameters showClockTaskParameters;
+SemaphoreHandle_t showClockTaskTerminationMutex;
 
 void buttonListenerTask(void *p)
 {
@@ -40,7 +44,7 @@ void supervisorTask(void *p)
     while (true)
     {
         supervisor((SupervisorParameters *)p);
-        vTaskDelay(1000 / portTICK_PERIOD_MS);
+        vTaskDelay(1000 / portTICK_PERIOD_MS); // todo supervisor task delay -> const
     }
 }
 
@@ -58,6 +62,8 @@ void setup()
     powerApi = watchPowerApi();
     systemApi = defaultSystemApi();
 
+    actionMode = true;
+
     lastShortPressTimestampMutex = xSemaphoreCreateMutex();
     lastShortPressTimestamp = systemApi.time();
     
@@ -73,6 +79,23 @@ void setup()
 
     actionModeMutex = xSemaphoreCreateMutex();
 
+    showClockTaskTerminationMutex = xSemaphoreCreateMutex();
+    showClockTaskParameters = {
+        .handle = NULL,
+        .func = showClock,
+        .parameters = &showClockParameters,
+        .actionMutex = &actionModeMutex,
+        .action = &actionMode,
+        .terminationMutex = &showClockTaskTerminationMutex,
+        .termination = false,
+        .canBeSuspended = false,
+        .taskDelay = 250,
+        .systemApi = &systemApi
+    };
+    xTaskCreate(actionModeTask, "showClockTask", 2048, (void *)&showClockTaskParameters, 1, &showClockTaskParameters.handle);
+
+    actionModeTasks[0] = &showClockTaskParameters;
+
     supervisorParameters = {
         .actionMutex = &actionModeMutex,
         .action = &actionMode,
@@ -83,7 +106,7 @@ void setup()
         .goToSleepTime = 10,
         .goToSleep = goToSleep,
         .actionModeTasks = actionModeTasks,
-        .actionModeTasksCount = 0,
+        .actionModeTasksCount = 1,
         .sleepModeTasks = sleepModeTasks,
         .sleepModeTasksCount = 0,
         .systemApi = &systemApi

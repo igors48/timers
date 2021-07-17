@@ -17,6 +17,8 @@ typedef struct
     SystemApi *systemApi;
 } TaskParameters;
 
+void actionModeTask(void *p);
+
 //void task(void *p);
 
 //TaskParameters create(Func func, void *parameters, void *mutex, unsigned int taskDelay);
