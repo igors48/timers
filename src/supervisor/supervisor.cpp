@@ -1,7 +1,5 @@
 #include "supervisor.hpp"
 
-#include <Arduino.h> // todo remove
-
 static const char SUPERVISOR[] = "supervisor";
 
 void supervisor(SupervisorParameters *p)
@@ -11,7 +9,7 @@ void supervisor(SupervisorParameters *p)
         bool action = *p->action;
         p->systemApi->give(p->actionMutex);
         p->systemApi->log(SUPERVISOR, "action mode %d", action);
-        if (p->systemApi->take(p->lastEventTimestampMutex, 10)) // todo there was missprint lastEventTimestamp vs lastEventTimestampMutex - tests dont see
+        if (p->systemApi->take(p->lastEventTimestampMutex, 10)) // todo there was missprint lastEventTimestamp vs lastEventTimestampMutex - tests dont see it
         {
             long lastEventTimestamp = *p->lastEventTimestamp;
             p->systemApi->give(p->lastEventTimestampMutex);
@@ -45,7 +43,7 @@ void supervisor(SupervisorParameters *p)
     }
 }
 
-bool setTermination(TaskParameters **tasks, int count, int tryCount)
+bool setTermination(TaskParameters **tasks, int count, int tryCount, bool value)
 {
     bool notDone = true;
     int triesLeft = tryCount;
@@ -54,13 +52,12 @@ bool setTermination(TaskParameters **tasks, int count, int tryCount)
         notDone = false;
         for (int i = 0; i < count; i++)
         {
-            TaskParameters* current = tasks[i];
+            TaskParameters *current = tasks[i];
             
-            void* mutex = current->terminationMutex;
-            Serial.println("after mutex assignment");
+            void *mutex = current->terminationMutex;
             if (current->systemApi->take(mutex, 1))
             {
-                current->termination = true;
+                current->termination = value;
                 current->systemApi->give(mutex);
             }
             else
@@ -82,8 +79,8 @@ bool waitForSuspend(TaskParameters **tasks, int count, int tryCount)
         notDone = false;
         for (int i = 0; i < count; i++)
         {
-            TaskParameters* current = tasks[i];
-            void* mutex = current->terminationMutex;
+            TaskParameters *current = tasks[i];
+            void *mutex = current->terminationMutex;
             if (current->systemApi->take(mutex, 1))
             {
                 bool canBeSuspended = current->canBeSuspended;
@@ -103,7 +100,7 @@ bool waitForSuspend(TaskParameters **tasks, int count, int tryCount)
     return !notDone;
 }
 
-void suspendTasks(TaskParameters *tasks[], int count, Suspend suspend)
+void suspendTasks(TaskParameters **tasks, int count, Suspend suspend)
 {
     for (int i = 0; i < count; i++)
     {
@@ -111,7 +108,7 @@ void suspendTasks(TaskParameters *tasks[], int count, Suspend suspend)
     }
 }
 
-void resumeTasks(TaskParameters *tasks[], int count, Resume resume)
+void resumeTasks(TaskParameters **tasks, int count, Resume resume)
 {
     for (int i = 0; i < count; i++)
     {
@@ -128,10 +125,11 @@ void goToSleep(void *v)
         *p->action = false; // todo cover by test 
         p->systemApi->give(p->actionMutex);
 
-        setTermination(p->actionModeTasks, p->actionModeTasksCount, 3);
+        setTermination(p->actionModeTasks, p->actionModeTasksCount, 3, true);
         waitForSuspend(p->actionModeTasks, p->actionModeTasksCount, 3);
         suspendTasks(p->actionModeTasks, p->actionModeTasksCount, p->systemApi->suspend);
 
+        setTermination(p->sleepModeTasks, p->sleepModeTasksCount, 3, false);
         resumeTasks(p->sleepModeTasks, p->sleepModeTasksCount, p->systemApi->resume);
     }
 }
@@ -145,10 +143,11 @@ void wakeUp(void *v)
         *p->action = true; // todo cover by test 
         p->systemApi->give(p->actionMutex);
 
-        setTermination(p->sleepModeTasks, p->sleepModeTasksCount, 3);
+        setTermination(p->sleepModeTasks, p->sleepModeTasksCount, 3, true);
         waitForSuspend(p->sleepModeTasks, p->sleepModeTasksCount, 3);
         suspendTasks(p->sleepModeTasks, p->sleepModeTasksCount, p->systemApi->suspend);
 
+        setTermination(p->actionModeTasks, p->actionModeTasksCount, 3, false);
         resumeTasks(p->actionModeTasks, p->actionModeTasksCount, p->systemApi->resume);
     }
 }

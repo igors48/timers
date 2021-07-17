@@ -18,8 +18,8 @@ void watchInit()
     watch->power->setPowerOutPut(AXP202_LDO3, AXP202_OFF);
     watch->power->setPowerOutPut(AXP202_LDO4, AXP202_OFF);
 
-    watch->tft->setCursor(8, 8);
-    watch->tft->setTextSize(3);
-    watch->tft->setTextFont(2);
-    watch->tft->print("ON");
+    // watch->tft->setCursor(8, 8);
+    // watch->tft->setTextSize(3);
+    // watch->tft->setTextFont(2);
+    // watch->tft->print("ON");
 }

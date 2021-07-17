@@ -60,7 +60,7 @@ void setUp(void)
 void whenHappyFlow()
 {
     TaskParameters *tasks[] = {&p1, &p2};
-    bool result = setTermination(tasks, 2, 2); 
+    bool result = setTermination(tasks, 2, 2, true); 
 
     TEST_ASSERT_EQUAL_UINT8(1, result); // THEN returns true
     TEST_ASSERT_EQUAL_UINT8(1, p1.termination); // THEN first task has termination flag set
@@ -73,7 +73,7 @@ void whenCouldntTakeMutexOnSecondTask()
 {
     TaskParameters *tasks[] = {&p1, &p2};
     p2.systemApi->take = takeBlink;
-    bool result = setTermination(tasks, 2, 2); 
+    bool result = setTermination(tasks, 2, 2, true); 
 
     TEST_ASSERT_EQUAL_UINT8(0, result); // THEN returns false
     TEST_ASSERT_EQUAL_UINT8(1, p1.termination); // THEN first task has termination flag set
