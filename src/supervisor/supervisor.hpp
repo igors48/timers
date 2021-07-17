@@ -19,6 +19,8 @@ typedef struct
     TaskParameters **sleepModeTasks;
     int sleepModeTasksCount;
     SystemApi *systemApi;
+    VoidFunc watchGoToSleep; // todo create API
+    VoidFunc watchWakeUp;
 } SupervisorParameters;
 
 void supervisor(SupervisorParameters *p);

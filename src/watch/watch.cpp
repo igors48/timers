@@ -6,7 +6,6 @@ void watchInit()
     watch = TTGOClass::getWatch();
     watch->begin();
     watch->openBL();
-    watch->setBrightness(8);
 
     watch->rtc->check();
     watch->rtc->syncToSystem();
@@ -22,4 +21,18 @@ void watchInit()
     // watch->tft->setTextSize(3);
     // watch->tft->setTextFont(2);
     // watch->tft->print("ON");
+}
+
+void watchWakeUp()
+{
+    watch->displayWakeup();
+    watch->touchWakup();
+    watch->setBrightness(8);    
+}
+
+void watchGoToSleep()
+{
+    watch->setBrightness(0);    
+    watch->displaySleep();
+    watch->touchToSleep();
 }

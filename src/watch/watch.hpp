@@ -5,3 +5,5 @@
 extern TTGOClass *watch;
 
 void watchInit();
+void watchWakeUp();
+void watchGoToSleep();

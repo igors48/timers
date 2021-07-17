@@ -109,7 +109,9 @@ void setup()
         .actionModeTasksCount = 1,
         .sleepModeTasks = sleepModeTasks,
         .sleepModeTasksCount = 0,
-        .systemApi = &systemApi
+        .systemApi = &systemApi,
+        .watchGoToSleep = watchGoToSleep,
+        .watchWakeUp = watchWakeUp
     };
 
     xTaskCreate(supervisorTask, "supervisorTask", 2048, (void *)&supervisorParameters, 1, NULL);
@@ -117,6 +119,7 @@ void setup()
     pinMode(AXP202_INT, INPUT_PULLUP);
     attachInterrupt(AXP202_INT, buttonInterruptHandler, FALLING);
     watch->power->enableIRQ(AXP202_PEK_SHORTPRESS_IRQ | AXP202_VBUS_REMOVED_IRQ | AXP202_VBUS_CONNECT_IRQ | AXP202_CHARGING_IRQ, true);
+    watch->power->adc1Enable(AXP202_VBUS_VOL_ADC1 | AXP202_VBUS_CUR_ADC1 | AXP202_BATT_CUR_ADC1 | AXP202_BATT_VOL_ADC1, true);
     watch->power->clearIRQ();
 
     Serial.println("tasks started");

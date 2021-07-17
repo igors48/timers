@@ -21,6 +21,7 @@ void supervisor(SupervisorParameters *p)
             {
                 p->systemApi->log(SUPERVISOR, "before go to sleep");
                 p->goToSleep(p);
+                p->watchGoToSleep();
             }
             else
             {
@@ -28,6 +29,7 @@ void supervisor(SupervisorParameters *p)
                 if (wakeUpNow)
                 {
                     p->systemApi->log(SUPERVISOR, "before wake up");
+                    p->watchWakeUp();
                     p->wakeUp(p);
                 }
             }
