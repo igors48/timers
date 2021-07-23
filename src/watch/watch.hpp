@@ -2,8 +2,13 @@
 
 #include <LilyGoWatch.h>
 
+#include "tools/func.hpp"
+
 extern TTGOClass *watch;
 
-void watchInit();
-void watchWakeUp();
-void watchGoToSleep();
+typedef struct {
+    VoidFunc init;
+    VoidFunc deepSleep;
+} WatchApi;
+
+WatchApi defaultWatchApi();
