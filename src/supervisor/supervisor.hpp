@@ -7,8 +7,6 @@
 
 typedef struct
 {
-    void *actionMutex;
-    bool *action;
     void *lastEventTimestampMutex;
     long *lastEventTimestamp;
     long goToSleepTime;

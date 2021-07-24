@@ -1,5 +1,6 @@
 #include "watch.hpp"
 #include <WiFi.h>
+#include <Arduino.h>
 
 void watchInit()
 {
@@ -48,6 +49,7 @@ void watchGoToSleep()
     delay(100); // seen some false wake ups without it
     //esp_deep_sleep_start();
     esp_light_sleep_start();
+    Serial.println("after esp_light_sleep_start");
 }
 
 WatchApi defaultWatchApi()

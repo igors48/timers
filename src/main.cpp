@@ -9,9 +9,6 @@
 
 TTGOClass *watch;
 
-SemaphoreHandle_t actionModeMutex;
-bool actionMode;
-
 TaskHandle_t buttonListenerTaskHandle;
 SemaphoreHandle_t lastShortPressTimestampMutex;
 time_t lastShortPressTimestamp;
@@ -64,8 +61,6 @@ void setup()
     powerApi = watchPowerApi();
     systemApi = defaultSystemApi();
 
-    actionMode = true;
-
     lastShortPressTimestampMutex = xSemaphoreCreateMutex();
     lastShortPressTimestamp = systemApi.time();
     
@@ -77,9 +72,9 @@ void setup()
 
     xTaskCreate(buttonListenerTask, "buttonListenerTask", 2048, (void *)&buttonListenerParameters, 1, &buttonListenerTaskHandle);
 
-    showClockParameters = {.watch = watch};
-
-    actionModeMutex = xSemaphoreCreateMutex();
+    showClockParameters = {
+        .watch = watch
+        };
 
     showClockTaskTerminationMutex = xSemaphoreCreateMutex();
     showClockTaskParameters = {
@@ -97,15 +92,14 @@ void setup()
     tasks[0] = &showClockTaskParameters;
 
     supervisorParameters = {
-        .actionMutex = &actionModeMutex,
-        .action = &actionMode,
         .lastEventTimestampMutex = &lastShortPressTimestampMutex,
         .lastEventTimestamp = &lastShortPressTimestamp,
-        .goToSleepTime = 10,
+        .goToSleepTime = 5,
         .goToSleep = goToSleep,
         .tasks = tasks,
         .tasksCount = 1,
-        .systemApi = &systemApi
+        .systemApi = &systemApi,
+        .watchApi = &watchApi
     };
 
     xTaskCreate(supervisorTask, "supervisorTask", 2048, (void *)&supervisorParameters, 1, NULL);
