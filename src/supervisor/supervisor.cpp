@@ -21,17 +21,6 @@ void supervisor(SupervisorParameters *p)
             {
                 p->systemApi->log(SUPERVISOR, "before go to sleep");
                 p->goToSleep(p);
-                p->watchGoToSleep();
-            }
-            else
-            {
-                bool wakeUpNow = !action && (diff <= p->wakeUpTime);
-                if (wakeUpNow)
-                {
-                    p->systemApi->log(SUPERVISOR, "before wake up");
-                    p->watchWakeUp();
-                    p->wakeUp(p);
-                }
             }
         }
         else
@@ -127,29 +116,8 @@ void goToSleep(void *v)
         *p->action = false; // todo cover by test 
         p->systemApi->give(p->actionMutex);
 
-        setTermination(p->actionModeTasks, p->actionModeTasksCount, 3, true);
-        waitForSuspend(p->actionModeTasks, p->actionModeTasksCount, 3);
-        suspendTasks(p->actionModeTasks, p->actionModeTasksCount, p->systemApi->suspend);
-
-        setTermination(p->sleepModeTasks, p->sleepModeTasksCount, 3, false);
-        resumeTasks(p->sleepModeTasks, p->sleepModeTasksCount, p->systemApi->resume);
-    }
-}
-
-void wakeUp(void *v)
-{
-    SupervisorParameters *p = (SupervisorParameters *)v;
-    p->systemApi->log(SUPERVISOR, "wake up");
-    if (p->systemApi->take(p->actionMutex, 10))
-    {
-        *p->action = true; // todo cover by test 
-        p->systemApi->give(p->actionMutex);
-
-        setTermination(p->sleepModeTasks, p->sleepModeTasksCount, 3, true);
-        waitForSuspend(p->sleepModeTasks, p->sleepModeTasksCount, 3);
-        suspendTasks(p->sleepModeTasks, p->sleepModeTasksCount, p->systemApi->suspend);
-
-        setTermination(p->actionModeTasks, p->actionModeTasksCount, 3, false);
-        resumeTasks(p->actionModeTasks, p->actionModeTasksCount, p->systemApi->resume);
+        setTermination(p->tasks, p->tasksCount, 3, true);
+        waitForSuspend(p->tasks, p->tasksCount, 3);
+        suspendTasks(p->tasks, p->tasksCount, p->systemApi->suspend);
     }
 }

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../watch/watch.hpp"
 #include "../system/system.hpp"
 #include "../tools/func.hpp"
 #include "task.hpp"
@@ -10,19 +11,13 @@ typedef struct
     bool *action;
     void *lastEventTimestampMutex;
     long *lastEventTimestamp;
-    long wakeUpTime;
-    Func wakeUp;
     long goToSleepTime;
     Func goToSleep;
-    TaskParameters **actionModeTasks;
-    int actionModeTasksCount;
-    TaskParameters **sleepModeTasks;
-    int sleepModeTasksCount;
+    TaskParameters **tasks;
+    int tasksCount;
     SystemApi *systemApi;
-    VoidFunc watchGoToSleep; // todo create API
-    VoidFunc watchWakeUp;
+    WatchApi *watchApi;
 } SupervisorParameters;
 
 void supervisor(SupervisorParameters *p);
 void goToSleep(void *p);
-void wakeUp(void *p);

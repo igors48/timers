@@ -8,7 +8,9 @@ extern TTGOClass *watch;
 
 typedef struct {
     VoidFunc init;
-    VoidFunc deepSleep;
+    VoidFunc afterWakeUp;
+    VoidFunc beforeGoToSleep;
+    VoidFunc goToSleep;
 } WatchApi;
 
 WatchApi defaultWatchApi();

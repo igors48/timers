@@ -6,10 +6,8 @@
 typedef struct
 {
     void *handle;
-    Func func;
+    Func func; // todo consider approach - create pool of such structs. just replace func and parameters during runtime
     void *parameters;
-    void *actionMutex; // common for all tasks
-    bool *action;
     void *terminationMutex; // individual for each tasks
     bool termination; // guarded by terminationMutex
     bool canBeSuspended; // guarded by terminationMutex
@@ -17,8 +15,4 @@ typedef struct
     SystemApi *systemApi;
 } TaskParameters;
 
-void actionModeTask(void *p);
-
-//void task(void *p);
-
-//TaskParameters create(Func func, void *parameters, void *mutex, unsigned int taskDelay);
+void task(void *p);
