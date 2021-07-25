@@ -1,5 +1,5 @@
 #include "power.hpp"
-#include "watch.hpp"
+#include "ttgo.hpp"
 
 // took power from header file name
 void powerReadIRQ()

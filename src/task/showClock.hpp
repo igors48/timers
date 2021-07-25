@@ -1,6 +1,6 @@
 #pragma once
 
-#include "watch/watch.hpp"
+#include "watch/ttgo.hpp"
 
 typedef struct
 {

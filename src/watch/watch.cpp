@@ -1,6 +1,8 @@
-#include "watch.hpp"
 #include <WiFi.h>
 #include <Arduino.h>
+
+#include "ttgo.hpp"
+#include "watch.hpp"
 
 void watchInit()
 {
