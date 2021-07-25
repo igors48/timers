@@ -1,4 +1,4 @@
-#include "watch/power.hpp"
+#include "powerMock.hpp"
 
 void readIRQMock()
 {
