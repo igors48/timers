@@ -1,16 +1,17 @@
 #include "watchState.hpp"
 
-WatchState copy(WatchState watchState)
+WatchState initialWatchState()
 {
-    Date origin = watchState.date;
-    Date date = {.year = origin.year,
-                 .month = origin.month,
-                 .day = origin.day,
-                 .hour = origin.hour,
-                 .minute = origin.minute,
-                 .second = origin.second};
+    Date date = {
+        .year = 0,
+        .month = 0,
+        .day = 0,
+        .hour = 0,
+        .minute = 0,
+        .second = 0,
+    };
 
     return {
         .date = date
-    };                 
+    };
 }

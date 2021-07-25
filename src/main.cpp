@@ -6,8 +6,9 @@
 
 #include "task/buttonListener.hpp"
 #include "task/showClock.hpp"
+#include "task/watchStateProducer.hpp"
 
-TTGOClass *watch;
+//TTGOClass *watch;
 
 TaskHandle_t buttonListenerTaskHandle;
 SemaphoreHandle_t lastShortPressTimestampMutex;
@@ -16,6 +17,9 @@ time_t lastShortPressTimestamp;
 WatchApi watchApi;
 PowerApi powerApi;
 SystemApi systemApi;
+
+WatchState watchState;
+SemaphoreHandle_t watchStateMutex;
 
 ButtonListenerParameters buttonListenerParameters;
 ShowClockParameters showClockParameters;
@@ -26,6 +30,10 @@ SupervisorParameters supervisorParameters;
 
 TaskParameters showClockTaskParameters;
 SemaphoreHandle_t showClockTaskTerminationMutex;
+
+WatchStateProducerParameters watchStateProducerParameters;
+TaskParameters watchStateProducerTaskParameters;
+SemaphoreHandle_t watchStateProducerTerminationMutex;
 
 void buttonListenerTask(void *p)
 {
@@ -50,6 +58,22 @@ void buttonInterruptHandler(void)
     vTaskResume(buttonListenerTaskHandle);
 }
 
+void initWatchStateProducerTask() 
+{
+    /*
+    typedef struct
+{
+    void *watchStateMutex;
+    WatchState *state;
+    RtcApi *rtcApi;
+    SystemApi *systemApi;
+} WatchStateProducerParameters;
+    */
+    watchStateProducerParameters = {
+
+    }
+}
+
 void setup()
 {
     Serial.begin(115200);
@@ -61,6 +85,9 @@ void setup()
     powerApi = watchPowerApi();
     systemApi = defaultSystemApi();
 
+    watchState = initialWatchState();
+    watchStateMutex = xSemaphoreCreateMutex();
+    
     lastShortPressTimestampMutex = xSemaphoreCreateMutex();
     lastShortPressTimestamp = systemApi.time();
     
@@ -88,6 +115,7 @@ void setup()
         .systemApi = &systemApi
     };
     xTaskCreate(task, "showClockTask", 2048, (void *)&showClockTaskParameters, 1, &showClockTaskParameters.handle);
+
 
     tasks[0] = &showClockTaskParameters;
 

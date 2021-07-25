@@ -8,4 +8,4 @@ typedef struct
     Date date;
 } WatchState;
 
-WatchState copy(WatchState watchState);
+WatchState initialWatchState();
