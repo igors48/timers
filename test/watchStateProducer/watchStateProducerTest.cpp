@@ -28,7 +28,7 @@ void setUp(void)
     rtcApi = rtcApiMock();
     systemApi = systemApiMock();
     
-    p = {.watchStateMutex = &watchStateMutex,
+    p = {.stateMutex = &watchStateMutex,
          .state = &watchState,
          .rtcApi = &rtcApi,
          .systemApi = &systemApi

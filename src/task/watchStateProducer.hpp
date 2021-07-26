@@ -6,10 +6,10 @@
 
 typedef struct
 {
-    void *watchStateMutex;
+    void *stateMutex;
     WatchState *state;
     RtcApi *rtcApi;
     SystemApi *systemApi;
 } WatchStateProducerParameters;
 
-void watchStateProducer(WatchStateProducerParameters *p);
+void watchStateProducer(void *v);

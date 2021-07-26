@@ -2,13 +2,14 @@
 
 #include "watch/watch.hpp"
 #include "watch/power.hpp"
+#include "watch/rtc.hpp"
 #include "supervisor/supervisor.hpp"
 
 #include "task/buttonListener.hpp"
 #include "task/showClock.hpp"
 #include "task/watchStateProducer.hpp"
 
-//TTGOClass *watch;
+TTGOClass *watch;
 
 TaskHandle_t buttonListenerTaskHandle;
 SemaphoreHandle_t lastShortPressTimestampMutex;
@@ -17,6 +18,7 @@ time_t lastShortPressTimestamp;
 WatchApi watchApi;
 PowerApi powerApi;
 SystemApi systemApi;
+RtcApi rtcApi;
 
 WatchState watchState;
 SemaphoreHandle_t watchStateMutex;
@@ -24,7 +26,8 @@ SemaphoreHandle_t watchStateMutex;
 ButtonListenerParameters buttonListenerParameters;
 ShowClockParameters showClockParameters;
 
-TaskParameters *tasks[1];
+const unsigned char TASK_COUNT = 2;
+TaskParameters *tasks[TASK_COUNT];
 
 SupervisorParameters supervisorParameters;
 
@@ -60,18 +63,25 @@ void buttonInterruptHandler(void)
 
 void initWatchStateProducerTask() 
 {
-    /*
-    typedef struct
-{
-    void *watchStateMutex;
-    WatchState *state;
-    RtcApi *rtcApi;
-    SystemApi *systemApi;
-} WatchStateProducerParameters;
-    */
     watchStateProducerParameters = {
+        .stateMutex = &watchStateMutex,
+        .state = &watchState,
+        .rtcApi = &rtcApi,
+        .systemApi = &systemApi
+    };
 
-    }
+    watchStateProducerTerminationMutex = xSemaphoreCreateMutex();
+    
+    watchStateProducerTaskParameters = {
+        .handle = NULL,
+        .func = watchStateProducer,
+        .parameters = &watchStateProducerParameters,
+        .terminationMutex = &watchStateProducerTerminationMutex,
+        .termination = false,
+        .canBeSuspended = false,
+        .taskDelay = 500,
+        .systemApi = &systemApi
+    };
 }
 
 void setup()
@@ -84,6 +94,7 @@ void setup()
 
     powerApi = watchPowerApi();
     systemApi = defaultSystemApi();
+    rtcApi = watchRtcApi();
 
     watchState = initialWatchState();
     watchStateMutex = xSemaphoreCreateMutex();
@@ -116,8 +127,11 @@ void setup()
     };
     xTaskCreate(task, "showClockTask", 2048, (void *)&showClockTaskParameters, 1, &showClockTaskParameters.handle);
 
+    initWatchStateProducerTask();
+    xTaskCreate(task, "watchStateProducer", 2048, (void *)&watchStateProducerTaskParameters, 1, &watchStateProducerTaskParameters.handle);
 
     tasks[0] = &showClockTaskParameters;
+    tasks[1] = &watchStateProducerTaskParameters; 
 
     supervisorParameters = {
         .lastEventTimestampMutex = &lastShortPressTimestampMutex,
@@ -125,7 +139,7 @@ void setup()
         .goToSleepTime = 5,
         .goToSleep = goToSleep,
         .tasks = tasks,
-        .tasksCount = 1,
+        .tasksCount = TASK_COUNT,
         .systemApi = &systemApi,
         .watchApi = &watchApi
     };
