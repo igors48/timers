@@ -8,6 +8,7 @@
 #include "task/buttonListener.hpp"
 #include "task/showClock.hpp"
 #include "task/watchStateProducer.hpp"
+#include "task/watchStateRender.hpp"
 
 TTGOClass *watch;
 
@@ -26,7 +27,7 @@ SemaphoreHandle_t watchStateMutex;
 ButtonListenerParameters buttonListenerParameters;
 ShowClockParameters showClockParameters;
 
-const unsigned char TASK_COUNT = 2;
+const unsigned char TASK_COUNT = 1;
 TaskParameters *tasks[TASK_COUNT];
 
 SupervisorParameters supervisorParameters;
@@ -37,6 +38,10 @@ SemaphoreHandle_t showClockTaskTerminationMutex;
 WatchStateProducerParameters watchStateProducerParameters;
 TaskParameters watchStateProducerTaskParameters;
 SemaphoreHandle_t watchStateProducerTerminationMutex;
+
+WatchStateRenderParameters watchStateRenderParameters;
+TaskParameters watchStateRenderTaskParameters;
+SemaphoreHandle_t watchStateRenderTerminationMutex;
 
 void buttonListenerTask(void *p)
 {
@@ -84,6 +89,29 @@ void initWatchStateProducerTask()
     };
 }
 
+void initWatchStateRenderTask() 
+{
+    watchStateRenderParameters = {
+        .stateMutex = &watchStateMutex,
+        .state = &watchState,
+        .systemApi = &systemApi,
+        .watch = watch
+    };
+
+    watchStateRenderTerminationMutex = xSemaphoreCreateMutex();
+    
+    watchStateRenderTaskParameters = {
+        .handle = NULL,
+        .func = watchStateRender,
+        .parameters = &watchStateRenderParameters,
+        .terminationMutex = &watchStateRenderTerminationMutex,
+        .termination = false,
+        .canBeSuspended = false,
+        .taskDelay = 250,
+        .systemApi = &systemApi
+    };
+}
+
 void setup()
 {
     Serial.begin(115200);
@@ -110,33 +138,36 @@ void setup()
 
     xTaskCreate(buttonListenerTask, "buttonListenerTask", 2048, (void *)&buttonListenerParameters, 1, &buttonListenerTaskHandle);
 
-    showClockParameters = {
-        .watch = watch
-        };
+    // showClockParameters = {
+    //     .watch = watch
+    //     };
 
-    showClockTaskTerminationMutex = xSemaphoreCreateMutex();
-    showClockTaskParameters = {
-        .handle = NULL,
-        .func = showClock,
-        .parameters = &showClockParameters,
-        .terminationMutex = &showClockTaskTerminationMutex,
-        .termination = false,
-        .canBeSuspended = false,
-        .taskDelay = 250,
-        .systemApi = &systemApi
-    };
-    xTaskCreate(task, "showClockTask", 2048, (void *)&showClockTaskParameters, 1, &showClockTaskParameters.handle);
+    // showClockTaskTerminationMutex = xSemaphoreCreateMutex();
+    // showClockTaskParameters = {
+    //     .handle = NULL,
+    //     .func = showClock,
+    //     .parameters = &showClockParameters,
+    //     .terminationMutex = &showClockTaskTerminationMutex,
+    //     .termination = false,
+    //     .canBeSuspended = false,
+    //     .taskDelay = 250,
+    //     .systemApi = &systemApi
+    // };
+    // xTaskCreate(task, "showClockTask", 2048, (void *)&showClockTaskParameters, 1, &showClockTaskParameters.handle);
 
     initWatchStateProducerTask();
     xTaskCreate(task, "watchStateProducer", 2048, (void *)&watchStateProducerTaskParameters, 1, &watchStateProducerTaskParameters.handle);
 
-    tasks[0] = &showClockTaskParameters;
-    tasks[1] = &watchStateProducerTaskParameters; 
+    // initWatchStateRenderTask();
+    // xTaskCreate(task, "watchStateRender", 2048, (void *)&watchStateRenderTaskParameters, 1, &watchStateRenderTaskParameters.handle);
+
+    tasks[0] = &watchStateProducerTaskParameters; 
+    //tasks[1] = &watchStateRenderTaskParameters;
 
     supervisorParameters = {
         .lastEventTimestampMutex = &lastShortPressTimestampMutex,
         .lastEventTimestamp = &lastShortPressTimestamp,
-        .goToSleepTime = 5,
+        .goToSleepTime = 20,
         .goToSleep = goToSleep,
         .tasks = tasks,
         .tasksCount = TASK_COUNT,

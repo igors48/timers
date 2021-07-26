@@ -1,11 +1,13 @@
 #include "watchStateRender.hpp"
 
-void watchStateRender(WatchStateRenderParameters *p)
-{
-    if (p->systemApi->take(p->watchStateMutex, 10))
+void watchStateRender(void *v)
+{    
+    WatchStateRenderParameters *p = (WatchStateRenderParameters *)v;
+        p->systemApi->log("watchStateRender", "watchStateRender");    
+    if (p->systemApi->take(p->stateMutex, 10))
     {
         WatchState watchState = *p->state;
-        p->systemApi->give(p->watchStateMutex);
+        p->systemApi->give(p->stateMutex);
 
         char buf[256];
         snprintf(buf, sizeof(buf), "%02d:%02d:%02d", watchState.date.hour, watchState.date.minute, watchState.date.second);

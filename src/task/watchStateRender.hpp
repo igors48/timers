@@ -7,10 +7,10 @@
 
 typedef struct
 {
-    void *watchStateMutex;
+    void *stateMutex;
     WatchState *state;
     SystemApi *systemApi;
     TTGOClass *watch;
 } WatchStateRenderParameters;
 
-void watchStateRender(WatchStateRenderParameters *p);
+void watchStateRender(void *v);
