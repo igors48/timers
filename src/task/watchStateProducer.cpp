@@ -3,7 +3,6 @@
 void watchStateProducer(void *v)
 {
     WatchStateProducerParameters *p = (WatchStateProducerParameters *)v;
-    p->systemApi->log("watchStateProducer", "watchStateProducer");
     Date date = p->rtcApi->getDate();
     if (p->systemApi->take(p->stateMutex, 10)) {
         p->state->date.year = date.year;

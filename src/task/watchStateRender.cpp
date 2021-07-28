@@ -1,9 +1,8 @@
 #include "watchStateRender.hpp"
 
 void watchStateRender(void *v)
-{    
+{
     WatchStateRenderParameters *p = (WatchStateRenderParameters *)v;
-        p->systemApi->log("watchStateRender", "watchStateRender");    
     if (p->systemApi->take(p->stateMutex, 10))
     {
         WatchState watchState = *p->state;
@@ -15,5 +14,11 @@ void watchStateRender(void *v)
         p->watch->tft->setTextSize(4);
         p->watch->tft->setTextFont(1);
         p->watch->tft->print(buf);
+
+        unsigned char battPercent = p->watch->power->getBattPercentage();
+        p->watch->tft->setCursor(100, 130);
+        p->watch->tft->setTextSize(2);
+        p->watch->tft->print(battPercent);
+        p->watch->tft->print(" %");
     }
 }

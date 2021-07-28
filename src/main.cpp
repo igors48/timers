@@ -27,7 +27,7 @@ SemaphoreHandle_t watchStateMutex;
 ButtonListenerParameters buttonListenerParameters;
 ShowClockParameters showClockParameters;
 
-const unsigned char TASK_COUNT = 1;
+const unsigned char TASK_COUNT = 2;
 TaskParameters *tasks[TASK_COUNT];
 
 SupervisorParameters supervisorParameters;
@@ -158,16 +158,16 @@ void setup()
     initWatchStateProducerTask();
     xTaskCreate(task, "watchStateProducer", 2048, (void *)&watchStateProducerTaskParameters, 1, &watchStateProducerTaskParameters.handle);
 
-    // initWatchStateRenderTask();
-    // xTaskCreate(task, "watchStateRender", 2048, (void *)&watchStateRenderTaskParameters, 1, &watchStateRenderTaskParameters.handle);
+    initWatchStateRenderTask();
+    xTaskCreate(task, "watchStateRender", 4096, (void *)&watchStateRenderTaskParameters, 1, &watchStateRenderTaskParameters.handle);
 
     tasks[0] = &watchStateProducerTaskParameters; 
-    //tasks[1] = &watchStateRenderTaskParameters;
+    tasks[1] = &watchStateRenderTaskParameters;
 
     supervisorParameters = {
         .lastEventTimestampMutex = &lastShortPressTimestampMutex,
         .lastEventTimestamp = &lastShortPressTimestamp,
-        .goToSleepTime = 20,
+        .goToSleepTime = 5,
         .goToSleep = goToSleep,
         .tasks = tasks,
         .tasksCount = TASK_COUNT,
