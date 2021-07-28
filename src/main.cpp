@@ -115,6 +115,7 @@ void initWatchStateRenderTask()
 void setup()
 {
     Serial.begin(115200);
+    delay(4000);
 
     watchApi = defaultWatchApi();
     watchApi.init();

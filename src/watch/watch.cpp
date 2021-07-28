@@ -9,12 +9,19 @@ void watchInit()
     watch = TTGOClass::getWatch();
     watch->begin();
 
+    auto tnow = watch->rtc->formatDateTime(PCF_TIMEFORMAT_HMS);
+    Serial.println(tnow);
+
+    watch->rtc->check();
+    watch->rtc->syncToSystem();
+
+    tnow = watch->rtc->formatDateTime(PCF_TIMEFORMAT_HMS);
+    Serial.println(tnow);    
+
     watch->power->enableIRQ(AXP202_PEK_SHORTPRESS_IRQ | AXP202_VBUS_REMOVED_IRQ | AXP202_VBUS_CONNECT_IRQ | AXP202_CHARGING_IRQ, true);
     watch->power->adc1Enable(AXP202_VBUS_VOL_ADC1 | AXP202_VBUS_CUR_ADC1 | AXP202_BATT_CUR_ADC1 | AXP202_BATT_VOL_ADC1, true);
     watch->power->clearIRQ();
 
-    watch->rtc->check();
-    watch->rtc->syncToSystem();
 
     WiFi.mode(WIFI_OFF);
 
@@ -30,9 +37,6 @@ void watchAfterWakeUp()
     watch->displayWakeup();
     watch->setBrightness(8);
     watch->touchWakup();
-
-    watch->rtc->check();
-    watch->rtc->syncToSystem();
 }
 
 void watchBeforeGoToSleep()
