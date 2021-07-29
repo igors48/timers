@@ -5,3 +5,5 @@ typedef void (*Func)(void *p);
 typedef void (*VoidFunc)();
 
 typedef bool (*BoolFunc)();
+
+typedef int (*IntFunc)();

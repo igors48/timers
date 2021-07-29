@@ -15,10 +15,15 @@ void clearIRQMock()
     // empty
 }
 
+int getBattPercentageMock() {
+    return 42;
+}
+
 PowerApi powerApiMock()
 {
     return {
         .readIRQ = readIRQMock,
         .isPEKShortPressIRQ = isPEKShortPressIRQMock,
-        .clearIRQ = clearIRQMock};
+        .clearIRQ = clearIRQMock,
+        .getBattPercentage = getBattPercentageMock};
 }

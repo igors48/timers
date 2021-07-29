@@ -9,7 +9,7 @@ void watchInit()
     watch = TTGOClass::getWatch();
     watch->begin();
 
-    RTC_Date compiled = RTC_Date(__DATE__, __TIME__);
+    RTC_Date compiled = RTC_Date(__DATE__, __TIME__); // seems __DATE__, __TIME__ set to compilation time for this file not the project
     watch->rtc->setDateTime(compiled);
 
     watch->power->enableIRQ(AXP202_PEK_SHORTPRESS_IRQ | AXP202_VBUS_REMOVED_IRQ | AXP202_VBUS_CONNECT_IRQ | AXP202_CHARGING_IRQ, true);

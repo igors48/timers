@@ -15,10 +15,9 @@ void watchStateRender(void *v)
         p->watch->tft->setTextFont(1);
         p->watch->tft->print(buf);
 
-        unsigned char battPercent = p->watch->power->getBattPercentage();
         p->watch->tft->setCursor(100, 130);
         p->watch->tft->setTextSize(2);
-        p->watch->tft->print(battPercent);
+        p->watch->tft->print(watchState.battPercentage);
         p->watch->tft->print(" %");
     }
 }

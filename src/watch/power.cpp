@@ -17,11 +17,17 @@ void powerClearIRQ()
     watch->power->clearIRQ();
 }
 
+int powerGetBattPercentage()
+{
+    return watch->power->getBattPercentage();
+}
+
 // took watch from package name
 PowerApi watchPowerApi()
 {
     return {
         .readIRQ = powerReadIRQ,
         .isPEKShortPressIRQ = powerIsPEKShortPressIRQ,
-        .clearIRQ = powerClearIRQ};
+        .clearIRQ = powerClearIRQ,
+        .getBattPercentage = powerGetBattPercentage};
 }

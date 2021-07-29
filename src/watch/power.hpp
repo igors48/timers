@@ -9,6 +9,7 @@ typedef struct
     VoidFunc readIRQ;
     BoolFunc isPEKShortPressIRQ;
     VoidFunc clearIRQ;
+    IntFunc getBattPercentage;
 } PowerApi;
 
 // took watch from package name

@@ -2,6 +2,7 @@
 
 #include "../rtcMock.hpp"
 #include "../systemMock.hpp"
+#include "../powerMock.hpp"
 
 #include "task/watchStateProducer.cpp"
 
@@ -10,6 +11,7 @@ Date date;
 WatchState watchState;
 RtcApi rtcApi;
 SystemApi systemApi;
+PowerApi powerApi;
 
 WatchStateProducerParameters p;
 
@@ -27,11 +29,13 @@ void setUp(void)
     
     rtcApi = rtcApiMock();
     systemApi = systemApiMock();
+    powerApi = powerApiMock();
     
     p = {.stateMutex = &watchStateMutex,
          .state = &watchState,
          .rtcApi = &rtcApi,
-         .systemApi = &systemApi
+         .systemApi = &systemApi,
+         .powerApi = &powerApi
     };
 }
 
@@ -45,6 +49,7 @@ void whenHappyFlow(void)
     TEST_ASSERT_EQUAL_UINT8(4, watchState.date.hour);
     TEST_ASSERT_EQUAL_UINT8(5, watchState.date.minute);
     TEST_ASSERT_EQUAL_UINT8(6, watchState.date.second);
+    TEST_ASSERT_EQUAL_INT(42, watchState.battPercentage);
 }
 
 int main()

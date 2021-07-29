@@ -12,6 +12,7 @@ WatchState initialWatchState()
     };
 
     return {
-        .date = date
+        .date = date,
+        .battPercentage = 0
     };
 }

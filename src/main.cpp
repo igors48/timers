@@ -6,7 +6,6 @@
 #include "supervisor/supervisor.hpp"
 
 #include "task/buttonListener.hpp"
-#include "task/showClock.hpp"
 #include "task/watchStateProducer.hpp"
 #include "task/watchStateRender.hpp"
 
@@ -25,7 +24,6 @@ WatchState watchState;
 SemaphoreHandle_t watchStateMutex;
 
 ButtonListenerParameters buttonListenerParameters;
-ShowClockParameters showClockParameters;
 
 const unsigned char TASK_COUNT = 2;
 TaskParameters *tasks[TASK_COUNT];
@@ -72,7 +70,8 @@ void initWatchStateProducerTask()
         .stateMutex = &watchStateMutex,
         .state = &watchState,
         .rtcApi = &rtcApi,
-        .systemApi = &systemApi
+        .systemApi = &systemApi,
+        .powerApi = &powerApi
     };
 
     watchStateProducerTerminationMutex = xSemaphoreCreateMutex();
@@ -119,12 +118,13 @@ void setup()
 
     watchApi = defaultWatchApi();
     watchApi.init();
+    delay(500);
     watchApi.afterWakeUp();
+    delay(500);
 
     powerApi = watchPowerApi();
     systemApi = defaultSystemApi();
     rtcApi = watchRtcApi();
-
     watchState = initialWatchState();
     watchStateMutex = xSemaphoreCreateMutex();
     
@@ -138,23 +138,6 @@ void setup()
         .systemApi = &systemApi};
 
     xTaskCreate(buttonListenerTask, "buttonListenerTask", 2048, (void *)&buttonListenerParameters, 1, &buttonListenerTaskHandle);
-
-    // showClockParameters = {
-    //     .watch = watch
-    //     };
-
-    // showClockTaskTerminationMutex = xSemaphoreCreateMutex();
-    // showClockTaskParameters = {
-    //     .handle = NULL,
-    //     .func = showClock,
-    //     .parameters = &showClockParameters,
-    //     .terminationMutex = &showClockTaskTerminationMutex,
-    //     .termination = false,
-    //     .canBeSuspended = false,
-    //     .taskDelay = 250,
-    //     .systemApi = &systemApi
-    // };
-    // xTaskCreate(task, "showClockTask", 2048, (void *)&showClockTaskParameters, 1, &showClockTaskParameters.handle);
 
     initWatchStateProducerTask();
     xTaskCreate(task, "watchStateProducer", 2048, (void *)&watchStateProducerTaskParameters, 1, &watchStateProducerTaskParameters.handle);
