@@ -1,8 +1,10 @@
 #include "system/system.hpp"
 
+#include "watch/ttgo.hpp"
 #include "watch/watch.hpp"
 #include "watch/power.hpp"
 #include "watch/rtc.hpp"
+#include "watch/tft.hpp"
 #include "supervisor/supervisor.hpp"
 
 #include "task/buttonListener.hpp"
@@ -19,6 +21,7 @@ WatchApi watchApi;
 PowerApi powerApi;
 SystemApi systemApi;
 RtcApi rtcApi;
+TftApi tftApi;
 
 WatchState watchState;
 SemaphoreHandle_t watchStateMutex;
@@ -94,7 +97,7 @@ void initWatchStateRenderTask()
         .stateMutex = &watchStateMutex,
         .state = &watchState,
         .systemApi = &systemApi,
-        .watch = watch
+        .tftApi = &tftApi
     };
 
     watchStateRenderTerminationMutex = xSemaphoreCreateMutex();
@@ -125,6 +128,8 @@ void setup()
     powerApi = watchPowerApi();
     systemApi = defaultSystemApi();
     rtcApi = watchRtcApi();
+    tftApi = watchTftApi();
+
     watchState = initialWatchState();
     watchStateMutex = xSemaphoreCreateMutex();
     
