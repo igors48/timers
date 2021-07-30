@@ -48,6 +48,10 @@ void watchGoToSleep()
     Serial.println("after esp_light_sleep_start");
 }
 
+bool watchGetTouch(signed short &x, signed short &y){
+    return watch->getTouch(x, y);
+}
+
 WatchApi defaultWatchApi()
 {
     return
@@ -55,6 +59,7 @@ WatchApi defaultWatchApi()
         .init = watchInit,
         .afterWakeUp = watchAfterWakeUp,
         .beforeGoToSleep = watchBeforeGoToSleep,
-        .goToSleep = watchGoToSleep
+        .goToSleep = watchGoToSleep,
+        .getTouch = watchGetTouch
     };
 }

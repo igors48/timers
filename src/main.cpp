@@ -10,6 +10,7 @@
 #include "task/buttonListener.hpp"
 #include "task/watchStateProducer.hpp"
 #include "task/watchStateRender.hpp"
+#include "task/touchScreenListener.hpp"
 
 TTGOClass *watch;
 
@@ -28,6 +29,8 @@ SemaphoreHandle_t watchStateMutex;
 
 ButtonListenerParameters buttonListenerParameters;
 
+TouchScreenListenerParameters touchScreenListenerParameters;
+
 const unsigned char TASK_COUNT = 2;
 TaskParameters *tasks[TASK_COUNT];
 
@@ -43,6 +46,15 @@ SemaphoreHandle_t watchStateProducerTerminationMutex;
 WatchStateRenderParameters watchStateRenderParameters;
 TaskParameters watchStateRenderTaskParameters;
 SemaphoreHandle_t watchStateRenderTerminationMutex;
+
+void touchScreenListenerTask(void *v)
+{
+    while (true)
+    {
+        touchScreenListener(v);
+        vTaskDelay(250 / portTICK_PERIOD_MS);
+    }
+}
 
 void buttonListenerTask(void *p)
 {
@@ -67,18 +79,17 @@ void buttonInterruptHandler(void)
     vTaskResume(buttonListenerTaskHandle);
 }
 
-void initWatchStateProducerTask() 
+void initWatchStateProducerTask()
 {
     watchStateProducerParameters = {
         .stateMutex = &watchStateMutex,
         .state = &watchState,
         .rtcApi = &rtcApi,
         .systemApi = &systemApi,
-        .powerApi = &powerApi
-    };
+        .powerApi = &powerApi};
 
     watchStateProducerTerminationMutex = xSemaphoreCreateMutex();
-    
+
     watchStateProducerTaskParameters = {
         .handle = NULL,
         .func = watchStateProducer,
@@ -87,21 +98,19 @@ void initWatchStateProducerTask()
         .termination = false,
         .canBeSuspended = false,
         .taskDelay = 500,
-        .systemApi = &systemApi
-    };
+        .systemApi = &systemApi};
 }
 
-void initWatchStateRenderTask() 
+void initWatchStateRenderTask()
 {
     watchStateRenderParameters = {
         .stateMutex = &watchStateMutex,
         .state = &watchState,
         .systemApi = &systemApi,
-        .tftApi = &tftApi
-    };
+        .tftApi = &tftApi};
 
     watchStateRenderTerminationMutex = xSemaphoreCreateMutex();
-    
+
     watchStateRenderTaskParameters = {
         .handle = NULL,
         .func = watchStateRender,
@@ -110,8 +119,7 @@ void initWatchStateRenderTask()
         .termination = false,
         .canBeSuspended = false,
         .taskDelay = 250,
-        .systemApi = &systemApi
-    };
+        .systemApi = &systemApi};
 }
 
 void setup()
@@ -132,10 +140,10 @@ void setup()
 
     watchState = initialWatchState();
     watchStateMutex = xSemaphoreCreateMutex();
-    
+
     lastShortPressTimestampMutex = xSemaphoreCreateMutex();
     lastShortPressTimestamp = systemApi.time();
-    
+
     buttonListenerParameters = {
         .lastShortPressTimestampMutex = &lastShortPressTimestampMutex,
         .lastShortPressTimestamp = &lastShortPressTimestamp,
@@ -144,13 +152,18 @@ void setup()
 
     xTaskCreate(buttonListenerTask, "buttonListenerTask", 2048, (void *)&buttonListenerParameters, 1, &buttonListenerTaskHandle);
 
+    touchScreenListenerParameters = {
+        .watchApi = &watchApi};
+
+    xTaskCreate(touchScreenListenerTask, "touchScreenListenerTask", 2048, (void *)&touchScreenListenerParameters, 1, NULL);
+
     initWatchStateProducerTask();
     xTaskCreate(task, "watchStateProducer", 2048, (void *)&watchStateProducerTaskParameters, 1, &watchStateProducerTaskParameters.handle);
 
     initWatchStateRenderTask();
     xTaskCreate(task, "watchStateRender", 4096, (void *)&watchStateRenderTaskParameters, 1, &watchStateRenderTaskParameters.handle);
 
-    tasks[0] = &watchStateProducerTaskParameters; 
+    tasks[0] = &watchStateProducerTaskParameters;
     tasks[1] = &watchStateRenderTaskParameters;
 
     supervisorParameters = {
@@ -161,8 +174,7 @@ void setup()
         .tasks = tasks,
         .tasksCount = TASK_COUNT,
         .systemApi = &systemApi,
-        .watchApi = &watchApi
-    };
+        .watchApi = &watchApi};
 
     xTaskCreate(supervisorTask, "supervisorTask", 2048, (void *)&supervisorParameters, 1, NULL);
 
