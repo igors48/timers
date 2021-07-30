@@ -6,7 +6,7 @@
 typedef struct
 {
     void *handle;
-    Func func; // todo consider approach - create pool of such structs. just replace func and parameters during runtime
+    Func func; 
     void *parameters;
     // todo make this mutex common for all struct access not only for termination
     void *terminationMutex; // individual for each tasks  
