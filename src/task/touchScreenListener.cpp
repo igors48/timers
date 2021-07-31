@@ -1,6 +1,17 @@
+#include <stdlib.h>
+
 #include "touchScreenListener.hpp"
 
 #define TOUCH_TRESHOLD 3
+
+void _updateLastUserEventTimestamp(TouchScreenListenerParameters *p) {
+    if (p->systemApi->take(p->lastUserEventTimestampMutex, 10))
+    {
+        long now = p->systemApi->time();
+        *p->lastUserEventTimestamp = now;
+        p->systemApi->give(p->lastUserEventTimestampMutex);
+    }
+}
 
 void _touched(TouchScreenListenerParameters *p, signed short x, signed short y)
 {
@@ -31,17 +42,9 @@ void _notTouched(TouchScreenListenerParameters *p)
         bool releasedAroundTheSamePoint = (deltaX < TOUCH_TRESHOLD) && (deltaY < TOUCH_TRESHOLD);
         if (releasedAroundTheSamePoint)
         {
+            _updateLastUserEventTimestamp(p);
             p->onTouch(p->firstX, p->firstY);
         }
-    }
-}
-
-void _updateLastUserEventTimestamp(TouchScreenListenerParameters *p) {
-    if (p->systemApi->take(p->lastUserEventTimestampMutex, 10))
-    {
-        long now = p->systemApi->time();
-        *p->lastUserEventTimestamp = now;
-        p->systemApi->give(p->lastUserEventTimestampMutex);
     }
 }
 
@@ -50,7 +53,8 @@ void touchScreenListener(void *v)
     TouchScreenListenerParameters *p = (TouchScreenListenerParameters *)v;
     signed short x;
     signed short y;
-    if (p->watchApi->getTouch(x, y))
+    bool touched = p->watchApi->getTouch(x, y);
+    if (touched)
     {
         _updateLastUserEventTimestamp(p);
         _touched(p, x, y);
