@@ -5,6 +5,7 @@
 
 typedef struct
 {
+    // todo add task name
     void *handle;
     Func func; 
     void *parameters;
