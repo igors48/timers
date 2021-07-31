@@ -1,36 +1,47 @@
 #include "touchScreenListener.hpp"
 
-void _touched(TouchScreenListenerParameters *v, signed short x, signed short y)
+#define TOUCH_TRESHOLD 3
+
+void _touched(TouchScreenListenerParameters *p, signed short x, signed short y)
 {
-    bool firstTouch = (v->touched == false);
+    bool firstTouch = (p->touched == false);
     if (firstTouch)
     {
-        v->touched = true;
-        v->firstX = x;
-        v->firstY = y;
-        v->lastX = x;
-        v->lastY = y;
+        p->touched = true;
+        p->firstX = x;
+        p->firstY = y;
+        p->lastX = x;
+        p->lastY = y;
     }
     else
     {
-        v->lastX = x;
-        v->lastY = y;
+        p->lastX = x;
+        p->lastY = y;
     }
 }
 
-void _notTouched(TouchScreenListenerParameters *v)
+void _notTouched(TouchScreenListenerParameters *p)
 {
-    bool touchedBefore = (v->touched == true);
+    bool touchedBefore = (p->touched == true);
     if (touchedBefore)
     {
-        v->touched = 0;
-        signed short deltaX = abs(v->lastX - v->firstX);
-        signed short deltaY = abs(v->lastY - v->firstY);
-        bool releasedAroundTheSamePoint = (deltaX < 3) && (deltaY < 3);
+        p->touched = 0;
+        signed short deltaX = abs(p->lastX - p->firstX);
+        signed short deltaY = abs(p->lastY - p->firstY);
+        bool releasedAroundTheSamePoint = (deltaX < TOUCH_TRESHOLD) && (deltaY < TOUCH_TRESHOLD);
         if (releasedAroundTheSamePoint)
         {
-            v->onTouch(v->firstX, v->firstY);
+            p->onTouch(p->firstX, p->firstY);
         }
+    }
+}
+
+void _updateLastUserEventTimestamp(TouchScreenListenerParameters *p) {
+    if (p->systemApi->take(p->lastUserEventTimestampMutex, 10))
+    {
+        long now = p->systemApi->time();
+        *p->lastUserEventTimestamp = now;
+        p->systemApi->give(p->lastUserEventTimestampMutex);
     }
 }
 
@@ -41,6 +52,7 @@ void touchScreenListener(void *v)
     signed short y;
     if (p->watchApi->getTouch(x, y))
     {
+        _updateLastUserEventTimestamp(p);
         _touched(p, x, y);
     }
     else
