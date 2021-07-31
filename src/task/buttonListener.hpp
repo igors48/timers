@@ -5,8 +5,8 @@
 
 typedef struct
 {
-    void *lastShortPressTimestampMutex;
-    long *lastShortPressTimestamp;
+    void *lastUserEventTimestampMutex;
+    long *lastUserEventTimestamp;
     PowerApi *powerApi;
     SystemApi *systemApi;
 } ButtonListenerParameters;

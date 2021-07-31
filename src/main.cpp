@@ -15,8 +15,8 @@
 TTGOClass *watch;
 
 TaskHandle_t buttonListenerTaskHandle;
-SemaphoreHandle_t lastShortPressTimestampMutex;
-time_t lastShortPressTimestamp;
+SemaphoreHandle_t lastUserEventTimestampMutex;
+time_t lastUserEventTimestamp;
 
 WatchApi watchApi;
 PowerApi powerApi;
@@ -29,15 +29,14 @@ SemaphoreHandle_t watchStateMutex;
 
 ButtonListenerParameters buttonListenerParameters;
 
-TouchScreenListenerParameters touchScreenListenerParameters;
-
-const unsigned char TASK_COUNT = 2;
+const unsigned char TASK_COUNT = 3;
 TaskParameters *tasks[TASK_COUNT];
 
 SupervisorParameters supervisorParameters;
 
-TaskParameters showClockTaskParameters;
-SemaphoreHandle_t showClockTaskTerminationMutex;
+TouchScreenListenerParameters touchScreenListenerParameters;
+TaskParameters touchScreenListenerTaskParameters;
+SemaphoreHandle_t touchScreenListenerTerminationMutex;
 
 WatchStateProducerParameters watchStateProducerParameters;
 TaskParameters watchStateProducerTaskParameters;
@@ -77,6 +76,39 @@ void supervisorTask(void *p)
 void buttonInterruptHandler(void)
 {
     vTaskResume(buttonListenerTaskHandle);
+}
+
+void onTouchStub(signed short x, signed short y)
+{
+    Serial.printf("%d %d \r\n", x, y);
+}
+
+void initTouchScreenListenerTask()
+{
+    touchScreenListenerParameters = {
+        .touched = false,
+        .firstX = 0,
+        .firstY = 0,
+        .lastX = 0,
+        .lastY = 0,
+        .lastUserEventTimestampMutex = &lastUserEventTimestampMutex,
+        .lastUserEventTimestamp = &lastUserEventTimestamp,
+        .onTouch = onTouchStub,
+        .watchApi = &watchApi,
+        .systemApi = &systemApi
+    };
+
+    touchScreenListenerTerminationMutex = xSemaphoreCreateMutex();
+
+    touchScreenListenerTaskParameters = {
+        .handle = NULL,
+        .func = touchScreenListener,
+        .parameters = &touchScreenListenerParameters,
+        .terminationMutex = &touchScreenListenerTerminationMutex,
+        .termination = false,
+        .canBeSuspended = false,
+        .taskDelay = 50,
+        .systemApi = &systemApi};
 }
 
 void initWatchStateProducerTask()
@@ -141,21 +173,15 @@ void setup()
     watchState = initialWatchState();
     watchStateMutex = xSemaphoreCreateMutex();
 
-    lastShortPressTimestampMutex = xSemaphoreCreateMutex();
-    lastShortPressTimestamp = systemApi.time();
+    lastUserEventTimestampMutex = xSemaphoreCreateMutex();
+    lastUserEventTimestamp = systemApi.time();
 
     buttonListenerParameters = {
-        .lastShortPressTimestampMutex = &lastShortPressTimestampMutex,
-        .lastShortPressTimestamp = &lastShortPressTimestamp,
+        .lastUserEventTimestampMutex = &lastUserEventTimestampMutex,
+        .lastUserEventTimestamp = &lastUserEventTimestamp,
         .powerApi = &powerApi,
         .systemApi = &systemApi};
-
     xTaskCreate(buttonListenerTask, "buttonListenerTask", 2048, (void *)&buttonListenerParameters, 1, &buttonListenerTaskHandle);
-
-    touchScreenListenerParameters = {
-        .watchApi = &watchApi};
-
-    xTaskCreate(touchScreenListenerTask, "touchScreenListenerTask", 2048, (void *)&touchScreenListenerParameters, 1, NULL);
 
     initWatchStateProducerTask();
     xTaskCreate(task, "watchStateProducer", 2048, (void *)&watchStateProducerTaskParameters, 1, &watchStateProducerTaskParameters.handle);
@@ -163,12 +189,16 @@ void setup()
     initWatchStateRenderTask();
     xTaskCreate(task, "watchStateRender", 4096, (void *)&watchStateRenderTaskParameters, 1, &watchStateRenderTaskParameters.handle);
 
+    initTouchScreenListenerTask();
+    xTaskCreate(task, "touchScreenListener", 4096, (void *)&touchScreenListenerTaskParameters, 1, &touchScreenListenerTaskParameters.handle);
+
     tasks[0] = &watchStateProducerTaskParameters;
     tasks[1] = &watchStateRenderTaskParameters;
+    tasks[2] = &touchScreenListenerTaskParameters;
 
     supervisorParameters = {
-        .lastEventTimestampMutex = &lastShortPressTimestampMutex,
-        .lastEventTimestamp = &lastShortPressTimestamp,
+        .lastEventTimestampMutex = &lastUserEventTimestampMutex,
+        .lastEventTimestamp = &lastUserEventTimestamp,
         .goToSleepTime = 5,
         .goToSleep = goToSleep,
         .tasks = tasks,

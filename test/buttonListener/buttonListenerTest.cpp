@@ -5,8 +5,8 @@
 
 #include "task/buttonListener.cpp"
 
-int lastShortPressTimestampMutex;
-long lastShortPressTimestamp;
+int lastUserEventTimestampMutex;
+long lastUserEventTimestamp;
 PowerApi powerApi;
 SystemApi systemApi;
 
@@ -28,11 +28,11 @@ void setUp(void)
     systemApi = systemApiMock();
     systemApi.time = time;
 
-    lastShortPressTimestamp = 0;
+    lastUserEventTimestamp = 0;
 
     p = {
-        .lastShortPressTimestampMutex = &lastShortPressTimestampMutex,
-        .lastShortPressTimestamp = &lastShortPressTimestamp,
+        .lastUserEventTimestampMutex = &lastUserEventTimestampMutex,
+        .lastUserEventTimestamp = &lastUserEventTimestamp,
         .powerApi = &powerApi,
         .systemApi = &systemApi};
 }
@@ -41,7 +41,7 @@ void whenItIsShortPress()
 {
     buttonListener(&p);
 
-    TEST_ASSERT_EQUAL_UINT32(48, lastShortPressTimestamp); // THEN last short press timestamp changed
+    TEST_ASSERT_EQUAL_UINT32(48, lastUserEventTimestamp); // THEN last user event timestamp changed
 }
 
 void whenItIsNotShortPress() 
@@ -50,7 +50,7 @@ void whenItIsNotShortPress()
 
     buttonListener(&p);
 
-    TEST_ASSERT_EQUAL_UINT32(0, lastShortPressTimestamp); // THEN last short press timestamp not changed
+    TEST_ASSERT_EQUAL_UINT32(0, lastUserEventTimestamp); // THEN last user event timestamp not changed
 }
 
 int main()
