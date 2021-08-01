@@ -20,6 +20,9 @@ void resumeTasks(TaskParameters **tasks, int count, Resume resume)
     }
 }
 
+// todo add logging for each task state changing (termitation, suspend, paused)
+// todo setTermination and waitForSuspend should be depnded on time not on try counts
+
 bool setTermination(TaskParameters **tasks, int count, int tryCount, bool value)
 {
     bool notDone = true;

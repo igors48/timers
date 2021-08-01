@@ -29,7 +29,7 @@ SemaphoreHandle_t watchStateMutex;
 
 ButtonListenerParameters buttonListenerParameters;
 
-const unsigned char TASK_COUNT = 3;
+const unsigned char TASK_COUNT = 2;
 TaskParameters *tasks[TASK_COUNT];
 
 SupervisorParameters supervisorParameters;
@@ -51,7 +51,7 @@ void touchScreenListenerTask(void *v)
     while (true)
     {
         touchScreenListener(v);
-        vTaskDelay(50 / portTICK_PERIOD_MS);
+        vTaskDelay(500 / portTICK_PERIOD_MS);
     }
 }
 
@@ -97,7 +97,7 @@ void initTouchScreenListenerTask()
         .watchApi = &watchApi,
         .systemApi = &systemApi
     };
-
+/*
     touchScreenListenerTerminationMutex = xSemaphoreCreateMutex();
 
     touchScreenListenerTaskParameters = {
@@ -109,6 +109,7 @@ void initTouchScreenListenerTask()
         .canBeSuspended = false,
         .taskDelay = 50,
         .systemApi = &systemApi};
+        */
 }
 
 void initWatchStateProducerTask()
@@ -189,12 +190,13 @@ void setup()
     initWatchStateRenderTask();
     xTaskCreate(task, "watchStateRender", 4096, (void *)&watchStateRenderTaskParameters, 1, &watchStateRenderTaskParameters.handle);
 
-    initTouchScreenListenerTask();
-    xTaskCreate(task, "touchScreenListener", 4096, (void *)&touchScreenListenerTaskParameters, 1, &touchScreenListenerTaskParameters.handle);
+    //initTouchScreenListenerTask();
+    //xTaskCreate(task, "touchScreenListener", 16384, (void *)&touchScreenListenerTaskParameters, 1, &touchScreenListenerTaskParameters.handle);
+    //xTaskCreate(touchScreenListenerTask, "touchScreenListenerTask", 2048, (void *)&touchScreenListenerParameters, 1, NULL);
 
     tasks[0] = &watchStateProducerTaskParameters;
     tasks[1] = &watchStateRenderTaskParameters;
-    tasks[2] = &touchScreenListenerTaskParameters;
+//    tasks[2] = &touchScreenListenerTaskParameters;
 
     supervisorParameters = {
         .lastEventTimestampMutex = &lastUserEventTimestampMutex,

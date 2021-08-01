@@ -51,16 +51,17 @@ void _notTouched(TouchScreenListenerParameters *p)
 void touchScreenListener(void *v)
 {
     TouchScreenListenerParameters *p = (TouchScreenListenerParameters *)v;
-    signed short x;
-    signed short y;
-    bool touched = p->watchApi->getTouch(x, y);
-    if (touched)
-    {
-        _updateLastUserEventTimestamp(p);
-        _touched(p, x, y);
-    }
-    else
-    {
-        _notTouched(p);
-    }
+    p->systemApi->log("touchScreenListener", "start");
+    // signed short x;
+    // signed short y;
+    // bool touched = p->watchApi->getTouch(x, y);
+    // if (touched)
+    // {
+    //     _updateLastUserEventTimestamp(p);
+    //     _touched(p, x, y);
+    // }
+    // else
+    // {
+    //     _notTouched(p);
+    // }
 }
