@@ -2,21 +2,21 @@
 
 static const char SUPERVISOR[] = "supervisor";
 
-void suspendTasks(TaskParameters **tasks, int count, Suspend suspend)
+void suspendTasks(void **tasks, int count, Suspend suspend)
 {
     for (int i = 0; i < count; i++)
     {
-        TaskParameters *current = tasks[i];
-        suspend(current->handle);
+        void *current = tasks[i];
+        suspend(current);
     }
 }
 
-void resumeTasks(TaskParameters **tasks, int count, Resume resume)
+void resumeTasks(void **tasks, int count, Resume resume)
 {
     for (int i = 0; i < count; i++)
     {
-        TaskParameters *current = tasks[i];
-        resume(current->handle);
+        void *current = tasks[i];
+        resume(current);
     }
 }
 
@@ -83,13 +83,13 @@ bool waitForSuspend(TaskParameters **tasks, int count, int tryCount)
 void goToSleep(void *v)
 {
     SupervisorParameters *p = (SupervisorParameters *)v;
-    setTermination(p->tasks, p->tasksCount, 3, true);
-    waitForSuspend(p->tasks, p->tasksCount, 3);
+    // setTermination(p->tasks, p->tasksCount, 3, true);
+    // waitForSuspend(p->tasks, p->tasksCount, 3);
     suspendTasks(p->tasks, p->tasksCount, p->systemApi->suspend);
     p->watchApi->beforeGoToSleep();
     p->watchApi->goToSleep(); // here it stops
     p->watchApi->afterWakeUp();
-    setTermination(p->tasks, p->tasksCount, 3, false);
+    // setTermination(p->tasks, p->tasksCount, 3, false);
     resumeTasks(p->tasks, p->tasksCount, p->systemApi->resume);
 }
 
@@ -98,7 +98,6 @@ void supervisor(SupervisorParameters *p)
     if (p->systemApi->take(p->lastEventTimestampMutex, 10)) // todo there was missprint lastEventTimestamp vs lastEventTimestampMutex - tests dont see it
     {
         long lastEventTimestamp = *p->lastEventTimestamp;
-        p->systemApi->give(p->lastEventTimestampMutex);
         long current = p->systemApi->time();
         long diff = current - lastEventTimestamp;
         p->systemApi->log(SUPERVISOR, "diff %d", diff);
@@ -107,6 +106,7 @@ void supervisor(SupervisorParameters *p)
         {
             p->goToSleep(p);
         }
+        p->systemApi->give(p->lastEventTimestampMutex);
     }
     else
     {

@@ -4,12 +4,13 @@
 
 #define TOUCH_TRESHOLD 3
 
-void _updateLastUserEventTimestamp(TouchScreenListenerParameters *p) {
-    if (p->systemApi->take(p->lastUserEventTimestampMutex, 10))
+void _updateLastUserEventTimestamp(TouchScreenListenerParameters *p)
+{
+    //    if (p->systemApi->take(p->lastUserEventTimestampMutex, 10))
     {
         long now = p->systemApi->time();
         *p->lastUserEventTimestamp = now;
-        p->systemApi->give(p->lastUserEventTimestampMutex);
+        //        p->systemApi->give(p->lastUserEventTimestampMutex);
     }
 }
 
@@ -51,17 +52,20 @@ void _notTouched(TouchScreenListenerParameters *p)
 void touchScreenListener(void *v)
 {
     TouchScreenListenerParameters *p = (TouchScreenListenerParameters *)v;
-    p->systemApi->log("touchScreenListener", "start");
-    // signed short x;
-    // signed short y;
-    // bool touched = p->watchApi->getTouch(x, y);
-    // if (touched)
-    // {
-    //     _updateLastUserEventTimestamp(p);
-    //     _touched(p, x, y);
-    // }
-    // else
-    // {
-    //     _notTouched(p);
-    // }
+    if (p->systemApi->take(p->lastUserEventTimestampMutex, 10))
+    {
+        signed short x;
+        signed short y;
+        bool touched = p->watchApi->getTouch(x, y);
+        if (touched)
+        {
+            _updateLastUserEventTimestamp(p);
+            _touched(p, x, y);
+        }
+        else
+        {
+            _notTouched(p);
+        }
+        p->systemApi->give(p->lastUserEventTimestampMutex);
+    }
 }

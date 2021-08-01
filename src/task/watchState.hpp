@@ -7,6 +7,8 @@ typedef struct
 {
     Date date;
     int battPercentage; // todo consider battery state struct
+    signed short touchX;
+    signed short touchY;
 } WatchState;
 
 WatchState initialWatchState();

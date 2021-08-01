@@ -11,7 +11,7 @@ typedef struct
     long *lastEventTimestamp;
     long goToSleepTime;
     Func goToSleep;
-    TaskParameters **tasks;
+    void **tasks;
     int tasksCount;
     SystemApi *systemApi;
     WatchApi *watchApi;

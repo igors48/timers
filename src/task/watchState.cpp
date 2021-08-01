@@ -13,6 +13,8 @@ WatchState initialWatchState()
 
     return {
         .date = date,
-        .battPercentage = 0
+        .battPercentage = 0,
+        .touchX = 0,
+        .touchY = 0,
     };
 }

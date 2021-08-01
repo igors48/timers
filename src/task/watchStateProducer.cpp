@@ -3,9 +3,9 @@
 void watchStateProducer(void *v)
 {
     WatchStateProducerParameters *p = (WatchStateProducerParameters *)v;
-    Date date = p->rtcApi->getDate();
-    int battPercentage = p->powerApi->getBattPercentage();
     if (p->systemApi->take(p->stateMutex, 10)) {
+        Date date = p->rtcApi->getDate();
+        int battPercentage = p->powerApi->getBattPercentage();
         p->state->date.year = date.year;
         p->state->date.month = date.month;
         p->state->date.day = date.day;
