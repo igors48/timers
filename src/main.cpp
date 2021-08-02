@@ -16,8 +16,6 @@ TTGOClass *watch;
 
 SemaphoreHandle_t watchMutex;
 
-// SemaphoreHandle_t lastUserEventTimestampMutex;
-time_t lastUserEventTimestamp;
 
 WatchApi watchApi;
 PowerApi powerApi;
@@ -25,8 +23,8 @@ SystemApi systemApi;
 RtcApi rtcApi;
 TftApi tftApi;
 
+time_t lastUserEventTimestamp;
 WatchState watchState;
-// SemaphoreHandle_t watchStateMutex;
 
 ButtonListenerParameters buttonListenerParameters;
 TaskHandle_t buttonListenerTaskHandle;
@@ -38,27 +36,12 @@ SupervisorParameters supervisorParameters;
 
 TouchScreenListenerParameters touchScreenListenerParameters;
 TaskHandle_t touchScreenListenerTaskHandle;
-// TaskParameters touchScreenListenerTaskParameters;
-// SemaphoreHandle_t touchScreenListenerTerminationMutex;
 
 WatchStateProducerParameters watchStateProducerParameters;
 TaskHandle_t watchStateProducerTaskHandle;
-// TaskParameters watchStateProducerTaskParameters;
-// SemaphoreHandle_t watchStateProducerTerminationMutex;
 
 WatchStateRenderParameters watchStateRenderParameters;
 TaskHandle_t watchStateRenderTaskHandle;
-// TaskParameters watchStateRenderTaskParameters;
-// SemaphoreHandle_t watchStateRenderTerminationMutex;
-
-// void touchScreenListenerTask(void *v)
-// {
-//     while (true)
-//     {
-//         touchScreenListener(v);
-//         vTaskDelay(500 / portTICK_PERIOD_MS);
-//     }
-// }
 
 void buttonListenerTask(void *p)
 {
@@ -113,79 +96,10 @@ void buttonInterruptHandler(void)
 void onTouchStub(signed short x, signed short y)
 {
     Serial.printf("%d %d \r\n", x, y);
-    // temporary - we under critical section, so we can update safely
+    // temporary - called from critical section, so we can update safely
     watchState.touchX = x;
     watchState.touchY = y;
 }
-
-// void initTouchScreenListenerTask()
-// {
-//     touchScreenListenerParameters = {
-//         .touched = false,
-//         .firstX = 0,
-//         .firstY = 0,
-//         .lastX = 0,
-//         .lastY = 0,
-//         .lastUserEventTimestampMutex = &lastUserEventTimestampMutex,
-//         .lastUserEventTimestamp = &lastUserEventTimestamp,
-//         .onTouch = onTouchStub,
-//         .watchApi = &watchApi,
-//         .systemApi = &systemApi};
-//     touchScreenListenerTerminationMutex = xSemaphoreCreateMutex();
-
-//     touchScreenListenerTaskParameters = {
-//         .handle = NULL,
-//         .func = touchScreenListener,
-//         .parameters = &touchScreenListenerParameters,
-//         .terminationMutex = &touchScreenListenerTerminationMutex,
-//         .termination = false,
-//         .canBeSuspended = false,
-//         .taskDelay = 50,
-//         .systemApi = &systemApi};
-// }
-
-// void initWatchStateProducerTask()
-// {
-//     watchStateProducerParameters = {
-//         .stateMutex = &watchStateMutex,
-//         .state = &watchState,
-//         .rtcApi = &rtcApi,
-//         .systemApi = &systemApi,
-//         .powerApi = &powerApi};
-
-//     watchStateProducerTerminationMutex = xSemaphoreCreateMutex();
-
-//     watchStateProducerTaskParameters = {
-//         .handle = NULL,
-//         .func = watchStateProducer,
-//         .parameters = &watchStateProducerParameters,
-//         .terminationMutex = &watchStateProducerTerminationMutex,
-//         .termination = false,
-//         .canBeSuspended = false,
-//         .taskDelay = 500,
-//         .systemApi = &systemApi};
-// }
-
-// void initWatchStateRenderTask()
-// {
-//     watchStateRenderParameters = {
-//         .stateMutex = &watchStateMutex,
-//         .state = &watchState,
-//         .systemApi = &systemApi,
-//         .tftApi = &tftApi};
-
-//     watchStateRenderTerminationMutex = xSemaphoreCreateMutex();
-
-//     watchStateRenderTaskParameters = {
-//         .handle = NULL,
-//         .func = watchStateRender,
-//         .parameters = &watchStateRenderParameters,
-//         .terminationMutex = &watchStateRenderTerminationMutex,
-//         .termination = false,
-//         .canBeSuspended = false,
-//         .taskDelay = 250,
-//         .systemApi = &systemApi};
-// }
 
 void setup()
 {
@@ -267,44 +181,13 @@ void setup()
         xTaskCreate(supervisorTask, "supervisorTask", 2048, (void *)&supervisorParameters, 1, NULL);
 
         xSemaphoreGive(watchMutex);
+
+        Serial.println("tasks started");
     }
     else
     {
         Serial.println("Could not take watch mutex");
     }
-
-    // watchState = initialWatchState();
-    // watchStateMutex = xSemaphoreCreateMutex();
-
-    // lastUserEventTimestampMutex = xSemaphoreCreateMutex();
-
-    //initWatchStateProducerTask();
-    //xTaskCreate(task, "watchStateProducer", 2048, (void *)&watchStateProducerTaskParameters, 1, &watchStateProducerTaskParameters.handle);
-
-    //initWatchStateRenderTask();
-    //xTaskCreate(task, "watchStateRender", 4096, (void *)&watchStateRenderTaskParameters, 1, &watchStateRenderTaskParameters.handle);
-
-    //initTouchScreenListenerTask();
-    //xTaskCreate(task, "touchScreenListener", 16384, (void *)&touchScreenListenerTaskParameters, 1, &touchScreenListenerTaskParameters.handle);
-    //xTaskCreate(touchScreenListenerTask, "touchScreenListenerTask", 2048, (void *)&touchScreenListenerParameters, 1, NULL);
-
-    //tasks[0] = &watchStateProducerTaskParameters;
-    //tasks[1] = &watchStateRenderTaskParameters;
-    //    tasks[2] = &touchScreenListenerTaskParameters;
-
-    // supervisorParameters = {
-    //     .lastEventTimestampMutex = &lastUserEventTimestampMutex,
-    //     .lastEventTimestamp = &lastUserEventTimestamp,
-    //     .goToSleepTime = 5,
-    //     .goToSleep = goToSleep,
-    //     .tasks = tasks,
-    //     .tasksCount = TASK_COUNT,
-    //     .systemApi = &systemApi,
-    //     .watchApi = &watchApi};
-
-    // xTaskCreate(supervisorTask, "supervisorTask", 2048, (void *)&supervisorParameters, 1, NULL);
-
-    Serial.println("tasks started");
 }
 
 void loop()

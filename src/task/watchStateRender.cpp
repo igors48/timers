@@ -25,7 +25,7 @@ void watchStateRender(void *v)
         p->tftApi->setCursor(0, 200);
         p->tftApi->setTextFont(1);
         p->tftApi->setTextSize(2);
-        snprintf(buf, sizeof(buf), "%03d : %03d", watchState.touchX, watchState.touchY);
+        snprintf(buf, sizeof(buf), "x:%03d, y:%03d", watchState.touchX, watchState.touchY);
         p->tftApi->print(buf);
 
         p->systemApi->give(p->stateMutex);
