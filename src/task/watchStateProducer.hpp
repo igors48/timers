@@ -7,7 +7,7 @@
 
 typedef struct
 {
-    void *stateMutex;
+    void *watchMutex;
     WatchState *state;
     RtcApi *rtcApi;
     SystemApi *systemApi;

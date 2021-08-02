@@ -10,7 +10,7 @@ bool goToSleepCalled;
 long lastEventTimestamp;
 long goToSleepTime;
 
-int lastEventTimestampMutex;
+int watchMutex;
 
 SystemApi systemApi;
 WatchApi watchApi;
@@ -40,7 +40,7 @@ void setUp(void)
     watchApi = watchApiMock();
 
     p = {
-        .lastEventTimestampMutex = &lastEventTimestampMutex,
+        .watchMutex = &watchMutex,
         .lastEventTimestamp = &lastEventTimestamp,
         .goToSleepTime = goToSleepTime,
         .goToSleep = goToSleepMock,

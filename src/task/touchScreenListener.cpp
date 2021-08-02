@@ -6,12 +6,8 @@
 
 void _updateLastUserEventTimestamp(TouchScreenListenerParameters *p)
 {
-    //    if (p->systemApi->take(p->lastUserEventTimestampMutex, 10))
-    {
-        long now = p->systemApi->time();
-        *p->lastUserEventTimestamp = now;
-        //        p->systemApi->give(p->lastUserEventTimestampMutex);
-    }
+    long now = p->systemApi->time();
+    *p->lastUserEventTimestamp = now;
 }
 
 void _touched(TouchScreenListenerParameters *p, signed short x, signed short y)
@@ -52,7 +48,7 @@ void _notTouched(TouchScreenListenerParameters *p)
 void touchScreenListener(void *v)
 {
     TouchScreenListenerParameters *p = (TouchScreenListenerParameters *)v;
-    if (p->systemApi->take(p->lastUserEventTimestampMutex, 10))
+    if (p->systemApi->take(p->watchMutex, 10))
     {
         signed short x;
         signed short y;
@@ -66,6 +62,6 @@ void touchScreenListener(void *v)
         {
             _notTouched(p);
         }
-        p->systemApi->give(p->lastUserEventTimestampMutex);
+        p->systemApi->give(p->watchMutex);
     }
 }

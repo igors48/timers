@@ -5,7 +5,7 @@
 
 #include "task/touchScreenListener.cpp"
 
-int lastUserEventTimestampMutex;
+int watchMutex;
 long lastUserEventTimestamp;
 bool getTouchResult;
 signed short xResult;
@@ -58,7 +58,7 @@ void setUp(void)
         .firstY = 0,
         .lastX = 0,
         .lastY = 0,
-        .lastUserEventTimestampMutex = &lastUserEventTimestampMutex,
+        .watchMutex = &watchMutex,
         .lastUserEventTimestamp = &lastUserEventTimestamp,
         .onTouch = onTouchStub,
         .watchApi = &watchApi,

@@ -16,7 +16,6 @@ TTGOClass *watch;
 
 SemaphoreHandle_t watchMutex;
 
-
 WatchApi watchApi;
 PowerApi powerApi;
 SystemApi systemApi;
@@ -124,7 +123,7 @@ void setup()
         lastUserEventTimestamp = systemApi.time();
 
         buttonListenerParameters = {
-            .lastUserEventTimestampMutex = &watchMutex,
+            .watchMutex = &watchMutex,
             .lastUserEventTimestamp = &lastUserEventTimestamp,
             .powerApi = &powerApi,
             .systemApi = &systemApi};
@@ -134,7 +133,7 @@ void setup()
         attachInterrupt(AXP202_INT, buttonInterruptHandler, FALLING);
 
         watchStateProducerParameters = {
-            .stateMutex = &watchMutex,
+            .watchMutex = &watchMutex,
             .state = &watchState,
             .rtcApi = &rtcApi,
             .systemApi = &systemApi,
@@ -143,7 +142,7 @@ void setup()
         xTaskCreate(watchStateProducerTask, "watchStateProducerTask", 2048, (void *)&watchStateProducerParameters, 1, &watchStateProducerTaskHandle);
 
         watchStateRenderParameters = {
-            .stateMutex = &watchMutex,
+            .watchMutex = &watchMutex,
             .state = &watchState,
             .systemApi = &systemApi,
             .tftApi = &tftApi,
@@ -156,7 +155,7 @@ void setup()
             .firstY = 0,
             .lastX = 0,
             .lastY = 0,
-            .lastUserEventTimestampMutex = &watchMutex,
+            .watchMutex = &watchMutex,
             .lastUserEventTimestamp = &lastUserEventTimestamp,
             .onTouch = onTouchStub,
             .watchApi = &watchApi,
@@ -169,7 +168,7 @@ void setup()
         tasks[2] = touchScreenListenerTaskHandle;
 
         supervisorParameters = {
-            .lastEventTimestampMutex = &watchMutex,
+            .watchMutex = &watchMutex,
             .lastEventTimestamp = &lastUserEventTimestamp,
             .goToSleepTime = 5,
             .goToSleep = goToSleep,

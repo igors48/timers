@@ -32,7 +32,7 @@ void goToSleep(void *v)
 
 void supervisor(SupervisorParameters *p)
 {
-    if (p->systemApi->take(p->lastEventTimestampMutex, 10)) // todo there was missprint lastEventTimestamp vs lastEventTimestampMutex - tests dont see it
+    if (p->systemApi->take(p->watchMutex, 10)) // todo there was missprint lastEventTimestamp vs lastEventTimestampMutex - tests dont see it
     {
         long lastEventTimestamp = *p->lastEventTimestamp;
         long current = p->systemApi->time();
@@ -43,7 +43,7 @@ void supervisor(SupervisorParameters *p)
         {
             p->goToSleep(p);
         }
-        p->systemApi->give(p->lastEventTimestampMutex);
+        p->systemApi->give(p->watchMutex);
     }
     else
     {

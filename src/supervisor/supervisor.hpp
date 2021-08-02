@@ -3,11 +3,10 @@
 #include "../watch/watch.hpp"
 #include "../system/system.hpp"
 #include "../tools/func.hpp"
-#include "task.hpp"
 
 typedef struct
 {
-    void *lastEventTimestampMutex;
+    void *watchMutex;
     long *lastEventTimestamp;
     long goToSleepTime;
     Func goToSleep;

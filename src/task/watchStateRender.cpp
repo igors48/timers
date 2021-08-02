@@ -5,7 +5,7 @@
 void watchStateRender(void *v)
 {
     WatchStateRenderParameters *p = (WatchStateRenderParameters *)v;
-    if (p->systemApi->take(p->stateMutex, 10))
+    if (p->systemApi->take(p->watchMutex, 10))
     {
         WatchState watchState = *p->state;
 
@@ -28,6 +28,6 @@ void watchStateRender(void *v)
         snprintf(buf, sizeof(buf), "x:%03d, y:%03d", watchState.touchX, watchState.touchY);
         p->tftApi->print(buf);
 
-        p->systemApi->give(p->stateMutex);
+        p->systemApi->give(p->watchMutex);
     }
 }

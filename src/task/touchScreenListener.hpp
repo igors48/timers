@@ -11,7 +11,7 @@ typedef struct {
     signed short firstY;
     signed short lastX;
     signed short lastY;
-    void *lastUserEventTimestampMutex;
+    void *watchMutex;
     long *lastUserEventTimestamp;
     OnTouch onTouch;
     WatchApi *watchApi;

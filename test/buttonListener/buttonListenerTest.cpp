@@ -5,7 +5,7 @@
 
 #include "task/buttonListener.cpp"
 
-int lastUserEventTimestampMutex;
+int watchMutex;
 long lastUserEventTimestamp;
 PowerApi powerApi;
 SystemApi systemApi;
@@ -31,7 +31,7 @@ void setUp(void)
     lastUserEventTimestamp = 0;
 
     p = {
-        .lastUserEventTimestampMutex = &lastUserEventTimestampMutex,
+        .watchMutex = &watchMutex,
         .lastUserEventTimestamp = &lastUserEventTimestamp,
         .powerApi = &powerApi,
         .systemApi = &systemApi};

@@ -2,7 +2,7 @@
 
 void buttonListener(ButtonListenerParameters *p)
 {
-    if (p->systemApi->take(p->lastUserEventTimestampMutex, 100))
+    if (p->systemApi->take(p->watchMutex, 100))
     {
         p->powerApi->readIRQ();
         if (p->powerApi->isPEKShortPressIRQ())
@@ -11,6 +11,6 @@ void buttonListener(ButtonListenerParameters *p)
             *p->lastUserEventTimestamp = p->systemApi->time();
         }
         p->powerApi->clearIRQ();
-        p->systemApi->give(p->lastUserEventTimestampMutex);
+        p->systemApi->give(p->watchMutex);
     }
 }

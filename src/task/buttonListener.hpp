@@ -5,7 +5,7 @@
 
 typedef struct
 {
-    void *lastUserEventTimestampMutex;
+    void *watchMutex;
     long *lastUserEventTimestamp;
     PowerApi *powerApi;
     SystemApi *systemApi;

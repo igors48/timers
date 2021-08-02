@@ -6,7 +6,7 @@
 
 #include "task/watchStateProducer.cpp"
 
-int watchStateMutex;
+int watchMutex;
 Date date;
 WatchState watchState;
 RtcApi rtcApi;
@@ -26,20 +26,21 @@ void setUp(void)
         .second = 0};
     watchState = {
         .date = date};
-    
+
     rtcApi = rtcApiMock();
     systemApi = systemApiMock();
     powerApi = powerApiMock();
-    
-    p = {.stateMutex = &watchStateMutex,
-         .state = &watchState,
-         .rtcApi = &rtcApi,
-         .systemApi = &systemApi,
-         .powerApi = &powerApi
+
+    p = {
+        .watchMutex = &watchMutex,
+        .state = &watchState,
+        .rtcApi = &rtcApi,
+        .systemApi = &systemApi,
+        .powerApi = &powerApi,
     };
 }
 
-void whenHappyFlow(void) 
+void whenHappyFlow(void)
 {
     watchStateProducer(&p);
 
