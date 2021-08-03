@@ -11,7 +11,7 @@ typedef struct
     long goToSleepTime;
     Func goToSleep;
     void **tasks;
-    int tasksCount;
+    int tasksCount; // todo unsigned char instead int
     SystemApi *systemApi;
     WatchApi *watchApi;
 } SupervisorParameters;

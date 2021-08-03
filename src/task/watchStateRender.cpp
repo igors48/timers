@@ -10,11 +10,12 @@ void watchStateRender(void *v)
         WatchState watchState = *p->state;
 
         char buf[16];
-        snprintf(buf, sizeof(buf), "%02d:%02d:%02d", watchState.date.hour, watchState.date.minute, watchState.date.second);
-        p->tftApi->setCursor(10, 90);
-        p->tftApi->setTextSize(1);
-        p->tftApi->setTextFont(7);
-        p->tftApi->print(buf);
+
+        for (int i = 0; i < p->componentsCount; i++)
+        {
+            Component current = p->components[i];
+            current.render(watchState, p->tftApi);
+        }
 
         p->tftApi->setCursor(100, 150);
         p->tftApi->setTextFont(1);

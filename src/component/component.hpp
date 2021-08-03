@@ -8,4 +8,4 @@ typedef void (*Render)(WatchState watchState, TftApi *tftApi);
 typedef struct 
 {
     Render render;    
-};
+} Component;

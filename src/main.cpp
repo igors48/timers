@@ -5,12 +5,16 @@
 #include "watch/power.hpp"
 #include "watch/rtc.hpp"
 #include "watch/tft.hpp"
+
 #include "supervisor/supervisor.hpp"
 
 #include "task/buttonListener.hpp"
 #include "task/watchStateProducer.hpp"
 #include "task/watchStateRender.hpp"
 #include "task/touchScreenListener.hpp"
+
+#include "component/component.hpp"
+#include "component/timeDisplayComponent.hpp"
 
 TTGOClass *watch;
 
@@ -30,6 +34,9 @@ TaskHandle_t buttonListenerTaskHandle;
 
 const unsigned char TASK_COUNT = 3;
 TaskHandle_t tasks[TASK_COUNT];
+
+const unsigned char COMPONENTS_COUNT = 1;
+Component components[COMPONENTS_COUNT];
 
 SupervisorParameters supervisorParameters;
 
@@ -141,11 +148,15 @@ void setup()
         };
         xTaskCreate(watchStateProducerTask, "watchStateProducerTask", 2048, (void *)&watchStateProducerParameters, 1, &watchStateProducerTaskHandle);
 
+        components[0] = createTimeDisplayComponent();
+
         watchStateRenderParameters = {
             .watchMutex = &watchMutex,
             .state = &watchState,
             .systemApi = &systemApi,
             .tftApi = &tftApi,
+            .components = components,
+            .componentsCount = COMPONENTS_COUNT,
         };
         xTaskCreate(watchStateRenderTask, "watchStateRenderTask", 2048, (void *)&watchStateRenderParameters, 1, &watchStateRenderTaskHandle);
 
