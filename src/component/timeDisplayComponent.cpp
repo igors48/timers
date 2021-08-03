@@ -2,6 +2,12 @@
 
 #include "component.hpp"
 
+typedef struct
+{
+    unsigned char x;
+    unsigned char y;
+} TimeDisplayComponentProps;
+
 void timeDisplayComponentRender(WatchState watchState, TftApi *tftApi)
 {
     char buf[16];
@@ -12,9 +18,14 @@ void timeDisplayComponentRender(WatchState watchState, TftApi *tftApi)
     tftApi->print(buf);
 }
 
-Component createTimeDisplayComponent()
+Component createTimeDisplayComponent(unsigned char x, unsigned char y)
 {
+    TimeDisplayComponentProps props = {
+        .x = x,
+        .y = y,
+    };
     return {
+        .props = &props,
         .render = timeDisplayComponentRender,
     };
 }

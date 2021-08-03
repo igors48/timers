@@ -2,4 +2,4 @@
 
 #include "component.hpp"
 
-Component createTimeDisplayComponent();
+Component createTimeDisplayComponent(unsigned char x, unsigned char y);
