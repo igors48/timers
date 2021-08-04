@@ -14,7 +14,7 @@ void watchStateRender(void *v)
         for (int i = 0; i < p->componentsCount; i++)
         {
             Component current = p->components[i];
-            current.render(watchState, p->tftApi);
+            current.render(current.state, watchState, p->tftApi);
         }
 
         p->tftApi->setCursor(100, 150);

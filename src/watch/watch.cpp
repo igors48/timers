@@ -25,7 +25,7 @@ void watchAfterWakeUp()
 {
     watch->openBL();
     watch->displayWakeup();
-    watch->setBrightness(8);
+    watch->setBrightness(128);
     watch->touchWakup();
 }
 

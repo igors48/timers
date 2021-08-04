@@ -2,4 +2,10 @@
 
 #include "component.hpp"
 
-Component createTimeDisplayComponent(unsigned char x, unsigned char y);
+typedef struct
+{
+    unsigned char x;
+    unsigned char y;
+} TimeDisplayComponentState;
+
+Component createTimeDisplayComponent(TimeDisplayComponentState *state);

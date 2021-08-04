@@ -35,7 +35,7 @@ TaskHandle_t buttonListenerTaskHandle;
 const unsigned char TASK_COUNT = 3;
 TaskHandle_t tasks[TASK_COUNT];
 
-const unsigned char COMPONENTS_COUNT = 1;
+const unsigned char COMPONENTS_COUNT = 2;
 Component components[COMPONENTS_COUNT];
 
 SupervisorParameters supervisorParameters;
@@ -48,6 +48,9 @@ TaskHandle_t watchStateProducerTaskHandle;
 
 WatchStateRenderParameters watchStateRenderParameters;
 TaskHandle_t watchStateRenderTaskHandle;
+
+TimeDisplayComponentState timeDisplayComponentStateOne;
+TimeDisplayComponentState timeDisplayComponentStateTwo;
 
 void buttonListenerTask(void *p)
 {
@@ -148,7 +151,16 @@ void setup()
         };
         xTaskCreate(watchStateProducerTask, "watchStateProducerTask", 2048, (void *)&watchStateProducerParameters, 1, &watchStateProducerTaskHandle);
 
-        components[0] = createTimeDisplayComponent();
+        timeDisplayComponentStateOne= {
+            .x = 10,
+            .y = 5,
+        };
+        timeDisplayComponentStateTwo= {
+            .x = 10,
+            .y = 90,
+        };
+        components[0] = createTimeDisplayComponent(&timeDisplayComponentStateOne);
+        components[1] = createTimeDisplayComponent(&timeDisplayComponentStateTwo);
 
         watchStateRenderParameters = {
             .watchMutex = &watchMutex,

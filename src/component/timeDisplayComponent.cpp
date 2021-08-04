@@ -1,31 +1,23 @@
 #include <stdio.h>
 
 #include "component.hpp"
+#include "timeDisplayComponent.hpp"
 
-typedef struct
+void timeDisplayComponentRender(void *componentsState, WatchState watchState, TftApi *tftApi)
 {
-    unsigned char x;
-    unsigned char y;
-} TimeDisplayComponentProps;
-
-void timeDisplayComponentRender(WatchState watchState, TftApi *tftApi)
-{
+    TimeDisplayComponentState *state = (TimeDisplayComponentState *)componentsState;
     char buf[16];
     snprintf(buf, sizeof(buf), "%02d:%02d:%02d", watchState.date.hour, watchState.date.minute, watchState.date.second);
-    tftApi->setCursor(10, 90);
+    tftApi->setCursor(state->x, state->y);
     tftApi->setTextSize(1);
     tftApi->setTextFont(7);
     tftApi->print(buf);
 }
 
-Component createTimeDisplayComponent(unsigned char x, unsigned char y)
+Component createTimeDisplayComponent(TimeDisplayComponentState *state)
 {
-    TimeDisplayComponentProps props = {
-        .x = x,
-        .y = y,
-    };
     return {
-        .props = &props,
+        .state = state,
         .render = timeDisplayComponentRender,
     };
 }
