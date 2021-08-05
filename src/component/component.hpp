@@ -3,10 +3,16 @@
 #include "../task/watchState.hpp"
 #include "../watch/tft.hpp"
 
-typedef void (*Render)(void *componentState, WatchState watchState, TftApi *tftApi);
+typedef struct Component_ Component;
 
-typedef struct 
+typedef void (*Render)(Component component, WatchState watchState, TftApi *tftApi);
+
+struct Component_
 {
-    void *state;
+    unsigned char x;
+    unsigned char y;
+    unsigned char w;
+    unsigned char h;
     Render render;    
-} Component;
+};
+

@@ -51,10 +51,10 @@ TaskHandle_t watchStateProducerTaskHandle;
 WatchStateRenderParameters watchStateRenderParameters;
 TaskHandle_t watchStateRenderTaskHandle;
 
-TimeDisplayComponentState timeDisplayComponentStateOne;
-TimeDisplayComponentState timeDisplayComponentStateTwo;
-BatteryDisplayComponentState batteryDisplayComponentState;
-TouchDisplayComponentState touchDisplayComponentState;
+Component timeDisplayComponentStateOne;
+Component timeDisplayComponentStateTwo;
+Component batteryDisplayComponentState;
+Component touchDisplayComponentState;
 
 void buttonListenerTask(void *p)
 {
@@ -155,27 +155,10 @@ void setup()
         };
         xTaskCreate(watchStateProducerTask, "watchStateProducerTask", 2048, (void *)&watchStateProducerParameters, 1, &watchStateProducerTaskHandle);
 
-        timeDisplayComponentStateOne = {
-            .x = 10,
-            .y = 5,
-        };
-        timeDisplayComponentStateTwo = {
-            .x = 10,
-            .y = 90,
-        };
-        batteryDisplayComponentState = {
-            .x = 100,
-            .y = 150
-        };
-        touchDisplayComponentState = {
-            .x = 0,
-            .y = 200
-        };
-
-        components[0] = createTimeDisplayComponent(&timeDisplayComponentStateOne);
-        components[1] = createTimeDisplayComponent(&timeDisplayComponentStateTwo);
-        components[2] = createBatteryDisplayComponent(&batteryDisplayComponentState);
-        components[3] = createTouchDisplayComponent(&touchDisplayComponentState);
+        components[0] = createTimeDisplayComponent(10, 5, 50, 50);
+        components[1] = createTimeDisplayComponent(10, 90, 50, 50);
+        components[2] = createBatteryDisplayComponent(100, 150, 50, 50);
+        components[3] = createTouchDisplayComponent(0, 200, 50, 50);
 
         watchStateRenderParameters = {
             .watchMutex = &watchMutex,

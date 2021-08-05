@@ -3,21 +3,23 @@
 #include "component.hpp"
 #include "batteryDisplayComponent.hpp"
 
-void batteryDisplayComponentRender(void *componentsState, WatchState watchState, TftApi *tftApi)
+void batteryDisplayComponentRender(Component component, WatchState watchState, TftApi *tftApi)
 {
-    BatteryDisplayComponentState *state = (BatteryDisplayComponentState *)componentsState;
     char buf[16];
     snprintf(buf, sizeof(buf), "%02d %%", watchState.battPercentage);
-    tftApi->setCursor(state->x, state->y);
+    tftApi->setCursor(component.x, component.y);
     tftApi->setTextFont(1);
     tftApi->setTextSize(2);
     tftApi->print(buf);
 }
 
-Component createBatteryDisplayComponent(BatteryDisplayComponentState *state)
+Component createBatteryDisplayComponent(unsigned char x, unsigned char y, unsigned char w, unsigned char h)
 {
     return {
-        .state = state,
+        .x = x,
+        .y = y,
+        .w = w,
+        .h = h,
         .render = batteryDisplayComponentRender,
     };
 }

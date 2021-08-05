@@ -3,21 +3,23 @@
 #include "component.hpp"
 #include "timeDisplayComponent.hpp"
 
-void timeDisplayComponentRender(void *componentsState, WatchState watchState, TftApi *tftApi)
+void timeDisplayComponentRender(Component component, WatchState watchState, TftApi *tftApi)
 {
-    TimeDisplayComponentState *state = (TimeDisplayComponentState *)componentsState;
     char buf[16];
     snprintf(buf, sizeof(buf), "%02d:%02d:%02d", watchState.date.hour, watchState.date.minute, watchState.date.second);
-    tftApi->setCursor(state->x, state->y);
+    tftApi->setCursor(component.x, component.y);
     tftApi->setTextSize(1);
     tftApi->setTextFont(7);
     tftApi->print(buf);
 }
 
-Component createTimeDisplayComponent(TimeDisplayComponentState *state)
+Component createTimeDisplayComponent(unsigned char x, unsigned char y, unsigned char w, unsigned char h)
 {
     return {
-        .state = state,
+        .x = x,
+        .y = y,
+        .w = w,
+        .h = h,
         .render = timeDisplayComponentRender,
     };
 }

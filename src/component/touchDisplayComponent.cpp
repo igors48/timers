@@ -3,22 +3,23 @@
 #include "component.hpp"
 #include "touchDisplayComponent.hpp"
 
-void touchDisplayComponentRender(void *componentsState, WatchState watchState, TftApi *tftApi)
+void touchDisplayComponentRender(Component component, WatchState watchState, TftApi *tftApi)
 {
-    TouchDisplayComponentState *state = (TouchDisplayComponentState *)componentsState;
     char buf[16];
-
     snprintf(buf, sizeof(buf), "x:%03d, y:%03d", watchState.touchX, watchState.touchY);
-    tftApi->setCursor(state->x, state->y);
+    tftApi->setCursor(component.x, component.y);
     tftApi->setTextFont(1);
     tftApi->setTextSize(2);
     tftApi->print(buf);
 }
 
-Component createTouchDisplayComponent(TouchDisplayComponentState *state)
+Component createTouchDisplayComponent(unsigned char x, unsigned char y, unsigned char w, unsigned char h)
 {
     return {
-        .state = state,
+        .x = x,
+        .y = y,
+        .w = w,
+        .h = h,
         .render = touchDisplayComponentRender,
     };
 }
