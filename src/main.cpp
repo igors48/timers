@@ -16,6 +16,7 @@
 #include "component/component.hpp"
 #include "component/timeDisplayComponent.hpp"
 #include "component/batteryDisplayComponent.hpp"
+#include "component/touchDisplayComponent.hpp"
 
 TTGOClass *watch;
 
@@ -36,7 +37,7 @@ TaskHandle_t buttonListenerTaskHandle;
 const unsigned char TASK_COUNT = 3;
 TaskHandle_t tasks[TASK_COUNT];
 
-const unsigned char COMPONENTS_COUNT = 3;
+const unsigned char COMPONENTS_COUNT = 4;
 Component components[COMPONENTS_COUNT];
 
 SupervisorParameters supervisorParameters;
@@ -53,6 +54,7 @@ TaskHandle_t watchStateRenderTaskHandle;
 TimeDisplayComponentState timeDisplayComponentStateOne;
 TimeDisplayComponentState timeDisplayComponentStateTwo;
 BatteryDisplayComponentState batteryDisplayComponentState;
+TouchDisplayComponentState touchDisplayComponentState;
 
 void buttonListenerTask(void *p)
 {
@@ -165,10 +167,15 @@ void setup()
             .x = 100,
             .y = 150
         };
+        touchDisplayComponentState = {
+            .x = 0,
+            .y = 200
+        };
 
         components[0] = createTimeDisplayComponent(&timeDisplayComponentStateOne);
         components[1] = createTimeDisplayComponent(&timeDisplayComponentStateTwo);
         components[2] = createBatteryDisplayComponent(&batteryDisplayComponentState);
+        components[3] = createTouchDisplayComponent(&touchDisplayComponentState);
 
         watchStateRenderParameters = {
             .watchMutex = &watchMutex,
