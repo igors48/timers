@@ -15,6 +15,7 @@
 
 #include "component/component.hpp"
 #include "component/timeDisplayComponent.hpp"
+#include "component/batteryDisplayComponent.hpp"
 
 TTGOClass *watch;
 
@@ -35,7 +36,7 @@ TaskHandle_t buttonListenerTaskHandle;
 const unsigned char TASK_COUNT = 3;
 TaskHandle_t tasks[TASK_COUNT];
 
-const unsigned char COMPONENTS_COUNT = 2;
+const unsigned char COMPONENTS_COUNT = 3;
 Component components[COMPONENTS_COUNT];
 
 SupervisorParameters supervisorParameters;
@@ -51,6 +52,7 @@ TaskHandle_t watchStateRenderTaskHandle;
 
 TimeDisplayComponentState timeDisplayComponentStateOne;
 TimeDisplayComponentState timeDisplayComponentStateTwo;
+BatteryDisplayComponentState batteryDisplayComponentState;
 
 void buttonListenerTask(void *p)
 {
@@ -151,16 +153,22 @@ void setup()
         };
         xTaskCreate(watchStateProducerTask, "watchStateProducerTask", 2048, (void *)&watchStateProducerParameters, 1, &watchStateProducerTaskHandle);
 
-        timeDisplayComponentStateOne= {
+        timeDisplayComponentStateOne = {
             .x = 10,
             .y = 5,
         };
-        timeDisplayComponentStateTwo= {
+        timeDisplayComponentStateTwo = {
             .x = 10,
             .y = 90,
         };
+        batteryDisplayComponentState = {
+            .x = 100,
+            .y = 150
+        };
+
         components[0] = createTimeDisplayComponent(&timeDisplayComponentStateOne);
         components[1] = createTimeDisplayComponent(&timeDisplayComponentStateTwo);
+        components[2] = createBatteryDisplayComponent(&batteryDisplayComponentState);
 
         watchStateRenderParameters = {
             .watchMutex = &watchMutex,
