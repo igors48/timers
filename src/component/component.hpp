@@ -6,6 +6,7 @@
 typedef struct Component_ Component;
 
 typedef void (*Render)(Component component, WatchState watchState, TftApi *tftApi);
+typedef void (*OnTouch)(Component component);
 
 struct Component_
 {
@@ -13,6 +14,9 @@ struct Component_
     unsigned char y;
     unsigned char w;
     unsigned char h;
-    Render render;    
+    void *state;    
+    Render render;  
+    OnTouch onTouch;  
 };
 
+void componentOnTouch(Component component);

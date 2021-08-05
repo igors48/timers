@@ -40,7 +40,7 @@ void _notTouched(TouchScreenListenerParameters *p)
         if (releasedAroundTheSamePoint)
         {
             _updateLastUserEventTimestamp(p);
-            p->onTouch(p->firstX, p->firstY);
+            p->onScreenTouch(p->firstX, p->firstY);
         }
     }
 }

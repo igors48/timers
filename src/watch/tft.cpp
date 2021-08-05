@@ -16,6 +16,11 @@ void tftSetTextFont(unsigned char f)
     watch->tft->setTextFont(f);
 }
 
+void tftSetTextColor(unsigned short c)
+{
+    watch->tft->setTextColor(c);
+}
+
 void tftPrint(const char str[])
 {
     watch->tft->print(str);
@@ -32,6 +37,7 @@ TftApi watchTftApi()
         .setCursor = tftSetCursor,
         .setTextSize = tftSetTextSize,
         .setTextFont = tftSetTextFont,
+        .setTextColor = tftSetTextColor,
         .print = tftPrint,
         .drawRect = tftDrawRect,
     };

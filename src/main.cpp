@@ -21,6 +21,7 @@
 TTGOClass *watch;
 
 SemaphoreHandle_t watchMutex;
+SemaphoreHandle_t componentMutex;
 
 WatchApi watchApi;
 PowerApi powerApi;
@@ -51,10 +52,8 @@ TaskHandle_t watchStateProducerTaskHandle;
 WatchStateRenderParameters watchStateRenderParameters;
 TaskHandle_t watchStateRenderTaskHandle;
 
-Component timeDisplayComponentStateOne;
-Component timeDisplayComponentStateTwo;
-Component batteryDisplayComponentState;
-Component touchDisplayComponentState;
+TimeDisplayComponentState timeDisplayComponentStateOne;
+TimeDisplayComponentState timeDisplayComponentStateTwo;
 
 void buttonListenerTask(void *p)
 {
@@ -106,12 +105,21 @@ void buttonInterruptHandler(void)
     vTaskResume(buttonListenerTaskHandle);
 }
 
-void onTouchStub(signed short x, signed short y)
+void onScreenTouchStub(signed short x, signed short y)
 {
     Serial.printf("%d %d \r\n", x, y);
-    // temporary - called from critical section, so we can update safely
+    // called from watchMutex critical section, so we can update safely
     watchState.touchX = x;
     watchState.touchY = y;
+    for (int i = 0; i < COMPONENTS_COUNT; i++)
+    {
+        Component current = components[i];
+        if ((x > current.x) && (x < current.x + current.w) && (y > current.y) && (y < current.y + current.h))
+        {
+            Serial.println("bingo");
+            current.onTouch(current);
+        }
+    }
 }
 
 void setup()
@@ -120,6 +128,7 @@ void setup()
     delay(4000);
 
     watchMutex = xSemaphoreCreateMutex();
+    componentMutex = xSemaphoreCreateMutex();
 
     if (xSemaphoreTake(watchMutex, 1000 / portTICK_PERIOD_MS))
     {
@@ -155,8 +164,16 @@ void setup()
         };
         xTaskCreate(watchStateProducerTask, "watchStateProducerTask", 2048, (void *)&watchStateProducerParameters, 1, &watchStateProducerTaskHandle);
 
-        components[0] = createTimeDisplayComponent(10, 5, 50, 50);
-        components[1] = createTimeDisplayComponent(10, 90, 50, 50);
+        timeDisplayComponentStateOne = {
+            .color = 16,
+        };
+
+        timeDisplayComponentStateTwo = {
+            .color = 16,
+        };
+
+        components[0] = createTimeDisplayComponent(10, 5, 200, 70, &timeDisplayComponentStateOne);
+        components[1] = createTimeDisplayComponent(10, 90, 200, 70, &timeDisplayComponentStateTwo);
         components[2] = createBatteryDisplayComponent(100, 150, 50, 50);
         components[3] = createTouchDisplayComponent(0, 200, 50, 50);
 
@@ -165,6 +182,7 @@ void setup()
             .state = &watchState,
             .systemApi = &systemApi,
             .tftApi = &tftApi,
+            .componentMutex = &componentMutex,
             .components = components,
             .componentsCount = COMPONENTS_COUNT,
         };
@@ -178,7 +196,7 @@ void setup()
             .lastY = 0,
             .watchMutex = &watchMutex,
             .lastUserEventTimestamp = &lastUserEventTimestamp,
-            .onTouch = onTouchStub,
+            .onScreenTouch = onScreenTouchStub,
             .watchApi = &watchApi,
             .systemApi = &systemApi,
         };

@@ -3,7 +3,7 @@
 #include "../watch/watch.hpp"
 #include "../system/system.hpp"
 
-typedef void (*OnTouch)(signed short x, signed short y);
+typedef void (*OnScreenTouch)(signed short x, signed short y);
 
 typedef struct {
     bool touched;
@@ -13,7 +13,7 @@ typedef struct {
     signed short lastY;
     void *watchMutex;
     long *lastUserEventTimestamp;
-    OnTouch onTouch;
+    OnScreenTouch onScreenTouch;
     WatchApi *watchApi;
     SystemApi *systemApi;
 } TouchScreenListenerParameters;

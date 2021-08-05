@@ -10,6 +10,7 @@ void touchDisplayComponentRender(Component component, WatchState watchState, Tft
     tftApi->setCursor(component.x, component.y);
     tftApi->setTextFont(1);
     tftApi->setTextSize(2);
+    tftApi->setTextColor(0xFFFF);
     tftApi->print(buf);
 }
 
@@ -20,6 +21,8 @@ Component createTouchDisplayComponent(unsigned char x, unsigned char y, unsigned
         .y = y,
         .w = w,
         .h = h,
+        .state = NULL,
         .render = touchDisplayComponentRender,
+        .onTouch = componentOnTouch,
     };
 }
