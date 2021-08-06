@@ -21,7 +21,6 @@
 TTGOClass *watch;
 
 SemaphoreHandle_t watchMutex;
-SemaphoreHandle_t componentMutex;
 
 WatchApi watchApi;
 PowerApi powerApi;
@@ -128,7 +127,6 @@ void setup()
     delay(4000);
 
     watchMutex = xSemaphoreCreateMutex();
-    componentMutex = xSemaphoreCreateMutex();
 
     if (xSemaphoreTake(watchMutex, 1000 / portTICK_PERIOD_MS))
     {
@@ -182,7 +180,6 @@ void setup()
             .state = &watchState,
             .systemApi = &systemApi,
             .tftApi = &tftApi,
-            .componentMutex = &componentMutex,
             .components = components,
             .componentsCount = COMPONENTS_COUNT,
         };
