@@ -77,7 +77,7 @@ void watchStateRenderTask(void *p)
     while (true)
     {
         watchStateRender(p);
-        vTaskDelay(100 / portTICK_PERIOD_MS);
+        vTaskDelay(300 / portTICK_PERIOD_MS);
     }
 }
 
@@ -170,10 +170,10 @@ void setup()
             .color = 16,
         };
 
-        components[0] = createTimeDisplayComponent(10, 5, 200, 70, &timeDisplayComponentStateOne);
-        components[1] = createTimeDisplayComponent(10, 90, 200, 70, &timeDisplayComponentStateTwo);
+        components[0] = createTimeDisplayComponent(10, 5, 230, 70, &timeDisplayComponentStateOne);
+        components[1] = createTimeDisplayComponent(10, 90, 230, 70, &timeDisplayComponentStateTwo);
         components[2] = createBatteryDisplayComponent(100, 150, 50, 50);
-        components[3] = createTouchDisplayComponent(0, 200, 50, 50);
+        components[3] = createTouchDisplayComponent(0, 200, 200, 50);
 
         watchStateRenderParameters = {
             .watchMutex = &watchMutex,

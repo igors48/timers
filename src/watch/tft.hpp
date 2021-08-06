@@ -6,7 +6,7 @@ typedef void (*SetTextFont)(unsigned char f);
 typedef void (*SetTextColor)(unsigned short c);
 
 typedef void (*PrintFunc)(const char str[]);
-typedef void (*DrawRect)(signed int x, signed int y, signed int w, signed int h, unsigned int color);
+typedef void (*FillRect)(signed int x, signed int y, signed int w, signed int h, unsigned int color);
 
 typedef struct
 {
@@ -15,7 +15,7 @@ typedef struct
         SetTextFont setTextFont;
         SetTextColor setTextColor;
         PrintFunc print;
-        DrawRect drawRect;
+        FillRect fillRect;
 } TftApi;
 
 TftApi watchTftApi();
