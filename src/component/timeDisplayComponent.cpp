@@ -25,6 +25,39 @@ void timeDisplayComponentOnTouch(Component component)
     }
 }
 
+bool timeDisplayComponentNewState(Component component, WatchState watchState)
+{
+    TimeDisplayComponentState *state = (TimeDisplayComponentState *)component.state;   
+
+    bool changed = false;
+
+    if (state->color != state->_color) 
+    {
+        changed = true;
+        state->_color = state->color;
+    }
+
+    if (watchState.date.second != state->_second) 
+    {
+        changed = true;
+        state->_second = watchState.date.second;
+    }
+
+    if (watchState.date.minute != state->_minute) 
+    {
+        changed = true;
+        state->_minute = watchState.date.minute;
+    }
+
+    if (watchState.date.hour != state->_hour) 
+    {
+        changed = true;
+        state->_hour = watchState.date.hour;
+    }
+
+    return changed;
+}
+
 Component createTimeDisplayComponent(unsigned char x, unsigned char y, unsigned char w, unsigned char h, TimeDisplayComponentState *state)
 {
     return {
@@ -35,5 +68,6 @@ Component createTimeDisplayComponent(unsigned char x, unsigned char y, unsigned 
         .state = state,
         .render = timeDisplayComponentRender,
         .onTouch = timeDisplayComponentOnTouch,
+        .newState = componentNewState,
     };
 }

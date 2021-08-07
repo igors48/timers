@@ -25,5 +25,6 @@ Component createTouchDisplayComponent(unsigned char x, unsigned char y, unsigned
         .state = NULL,
         .render = touchDisplayComponentRender,
         .onTouch = componentOnTouch,
+        .newState = componentNewState,
     };
 }

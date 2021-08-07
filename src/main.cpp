@@ -165,10 +165,18 @@ void setup()
 
         timeDisplayComponentStateOne = {
             .color = 16,
+            ._color = 0,
+            ._hour = 0,
+            ._minute = 0,
+            ._second = 0,
         };
 
         timeDisplayComponentStateTwo = {
             .color = 16,
+            ._color = 0,
+            ._hour = 0,
+            ._minute = 0,
+            ._second = 0,
         };
 
         components[0] = createTimeDisplayComponent(10, 5, 230, 70, &timeDisplayComponentStateOne);

@@ -25,5 +25,6 @@ Component createBatteryDisplayComponent(unsigned char x, unsigned char y, unsign
         .state = NULL,
         .render = batteryDisplayComponentRender,
         .onTouch = componentOnTouch,
+        .newState = componentNewState,
     };
 }
