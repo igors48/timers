@@ -54,6 +54,9 @@ TaskHandle_t watchStateRenderTaskHandle;
 TimeDisplayComponentState timeDisplayComponentStateOne;
 TimeDisplayComponentState timeDisplayComponentStateTwo;
 
+TouchDisplayComponentState touchDisplayComponentState;
+BatteryDisplayComponentState batteryDisplayComponentState;
+
 void buttonListenerTask(void *p)
 {
     while (true)
@@ -77,7 +80,7 @@ void watchStateRenderTask(void *p)
     while (true)
     {
         watchStateRender(p);
-        vTaskDelay(300 / portTICK_PERIOD_MS);
+        vTaskDelay(100 / portTICK_PERIOD_MS);
     }
 }
 
@@ -179,10 +182,19 @@ void setup()
             ._second = 0,
         };
 
-        components[0] = createTimeDisplayComponent(10, 5, 230, 70, &timeDisplayComponentStateOne);
-        components[1] = createTimeDisplayComponent(10, 90, 230, 70, &timeDisplayComponentStateTwo);
-        components[2] = createBatteryDisplayComponent(100, 150, 50, 50);
-        components[3] = createTouchDisplayComponent(0, 200, 200, 50);
+        batteryDisplayComponentState = {
+            ._battPercentage = 0,
+        };
+
+        touchDisplayComponentState = {
+            ._touchX = -1,
+            ._touchY = -1,
+        };
+
+        components[0] = createTimeDisplayComponent(10, 5, 216, 48, &timeDisplayComponentStateOne);
+        components[1] = createTimeDisplayComponent(10, 90, 216, 48, &timeDisplayComponentStateTwo);
+        components[2] = createBatteryDisplayComponent(100, 150, 50, 50, &batteryDisplayComponentState);
+        components[3] = createTouchDisplayComponent(0, 200, 200, 50, &touchDisplayComponentState);
 
         watchStateRenderParameters = {
             .watchMutex = &watchMutex,

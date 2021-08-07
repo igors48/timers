@@ -15,16 +15,33 @@ void touchDisplayComponentRender(Component component, WatchState watchState, Tft
     tftApi->print(buf);
 }
 
-Component createTouchDisplayComponent(unsigned char x, unsigned char y, unsigned char w, unsigned char h)
+bool touchDisplayComponentNewState(Component component, WatchState watchState)
+{
+    TouchDisplayComponentState *state = (TouchDisplayComponentState *)component.state;   
+    bool changed = false;
+    if (state->_touchX != watchState.touchX)
+    {
+        changed = true;
+        state->_touchX = watchState.touchX;
+    }
+    if (state->_touchY != watchState.touchY)
+    {
+        changed = true;
+        state->_touchY = watchState.touchY;
+    }
+    return changed;
+}
+
+Component createTouchDisplayComponent(unsigned char x, unsigned char y, unsigned char w, unsigned char h, TouchDisplayComponentState *state)
 {
     return {
         .x = x,
         .y = y,
         .w = w,
         .h = h,
-        .state = NULL,
+        .state = state,
         .render = touchDisplayComponentRender,
         .onTouch = componentOnTouch,
-        .newState = componentNewState,
+        .newState = touchDisplayComponentNewState,
     };
 }

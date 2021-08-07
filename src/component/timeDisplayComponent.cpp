@@ -68,6 +68,6 @@ Component createTimeDisplayComponent(unsigned char x, unsigned char y, unsigned 
         .state = state,
         .render = timeDisplayComponentRender,
         .onTouch = timeDisplayComponentOnTouch,
-        .newState = componentNewState,
+        .newState = timeDisplayComponentNewState,
     };
 }

@@ -8,13 +8,15 @@ void watchStateRender(void *v)
     if (p->systemApi->take(p->watchMutex, 10))
     {
         WatchState watchState = *p->state;
-
         for (int i = 0; i < p->componentsCount; i++)
         {
             Component current = p->components[i];
-            current.render(current, watchState, p->tftApi);
+            bool needRender = current.newState(current, watchState);
+            if (needRender)
+            {
+                current.render(current, watchState, p->tftApi);
+            }
         }
-
         p->systemApi->give(p->watchMutex);
     }
 }

@@ -15,16 +15,28 @@ void batteryDisplayComponentRender(Component component, WatchState watchState, T
     tftApi->print(buf);
 }
 
-Component createBatteryDisplayComponent(unsigned char x, unsigned char y, unsigned char w, unsigned char h)
+bool batteryDisplayComponentNewState(Component component, WatchState watchState)
+{
+    BatteryDisplayComponentState *state = (BatteryDisplayComponentState *)component.state;   
+    bool changed = false;
+    if (state->_battPercentage != watchState.battPercentage) 
+    {
+        changed = true;
+        state->_battPercentage = watchState.battPercentage;
+    }
+    return changed;
+}
+
+Component createBatteryDisplayComponent(unsigned char x, unsigned char y, unsigned char w, unsigned char h, BatteryDisplayComponentState *state)
 {
     return {
         .x = x,
         .y = y,
         .w = w,
         .h = h,
-        .state = NULL,
+        .state = state,
         .render = batteryDisplayComponentRender,
         .onTouch = componentOnTouch,
-        .newState = componentNewState,
+        .newState = batteryDisplayComponentNewState,
     };
 }
