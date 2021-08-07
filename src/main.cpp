@@ -14,9 +14,10 @@
 #include "task/touchScreenListener.hpp"
 
 #include "component/component.hpp"
-#include "component/timeDisplayComponent.hpp"
 #include "component/batteryDisplayComponent.hpp"
 #include "component/touchDisplayComponent.hpp"
+#include "component/hourMinuteComponent.hpp"
+#include "component/secondComponent.hpp"
 
 TTGOClass *watch;
 
@@ -51,8 +52,8 @@ TaskHandle_t watchStateProducerTaskHandle;
 WatchStateRenderParameters watchStateRenderParameters;
 TaskHandle_t watchStateRenderTaskHandle;
 
-TimeDisplayComponentState timeDisplayComponentStateOne;
-TimeDisplayComponentState timeDisplayComponentStateTwo;
+HourMinuteComponentState hourMinuteComponentState;
+SecondComponentState secondComponentState;
 
 TouchDisplayComponentState touchDisplayComponentState;
 BatteryDisplayComponentState batteryDisplayComponentState;
@@ -166,22 +167,6 @@ void setup()
         };
         xTaskCreate(watchStateProducerTask, "watchStateProducerTask", 2048, (void *)&watchStateProducerParameters, 1, &watchStateProducerTaskHandle);
 
-        timeDisplayComponentStateOne = {
-            .color = 16,
-            ._color = 0,
-            ._hour = 0,
-            ._minute = 0,
-            ._second = 0,
-        };
-
-        timeDisplayComponentStateTwo = {
-            .color = 16,
-            ._color = 0,
-            ._hour = 0,
-            ._minute = 0,
-            ._second = 0,
-        };
-
         batteryDisplayComponentState = {
             ._battPercentage = 0,
         };
@@ -189,6 +174,20 @@ void setup()
         touchDisplayComponentState = {
             ._touchX = -1,
             ._touchY = -1,
+        };
+
+        hourMinuteComponentState = {
+            .color = 0xFFFF,
+            ._color = 0,
+            ._hour = 0,
+            ._minute = 0,
+
+        };
+
+        secondComponentState = {
+            .color = 0xFFFF,
+            ._color = 0,
+            ._second = 0,
         };
 
         components[0] = createTimeDisplayComponent(10, 5, 216, 48, &timeDisplayComponentStateOne);
