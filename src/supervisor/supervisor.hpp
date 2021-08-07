@@ -7,7 +7,7 @@
 typedef struct
 {
     void *watchMutex;
-    long *lastEventTimestamp;
+    long *lastUserEventTimestamp;
     long goToSleepTime;
     Func goToSleep;
     void **tasks;

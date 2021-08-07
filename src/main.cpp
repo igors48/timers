@@ -225,7 +225,7 @@ void setup()
 
         supervisorParameters = {
             .watchMutex = &watchMutex,
-            .lastEventTimestamp = &lastUserEventTimestamp,
+            .lastUserEventTimestamp = &lastUserEventTimestamp,
             .goToSleepTime = 5,
             .goToSleep = goToSleep,
             .tasks = tasks,

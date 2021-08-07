@@ -27,6 +27,8 @@ void goToSleep(void *v)
     p->watchApi->beforeGoToSleep();
     p->watchApi->goToSleep(); // here it stops
     p->watchApi->afterWakeUp();
+    p->systemApi->log(SUPERVISOR, "after wake up");
+    *p->lastUserEventTimestamp = p->systemApi->time(); // todo - cover with tests
     resumeTasks(p->tasks, p->tasksCount, p->systemApi->resume);
 }
 
@@ -34,7 +36,7 @@ void supervisor(SupervisorParameters *p)
 {
     if (p->systemApi->take(p->watchMutex, 10)) // todo there was missprint lastEventTimestamp vs lastEventTimestampMutex - tests dont see it
     {
-        long lastEventTimestamp = *p->lastEventTimestamp;
+        long lastEventTimestamp = *p->lastUserEventTimestamp;
         long current = p->systemApi->time();
         long diff = current - lastEventTimestamp;
         p->systemApi->log(SUPERVISOR, "diff %d", diff);
@@ -50,4 +52,3 @@ void supervisor(SupervisorParameters *p)
         p->systemApi->log(SUPERVISOR, "failed to take last event timestamp mutex");
     }
 }
-
