@@ -104,6 +104,7 @@ void buttonInterruptHandler(void)
     vTaskResume(buttonListenerTaskHandle);
 }
 
+// todo take it from here
 void onScreenTouchStub(signed short x, signed short y)
 {
     Serial.printf("%d %d \r\n", x, y);
