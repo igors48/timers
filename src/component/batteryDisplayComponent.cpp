@@ -7,11 +7,11 @@ void batteryDisplayComponentRender(Component component, WatchState watchState, T
 {
     char buf[16];
     snprintf(buf, sizeof(buf), "%02d %%", watchState.battPercentage);
-    tftApi->fillRect(component.x, component.y, component.w, component.h, 0x0000);
+    //tftApi->fillRect(component.x, component.y, component.w, component.h, 0x0000);
     tftApi->setCursor(component.x, component.y);
     tftApi->setTextFont(1);
     tftApi->setTextSize(2);
-    tftApi->setTextColor(0xFFFF);
+    tftApi->setTextColor(0xFFFF, 0x0000);
     tftApi->print(buf);
 }
 

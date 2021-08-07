@@ -16,9 +16,9 @@ void tftSetTextFont(unsigned char f)
     watch->tft->setTextFont(f);
 }
 
-void tftSetTextColor(unsigned short c)
+void tftSetTextColor(unsigned short f, unsigned short b)
 {
-    watch->tft->setTextColor(c);
+    watch->tft->setTextColor(f, b);
 }
 
 void tftPrint(const char str[])

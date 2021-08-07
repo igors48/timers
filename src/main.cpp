@@ -190,8 +190,8 @@ void setup()
             ._second = 0,
         };
 
-        components[0] = createTimeDisplayComponent(10, 5, 216, 48, &timeDisplayComponentStateOne);
-        components[1] = createTimeDisplayComponent(10, 90, 216, 48, &timeDisplayComponentStateTwo);
+        components[0] = createHourMinuteComponent(10, 90, 140, 48, &hourMinuteComponentState);
+        components[1] = createSecondComponent(150, 90, 75, 48, &secondComponentState);
         components[2] = createBatteryDisplayComponent(100, 150, 50, 50, &batteryDisplayComponentState);
         components[3] = createTouchDisplayComponent(0, 200, 200, 50, &touchDisplayComponentState);
 
