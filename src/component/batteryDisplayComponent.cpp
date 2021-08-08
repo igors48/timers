@@ -6,8 +6,7 @@
 void batteryDisplayComponentRender(Component component, WatchState watchState, TftApi *tftApi)
 {
     char buf[16];
-    snprintf(buf, sizeof(buf), "%02d %%", watchState.battPercentage);
-    //tftApi->fillRect(component.x, component.y, component.w, component.h, 0x0000);
+    snprintf(buf, sizeof(buf), "B:%03d%%", watchState.battPercentage);
     tftApi->setCursor(component.x, component.y);
     tftApi->setTextFont(1);
     tftApi->setTextSize(2);

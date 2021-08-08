@@ -6,8 +6,7 @@
 void touchDisplayComponentRender(Component component, WatchState watchState, TftApi *tftApi)
 {
     char buf[32];
-    snprintf(buf, sizeof(buf), "x:%03d, y:%03d, s:%06d", watchState.touchX, watchState.touchY, watchState.stepCount);
-    //tftApi->fillRect(component.x, component.y, component.w, component.h, 0x0000);
+    snprintf(buf, sizeof(buf), "x:%03d, y:%03d", watchState.touchX, watchState.touchY);
     tftApi->setCursor(component.x, component.y);
     tftApi->setTextFont(1);
     tftApi->setTextSize(1);

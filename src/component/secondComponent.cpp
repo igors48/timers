@@ -7,7 +7,6 @@ void secondComponentRender(Component component, WatchState watchState, TftApi *t
     SecondComponentState *state = (SecondComponentState *)component.state;    
     char buf[16];
     snprintf(buf, sizeof(buf), ":%02d", watchState.date.second);
-    //tftApi->fillRect(component.x, component.y, component.w, component.h, 0x666);
     tftApi->setCursor(component.x, component.y);
     tftApi->setTextSize(1);
     tftApi->setTextFont(7);
