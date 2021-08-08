@@ -16,5 +16,6 @@ WatchState initialWatchState()
         .battPercentage = 0,
         .touchX = 0,
         .touchY = 0,
+        .stepCount = 0,
     };
 }

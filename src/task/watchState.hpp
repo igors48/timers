@@ -9,6 +9,7 @@ typedef struct
     int battPercentage; // todo consider battery state struct
     signed short touchX;
     signed short touchY;
+    unsigned int stepCount;
 } WatchState;
 
 WatchState initialWatchState();

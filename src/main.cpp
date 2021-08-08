@@ -5,6 +5,7 @@
 #include "watch/power.hpp"
 #include "watch/rtc.hpp"
 #include "watch/tft.hpp"
+#include "watch/bma.hpp"
 
 #include "supervisor/supervisor.hpp"
 
@@ -28,6 +29,7 @@ PowerApi powerApi;
 SystemApi systemApi;
 RtcApi rtcApi;
 TftApi tftApi;
+BmaApi bmaApi;
 
 time_t lastUserEventTimestamp;
 WatchState watchState;
@@ -145,6 +147,7 @@ void setup()
         systemApi = defaultSystemApi();
         rtcApi = watchRtcApi();
         tftApi = watchTftApi();
+        bmaApi = watchBmaApi();
 
         lastUserEventTimestamp = systemApi.time();
 
@@ -164,6 +167,7 @@ void setup()
             .rtcApi = &rtcApi,
             .systemApi = &systemApi,
             .powerApi = &powerApi,
+            .bmaApi = &bmaApi,
         };
         xTaskCreate(watchStateProducerTask, "watchStateProducerTask", 2048, (void *)&watchStateProducerParameters, 1, &watchStateProducerTaskHandle);
 

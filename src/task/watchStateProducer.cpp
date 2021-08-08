@@ -13,6 +13,7 @@ void watchStateProducer(void *v)
         p->state->date.minute = date.minute;
         p->state->date.second = date.second;
         p->state->battPercentage = battPercentage;
+        p->state->stepCount = p->bmaApi->getCounter();
         p->systemApi->give(p->watchMutex);    
     }
 }

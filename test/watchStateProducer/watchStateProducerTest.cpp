@@ -3,6 +3,7 @@
 #include "../rtcMock.hpp"
 #include "../systemMock.hpp"
 #include "../powerMock.hpp"
+#include "../bmaMock.hpp"
 
 #include "task/watchStateProducer.cpp"
 
@@ -12,6 +13,7 @@ WatchState watchState;
 RtcApi rtcApi;
 SystemApi systemApi;
 PowerApi powerApi;
+BmaApi bmaApi;
 
 WatchStateProducerParameters p;
 
@@ -30,6 +32,7 @@ void setUp(void)
     rtcApi = rtcApiMock();
     systemApi = systemApiMock();
     powerApi = powerApiMock();
+    bmaApi = bmaApiMock();
 
     p = {
         .watchMutex = &watchMutex,
@@ -37,6 +40,7 @@ void setUp(void)
         .rtcApi = &rtcApi,
         .systemApi = &systemApi,
         .powerApi = &powerApi,
+        .bmaApi = &bmaApi,
     };
 }
 
@@ -51,6 +55,7 @@ void whenHappyFlow(void)
     TEST_ASSERT_EQUAL_UINT8(5, watchState.date.minute);
     TEST_ASSERT_EQUAL_UINT8(6, watchState.date.second);
     TEST_ASSERT_EQUAL_INT(42, watchState.battPercentage);
+    TEST_ASSERT_EQUAL_UINT32(100500, watchState.stepCount);
 }
 
 int main()
