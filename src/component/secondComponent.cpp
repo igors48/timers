@@ -17,10 +17,10 @@ void secondComponentRender(Component component, WatchState watchState, TftApi *t
 void secondComponentOnTouch(Component component)
 {
     SecondComponentState *state = (SecondComponentState *)component.state;   
-    if (state->color == 0xFFFF) {
+    if (state->color == 0xFDA0) {
         state->color = 0x9999;
     } else {
-        state->color = 0xFFFF;
+        state->color = 0xFDA0;
     }
 }
 

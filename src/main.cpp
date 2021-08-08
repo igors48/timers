@@ -20,6 +20,7 @@
 #include "component/hourMinuteComponent.hpp"
 #include "component/secondComponent.hpp"
 #include "component/stepCounterComponent.hpp"
+#include "component/dateComponent.hpp"
 
 TTGOClass *watch;
 
@@ -41,7 +42,7 @@ TaskHandle_t buttonListenerTaskHandle;
 const unsigned char TASK_COUNT = 3;
 TaskHandle_t tasks[TASK_COUNT];
 
-const unsigned char COMPONENTS_COUNT = 5;
+const unsigned char COMPONENTS_COUNT = 6;
 Component components[COMPONENTS_COUNT];
 
 SupervisorParameters supervisorParameters;
@@ -62,6 +63,7 @@ TouchDisplayComponentState touchDisplayComponentState;
 BatteryDisplayComponentState batteryDisplayComponentState;
 
 StepCounterComponentState stepCounterComponentState;
+DateComponentState dateComponentState;
 
 void buttonListenerTask(void *p)
 {
@@ -201,11 +203,18 @@ void setup()
             ._stepCount = -1,
         };
 
+        dateComponentState = {
+            ._year = 0,
+            ._month = 0,
+            ._day = 0,
+        };
+
         components[0] = createHourMinuteComponent(10, 90, 140, 48, &hourMinuteComponentState);
         components[1] = createSecondComponent(150, 90, 75, 48, &secondComponentState);
-        components[2] = createBatteryDisplayComponent(130, 150, 50, 50, &batteryDisplayComponentState);
-        components[3] = createTouchDisplayComponent(0, 230, 200, 50, &touchDisplayComponentState);
-        components[4] = createStepCounterComponent(30, 150, 50, 50, &stepCounterComponentState);
+        components[2] = createBatteryDisplayComponent(135, 150, 50, 50, &batteryDisplayComponentState);
+        components[3] = createTouchDisplayComponent(0, 232, 200, 50, &touchDisplayComponentState);
+        components[4] = createDateComponent(60, 175, 50, 50, &dateComponentState);
+        components[5] = createStepCounterComponent(35, 150, 50, 50, &stepCounterComponentState);
 
         watchStateRenderParameters = {
             .watchMutex = &watchMutex,

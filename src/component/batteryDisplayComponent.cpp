@@ -10,7 +10,7 @@ void batteryDisplayComponentRender(Component component, WatchState watchState, T
     tftApi->setCursor(component.x, component.y);
     tftApi->setTextFont(1);
     tftApi->setTextSize(2);
-    tftApi->setTextColor(0xFFFF, 0x0000);
+    tftApi->setTextColor(0xFDA0, 0x0000);
     tftApi->print(buf);
 }
 

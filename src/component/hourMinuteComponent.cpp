@@ -17,10 +17,10 @@ void hourMinuteComponentRender(Component component, WatchState watchState, TftAp
 void hourMinuteComponentOnTouch(Component component)
 {
     HourMinuteComponentState *state = (HourMinuteComponentState *)component.state;   
-    if (state->color == 0xFFFF) {
+    if (state->color == 0xFDA0) {
         state->color = 0x9999;
     } else {
-        state->color = 0xFFFF;
+        state->color = 0xFDA0;
     }
 }
 

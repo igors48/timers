@@ -27,7 +27,7 @@ void watchInit()
     watch = TTGOClass::getWatch();
     watch->begin();
 
-    Serial.println(__DATE__);
+    //Serial.println(__DATE__);
     Serial.println(__DATE__);
     Serial.println(__TIME__);
     RTC_Date compiled = RTC_Date(__DATE__, __TIME__); // seems __DATE__, __TIME__ set to compilation time for this file not the project
