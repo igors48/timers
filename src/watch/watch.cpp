@@ -4,12 +4,30 @@
 #include "ttgo.hpp"
 #include "watch.hpp"
 
+void watchInitBma()
+{
+    BMA *sensor = watch->bma;
+    Acfg cfg;
+    cfg.odr = BMA4_OUTPUT_DATA_RATE_100HZ;
+    cfg.range = BMA4_ACCEL_RANGE_2G;
+    cfg.bandwidth = BMA4_ACCEL_NORMAL_AVG4;
+    cfg.perf_mode = BMA4_CONTINUOUS_MODE;
+    sensor->accelConfig(cfg);
+    sensor->enableAccel();
+    sensor->enableFeature(BMA423_STEP_CNTR, false);
+    sensor->enableFeature(BMA423_TILT, true);
+    sensor->enableFeature(BMA423_WAKEUP, true);
+    sensor->resetStepCounter();
+    sensor->enableTiltInterrupt();
+    sensor->enableWakeupInterrupt();
+}
+
 void watchInit()
 {
     watch = TTGOClass::getWatch();
     watch->begin();
 
-    //Serial.println(__DATE__);
+    Serial.println(__DATE__);
     Serial.println(__TIME__);
     RTC_Date compiled = RTC_Date(__DATE__, __TIME__); // seems __DATE__, __TIME__ set to compilation time for this file not the project
     watch->rtc->setDateTime(compiled);
@@ -20,30 +38,7 @@ void watchInit()
 
     WiFi.mode(WIFI_OFF);
 
-    BMA *sensor = watch->bma;
-    Acfg cfg;
-    cfg.odr = BMA4_OUTPUT_DATA_RATE_100HZ;
-    cfg.range = BMA4_ACCEL_RANGE_2G;
-    cfg.bandwidth = BMA4_ACCEL_NORMAL_AVG4;
-    cfg.perf_mode = BMA4_CONTINUOUS_MODE;
-    sensor->accelConfig(cfg);
-    sensor->enableAccel();
-    // Disable BMA423 isStepCounter feature
-    sensor->enableFeature(BMA423_STEP_CNTR, false);
-    // Enable BMA423 isTilt feature
-    sensor->enableFeature(BMA423_TILT, true);
-    // Enable BMA423 isDoubleClick feature
-    sensor->enableFeature(BMA423_WAKEUP, true);
-
-    // Reset steps
-    sensor->resetStepCounter();
-
-    // Turn off feature interrupt
-    // sensor->enableStepCountInterrupt();
-
-    sensor->enableTiltInterrupt();
-    // It corresponds to isDoubleClick interrupt
-    sensor->enableWakeupInterrupt();
+    watchInitBma();
 }
 
 void watchAfterWakeUp()

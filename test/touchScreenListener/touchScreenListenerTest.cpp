@@ -60,7 +60,7 @@ void setUp(void)
         .lastY = 0,
         .watchMutex = &watchMutex,
         .lastUserEventTimestamp = &lastUserEventTimestamp,
-        .onTouch = onTouchStub,
+        .onScreenTouch = onTouchStub,
         .watchApi = &watchApi,
         .systemApi = &systemApi,
     };

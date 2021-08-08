@@ -7,7 +7,7 @@
 
 long timeResult;
 bool goToSleepCalled;
-long lastEventTimestamp;
+long lastUserEventTimestamp;
 long goToSleepTime;
 
 int watchMutex;
@@ -31,7 +31,7 @@ void setUp(void)
 {
     timeResult = 0;
     goToSleepCalled = false;
-    lastEventTimestamp = 0;
+    lastUserEventTimestamp = 0;
     goToSleepTime = 10;
 
     systemApi = systemApiMock();
@@ -41,16 +41,17 @@ void setUp(void)
 
     p = {
         .watchMutex = &watchMutex,
-        .lastEventTimestamp = &lastEventTimestamp,
+        .lastUserEventTimestamp = &lastUserEventTimestamp,
         .goToSleepTime = goToSleepTime,
         .goToSleep = goToSleepMock,
         .systemApi = &systemApi,
-        .watchApi = &watchApi};
+        .watchApi = &watchApi,
+        };
 }
 
 void whenActionModeAndIdleTimePassed()
 {
-    lastEventTimestamp = 1;
+    lastUserEventTimestamp = 1;
     timeResult = 15;
 
     supervisor(&p);
@@ -60,7 +61,7 @@ void whenActionModeAndIdleTimePassed()
 
 void whenActionModeAndIdleTimeNotPassed()
 {
-    lastEventTimestamp = 1;
+    lastUserEventTimestamp = 1;
     timeResult = 5;
 
     supervisor(&p);
@@ -70,7 +71,7 @@ void whenActionModeAndIdleTimeNotPassed()
 
 void whenSleepModeAndEvent()
 {
-    lastEventTimestamp = 1;
+    lastUserEventTimestamp = 1;
     timeResult = 2;
 
     supervisor(&p);
