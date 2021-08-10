@@ -28,7 +28,7 @@ void goToSleep(void *v)
     p->watchApi->goToSleep(); // here it stops
     p->watchApi->afterWakeUp();
     p->systemApi->log(SUPERVISOR, "after wake up");
-    *p->lastUserEventTimestamp = p->systemApi->time(); // todo - cover with tests
+    *p->lastUserEventTimestamp = p->systemApi->time(); // todo - cover with tests or even move this to the supervisor func
     resumeTasks(p->tasks, p->tasksCount, p->systemApi->resume);
 }
 
