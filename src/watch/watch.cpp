@@ -65,6 +65,8 @@ void watchGoToSleep()
     delay(100);
     esp_sleep_enable_ext1_wakeup(GPIO_SEL_39, ESP_EXT1_WAKEUP_ANY_HIGH);
     delay(100);
+    watch->bma->readInterrupt();
+    delay(100);
     watch->power->clearIRQ();
     delay(100); // seen some false wake ups without it
     //esp_deep_sleep_start();
