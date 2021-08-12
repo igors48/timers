@@ -2,6 +2,7 @@
 
 #include "../systemMock.hpp"
 #include "../watchMock.hpp"
+#include "../rtcMock.hpp"
 
 #include "supervisor/supervisor.cpp"
 
@@ -14,6 +15,7 @@ int watchMutex;
 
 SystemApi systemApi;
 WatchApi watchApi;
+RtcApi rtcApi;
 
 SupervisorParameters p;
 
@@ -38,6 +40,7 @@ void setUp(void)
     systemApi.time = time;
 
     watchApi = watchApiMock();
+    rtcApi = rtcApiMock();
 
     p = {
         .watchMutex = &watchMutex,
@@ -46,6 +49,7 @@ void setUp(void)
         .goToSleep = goToSleepMock,
         .systemApi = &systemApi,
         .watchApi = &watchApi,
+        .rtcApi = &rtcApi,
         };
 }
 
@@ -79,11 +83,18 @@ void whenSleepModeAndEvent()
     TEST_ASSERT_EQUAL_UINT8(0, goToSleepCalled); // THEN wake up
 }
 
+void calcSleepTimeTests()
+{
+    unsigned short sleepTime = calcSleepTime(&p);
+    TEST_ASSERT_EQUAL_UINT16(0, sleepTime); 
+}
+
 int main()
 {
     UNITY_BEGIN();
     RUN_TEST(whenActionModeAndIdleTimePassed);
     RUN_TEST(whenActionModeAndIdleTimeNotPassed);
     RUN_TEST(whenSleepModeAndEvent);
+    RUN_TEST(calcSleepTimeTests);
     UNITY_END();
 }

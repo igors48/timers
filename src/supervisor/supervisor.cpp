@@ -32,6 +32,15 @@ void goToSleep(void *v)
     resumeTasks(p->tasks, p->tasksCount, p->systemApi->resume);
 }
 
+unsigned short calcSleepTime(SupervisorParameters *p)
+{
+    Date now = p->rtcApi->getDate();
+    unsigned char seconds = 60 - now.second;
+    unsigned char minutes = 60 - now.minute;
+    unsigned short diff = minutes * 60 + seconds;
+    return diff;
+}
+
 void supervisor(SupervisorParameters *p)
 {
     if (p->systemApi->take(p->watchMutex, 10)) // todo there was missprint lastEventTimestamp vs lastEventTimestampMutex - tests dont see it
