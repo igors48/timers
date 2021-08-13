@@ -28,17 +28,17 @@ void goToSleep(void *v)
     p->watchApi->goToSleep(); // here it stops
     p->watchApi->afterWakeUp();
     p->systemApi->log(SUPERVISOR, "after wake up");
-    *p->lastUserEventTimestamp = p->systemApi->time(); // todo - cover with tests or even move this to the supervisor func
     resumeTasks(p->tasks, p->tasksCount, p->systemApi->resume);
 }
 
 unsigned short calcSleepTime(SupervisorParameters *p)
 {
     Date now = p->rtcApi->getDate();
-    unsigned char seconds = 60 - now.second;
-    unsigned char minutes = 60 - now.minute;
-    unsigned short diff = minutes * 60 + seconds;
-    return diff;
+    unsigned char seconds = now.second;
+    unsigned char minutes = now.minute;
+    seconds = (seconds == 0) ? 0 : 59 - seconds;
+    minutes = (minutes == 0) ? 0 : 59 - minutes;
+    return minutes * 60 + seconds;
 }
 
 void supervisor(SupervisorParameters *p)
@@ -52,7 +52,12 @@ void supervisor(SupervisorParameters *p)
         bool sleep = diff >= p->goToSleepTime;
         if (sleep)
         {
-            p->goToSleep(p);
+            unsigned short sleepTime = calcSleepTime(p);
+            if (sleepTime > p->goToSleepTime)
+            {
+                p->goToSleep(p);
+            }
+            *p->lastUserEventTimestamp = p->systemApi->time();
         }
         p->systemApi->give(p->watchMutex);
     }

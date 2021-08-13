@@ -33,7 +33,7 @@ RtcApi rtcApi;
 TftApi tftApi;
 BmaApi bmaApi;
 
-time_t lastUserEventTimestamp;
+time_t lastUserEventTimestamp; // todo consider rename. this value is updated by timer wakeup also
 WatchState watchState;
 
 ButtonListenerParameters buttonListenerParameters;
