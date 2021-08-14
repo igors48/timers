@@ -124,32 +124,32 @@ void calcSleepTimeTests()
     dateResult.minute = 0;
     dateResult.second = 1;
     sleepTime = calcSleepTime(&p);
-    TEST_ASSERT_EQUAL_UINT16(58, sleepTime);
+    TEST_ASSERT_EQUAL_UINT16(59 * 60 + 59, sleepTime);
 
     dateResult.minute = 0;
     dateResult.second = 59;
     sleepTime = calcSleepTime(&p);
-    TEST_ASSERT_EQUAL_UINT16(0, sleepTime);
+    TEST_ASSERT_EQUAL_UINT16(59 * 60 + 1, sleepTime);
 
     dateResult.minute = 1;
     dateResult.second = 0;
     sleepTime = calcSleepTime(&p);
-    TEST_ASSERT_EQUAL_UINT16(59 * 60, sleepTime);
+    TEST_ASSERT_EQUAL_UINT16(58 * 60 + 60, sleepTime);
 
     dateResult.minute = 59;
     dateResult.second = 0;
     sleepTime = calcSleepTime(&p);
-    TEST_ASSERT_EQUAL_UINT16(1 * 60, sleepTime);
+    TEST_ASSERT_EQUAL_UINT16(0 * 60 + 60, sleepTime);
 
     dateResult.minute = 59;
     dateResult.second = 59;
     sleepTime = calcSleepTime(&p);
-    TEST_ASSERT_EQUAL_UINT16(0, sleepTime);
+    TEST_ASSERT_EQUAL_UINT16(0 * 60 + 1, sleepTime);
 
     dateResult.minute = 59;
     dateResult.second = 58;
     sleepTime = calcSleepTime(&p);
-    TEST_ASSERT_EQUAL_UINT16(2, sleepTime);
+    TEST_ASSERT_EQUAL_UINT16(0 * 60 + 2, sleepTime);
 }
 
 void whenSleepTimeLesserThanGotoSleepPeriod()

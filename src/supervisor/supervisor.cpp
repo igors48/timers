@@ -20,12 +20,12 @@ void resumeTasks(void **tasks, int count, Resume resume)
     }
 }
 
-void goToSleep(void *v)
+void goToSleep(void *v, unsigned short sleepTimeSec)
 {
     SupervisorParameters *p = (SupervisorParameters *)v;
     suspendTasks(p->tasks, p->tasksCount, p->systemApi->suspend);
     p->watchApi->beforeGoToSleep();
-    p->watchApi->goToSleep(); // here it stops
+    p->watchApi->goToSleep(sleepTimeMicros); // here it stops
     p->watchApi->afterWakeUp();
     p->systemApi->log(SUPERVISOR, "after wake up");
     resumeTasks(p->tasks, p->tasksCount, p->systemApi->resume);
@@ -36,8 +36,11 @@ unsigned short calcSleepTime(SupervisorParameters *p)
     Date now = p->rtcApi->getDate();
     unsigned char seconds = now.second;
     unsigned char minutes = now.minute;
-    seconds = (seconds == 0) ? 0 : 59 - seconds;
-    minutes = (minutes == 0) ? 0 : 59 - minutes;
+    if (seconds == 0 && minutes == 0) {
+        return 0;
+    }
+    seconds = 60 - seconds;
+    minutes = 59 - minutes;
     return minutes * 60 + seconds;
 }
 
@@ -52,10 +55,10 @@ void supervisor(SupervisorParameters *p)
         bool sleep = diff >= p->goToSleepTime;
         if (sleep)
         {
-            unsigned short sleepTime = calcSleepTime(p);
-            if (sleepTime > p->goToSleepTime)
+            unsigned short sleepTime = calcSleepTime(p) - (p->goToSleepTime / 2);
+            if (sleepTime > 0)
             {
-                p->goToSleep(p);
+                p->goToSleep(p, sleepTime);
             }
             *p->lastUserEventTimestamp = p->systemApi->time();
         }
