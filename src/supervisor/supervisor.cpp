@@ -1,5 +1,7 @@
 #include "supervisor.hpp"
 
+#define uS_TO_S_FACTOR 1000000 /* Conversion factor for micro seconds to seconds */
+
 static const char SUPERVISOR[] = "supervisor";
 
 void suspendTasks(void **tasks, int count, Suspend suspend)
@@ -25,7 +27,7 @@ void goToSleep(void *v)
     SupervisorParameters *p = (SupervisorParameters *)v;
     suspendTasks(p->tasks, p->tasksCount, p->systemApi->suspend); // todo seems not needed
     p->watchApi->beforeGoToSleep();
-    p->watchApi->goToSleep(); // here it stops
+    p->watchApi->goToSleep(15 * uS_TO_S_FACTOR); // here it stops
     p->watchApi->afterWakeUp();
     p->systemApi->log(SUPERVISOR, "after wake up");
     resumeTasks(p->tasks, p->tasksCount, p->systemApi->resume); // todo seems not needed

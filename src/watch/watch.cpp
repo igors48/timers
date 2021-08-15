@@ -59,16 +59,18 @@ void watchBeforeGoToSleep()
     watch->powerOff();
 }
 
-void watchGoToSleep()
+void watchGoToSleep(unsigned long sleepTimeMicros)
 {
     esp_sleep_enable_ext0_wakeup((gpio_num_t)AXP202_INT, LOW);
-    delay(100);
+    delay(100); // seen some false wake ups without those delays
     esp_sleep_enable_ext1_wakeup(GPIO_SEL_39, ESP_EXT1_WAKEUP_ANY_HIGH);
+    delay(100);
+    esp_sleep_enable_timer_wakeup(sleepTimeMicros);
     delay(100);
     watch->bma->readInterrupt();
     delay(100);
     watch->power->clearIRQ();
-    delay(100); // seen some false wake ups without it
+    delay(100);
     //esp_deep_sleep_start();
     esp_light_sleep_start();
     Serial.println("after esp_light_sleep_start");

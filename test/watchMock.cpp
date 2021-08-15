@@ -15,7 +15,7 @@ void beforeGoToSleepMock()
     // empty
 }
 
-void goToSleepMock()
+void goToSleepMock(unsigned long sleepTimeMicros)
 {
     // empty
 }
