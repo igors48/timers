@@ -96,7 +96,7 @@ void touchScreenListenerTask(void *p)
 {
     while (true)
     {
-        touchScreenListener(p);
+        touchScreenListener(p);        
         vTaskDelay(50 / portTICK_PERIOD_MS);
     }
 }
@@ -107,6 +107,18 @@ void supervisorTask(void *p)
     {
         supervisor((SupervisorParameters *)p);
         vTaskDelay(1000 / portTICK_PERIOD_MS); // todo supervisor task delay -> const
+    }
+}
+
+TickType_t xLastWakeTime;
+
+void periodicTask(void *p)
+{
+    xLastWakeTime = xTaskGetTickCount();
+    while (true)
+    {
+        Serial.println("periodic");
+        vTaskDelayUntil(&xLastWakeTime, 500 / portTICK_PERIOD_MS);
     }
 }
 
@@ -177,7 +189,7 @@ void setup()
         xTaskCreate(watchStateProducerTask, "watchStateProducerTask", 2048, (void *)&watchStateProducerParameters, 1, &watchStateProducerTaskHandle);
 
         batteryDisplayComponentState = {
-            ._battPercentage = 0,
+            ._battPercentage = 0, // todo set to -1
         };
 
         touchDisplayComponentState = {
@@ -252,9 +264,13 @@ void setup()
             .tasks = tasks,
             .tasksCount = TASK_COUNT,
             .systemApi = &systemApi,
-            .watchApi = &watchApi};
+            .watchApi = &watchApi,
+            .rtcApi = &rtcApi,
+            };
 
         xTaskCreate(supervisorTask, "supervisorTask", 2048, (void *)&supervisorParameters, 1, NULL);
+
+        xTaskCreate(periodicTask, "periodicTask", 2048, NULL, 1, NULL);
 
         xSemaphoreGive(watchMutex);
 

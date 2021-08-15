@@ -20,15 +20,15 @@ void resumeTasks(void **tasks, int count, Resume resume)
     }
 }
 
-void goToSleep(void *v, unsigned short sleepTimeSec)
+void goToSleep(void *v)
 {
     SupervisorParameters *p = (SupervisorParameters *)v;
-    suspendTasks(p->tasks, p->tasksCount, p->systemApi->suspend);
+    suspendTasks(p->tasks, p->tasksCount, p->systemApi->suspend); // todo seems not needed
     p->watchApi->beforeGoToSleep();
-    p->watchApi->goToSleep(sleepTimeMicros); // here it stops
+    p->watchApi->goToSleep(); // here it stops
     p->watchApi->afterWakeUp();
     p->systemApi->log(SUPERVISOR, "after wake up");
-    resumeTasks(p->tasks, p->tasksCount, p->systemApi->resume);
+    resumeTasks(p->tasks, p->tasksCount, p->systemApi->resume); // todo seems not needed
 }
 
 unsigned short calcSleepTime(SupervisorParameters *p)
@@ -52,13 +52,13 @@ void supervisor(SupervisorParameters *p)
         long current = p->systemApi->time();
         long diff = current - lastEventTimestamp;
         p->systemApi->log(SUPERVISOR, "diff %d", diff);
-        bool sleep = diff >= p->goToSleepTime;
+        bool sleep = diff >= p->goToSleepTime; // todo extract the logic from here
         if (sleep)
         {
             unsigned short sleepTime = calcSleepTime(p) - (p->goToSleepTime / 2);
             if (sleepTime > 0)
             {
-                p->goToSleep(p, sleepTime);
+                p->goToSleep(p);
             }
             *p->lastUserEventTimestamp = p->systemApi->time();
         }
