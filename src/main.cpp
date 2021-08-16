@@ -110,7 +110,7 @@ void supervisorTask(void *p)
     }
 }
 
-TickType_t xLastWakeTime;
+TickType_t xLastWakeTime; //unsigned int
 
 void periodicTask(void *p)
 {
@@ -118,6 +118,7 @@ void periodicTask(void *p)
     while (true)
     {
         Serial.println("periodic");
+        //3 600 000ms = 1hr
         vTaskDelayUntil(&xLastWakeTime, 500 / portTICK_PERIOD_MS);
     }
 }
