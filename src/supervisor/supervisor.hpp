@@ -5,12 +5,14 @@
 #include "../watch/rtc.hpp"
 #include "../tools/func.hpp"
 
+typedef void (*SupervisorSleep)(void *v, unsigned short sleepTimeSec);
+
 typedef struct
 {
     void *watchMutex;
     long *lastUserEventTimestamp;
     long goToSleepTime;
-    Func goToSleep;
+    SupervisorSleep supervisorSleep;
     void **tasks;
     int tasksCount; // todo unsigned char instead int
     SystemApi *systemApi;
@@ -19,4 +21,4 @@ typedef struct
 } SupervisorParameters;
 
 void supervisor(SupervisorParameters *p);
-void goToSleep(void *p);
+void supervisorSleep(void *p, unsigned short sleepTimeSec);

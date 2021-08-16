@@ -1,6 +1,7 @@
 #include "supervisor.hpp"
 
 #define uS_TO_S_FACTOR 1000000 /* Conversion factor for micro seconds to seconds */
+#define SLEEP_TIME_TRESHOLD 3 
 
 static const char SUPERVISOR[] = "supervisor";
 
@@ -22,12 +23,13 @@ void resumeTasks(void **tasks, int count, Resume resume)
     }
 }
 
-void goToSleep(void *v)
+void supervisorSleep(void *v, unsigned short sleepTimeSec)
 {
     SupervisorParameters *p = (SupervisorParameters *)v;
     suspendTasks(p->tasks, p->tasksCount, p->systemApi->suspend); // todo seems not needed
+    p->systemApi->log(SUPERVISOR, "sleep for %d sec", sleepTimeSec);
     p->watchApi->beforeGoToSleep();
-    p->watchApi->goToSleep(15 * uS_TO_S_FACTOR); // here it stops
+    p->watchApi->goToSleep(sleepTimeSec * uS_TO_S_FACTOR); // here it stops
     p->watchApi->afterWakeUp();
     p->systemApi->log(SUPERVISOR, "after wake up");
     resumeTasks(p->tasks, p->tasksCount, p->systemApi->resume); // todo seems not needed
@@ -57,10 +59,11 @@ void supervisor(SupervisorParameters *p)
         bool sleep = diff >= p->goToSleepTime; // todo extract the logic from here
         if (sleep)
         {
-            unsigned short sleepTime = calcSleepTime(p) - (p->goToSleepTime / 2);
-            if (sleepTime > 0)
+            short sleepTime = calcSleepTime(p);
+            sleepTime = sleepTime - SLEEP_TIME_TRESHOLD;// todo consinder the new parameter
+            if (sleepTime > 1)
             {
-                p->goToSleep(p);
+                p->supervisorSleep(p, sleepTime);
             }
             *p->lastUserEventTimestamp = p->systemApi->time();
         }

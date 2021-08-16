@@ -9,6 +9,7 @@
 long timeResult;
 Date dateResult;
 bool goToSleepCalled;
+unsigned short sleepTimeSecValue;
 long lastUserEventTimestamp;
 long goToSleepTime;
 
@@ -25,14 +26,16 @@ long time() // todo name convention for common and local mock funcs
     return timeResult;
 }
 
-void goToSleepMock(void *p)
+void supervisorSleepMock(void *p, unsigned short sleepTimeSec)
 {
     goToSleepCalled = true;
+    sleepTimeSecValue = sleepTimeSec;
 }
 
-void goToSleepSomeTimeMock(void *p)
+void supervisorSleepSomeTimeMock(void *p, unsigned short sleepTimeSec)
 {
     goToSleepCalled = true;
+    sleepTimeSecValue = sleepTimeSec;
     timeResult = 48; // to simulate time pass
 }
 
@@ -45,6 +48,7 @@ void setUp(void)
 {
     timeResult = 0;
     goToSleepCalled = false;
+    sleepTimeSecValue = -1;
     lastUserEventTimestamp = 0;
     goToSleepTime = 10;
 
@@ -58,7 +62,7 @@ void setUp(void)
         .watchMutex = &watchMutex,
         .lastUserEventTimestamp = &lastUserEventTimestamp,
         .goToSleepTime = goToSleepTime,
-        .goToSleep = goToSleepMock,
+        .supervisorSleep = supervisorSleepMock,
         .systemApi = &systemApi,
         .watchApi = &watchApi,
         .rtcApi = &rtcApi,
@@ -67,6 +71,17 @@ void setUp(void)
 
 void whenActionModeAndIdleTimePassed()
 {
+    rtcApi.getDate = getDateStub;
+
+    dateResult = {
+        .year = 2021,
+        .month = 8,
+        .day = 13,
+        .hour = 7,
+        .minute = 0,
+        .second = 1, // start of the the new hour 
+    };
+    
     lastUserEventTimestamp = 1;
     timeResult = 15;
 
@@ -79,7 +94,7 @@ void whenAfterWakeUp()
 {
     lastUserEventTimestamp = 1;
     timeResult = 15;
-    p.goToSleep = goToSleepSomeTimeMock;
+    p.supervisorSleep = supervisorSleepSomeTimeMock;
 
     supervisor(&p);
 
@@ -162,7 +177,7 @@ void whenSleepTimeLesserThanGotoSleepPeriod()
         .day = 13,
         .hour = 7,
         .minute = 59,
-        .second = 57, // two seconds to the new hour
+        .second = 57, // three seconds to the new hour
     };
     lastUserEventTimestamp = 1;
     timeResult = 15;
@@ -182,7 +197,7 @@ void whenSleepTimeGreaterThanGotoSleepPeriod()
         .day = 13,
         .hour = 7,
         .minute = 59,
-        .second = 50, // nine seconds to the new hour 
+        .second = 50, // ten seconds to the new hour 
     };
     lastUserEventTimestamp = 1;
     timeResult = 15;
@@ -190,6 +205,7 @@ void whenSleepTimeGreaterThanGotoSleepPeriod()
     supervisor(&p);
 
     TEST_ASSERT_EQUAL_UINT8(1, goToSleepCalled); // THEN sleep
+    TEST_ASSERT_EQUAL_UINT8(7, sleepTimeSecValue); // THEN for 7 second
 }
 
 int main()
@@ -201,5 +217,6 @@ int main()
     RUN_TEST(whenSleepModeAndEvent);
     RUN_TEST(calcSleepTimeTests);
     RUN_TEST(whenSleepTimeLesserThanGotoSleepPeriod);
+    RUN_TEST(whenSleepTimeGreaterThanGotoSleepPeriod);
     UNITY_END();
 }

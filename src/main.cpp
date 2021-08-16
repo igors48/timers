@@ -260,7 +260,7 @@ void setup()
             .watchMutex = &watchMutex,
             .lastUserEventTimestamp = &lastUserEventTimestamp,
             .goToSleepTime = 5,
-            .goToSleep = goToSleep,
+            .supervisorSleep = supervisorSleep,
             .tasks = tasks,
             .tasksCount = TASK_COUNT,
             .systemApi = &systemApi,
