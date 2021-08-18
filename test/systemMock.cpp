@@ -25,6 +25,11 @@ void delayMock(unsigned int time)
     // empty
 }
 
+void delayUntilMock(unsigned int *prevoiusWakeTimeMillis, unsigned int timeIncrementMillis)
+{
+    // empty
+}
+
 void suspendMock(void *handle)
 {
     // empty
@@ -43,6 +48,7 @@ SystemApi systemApiMock()
         .log = logMock,
         .time = timeMock,
         .delay = delayMock,
+        .delayUntil = delayUntilMock,
         .suspend = suspendMock,
         .resume = resumeMock};
 }

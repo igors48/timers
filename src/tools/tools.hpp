@@ -1,3 +1,5 @@
 #pragma once
 
-someint secondsToNextHourStart(Date now);
+#include "watch/rtc.hpp"
+
+unsigned long secondsToNextHourStart(Date now);

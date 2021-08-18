@@ -1,9 +1,10 @@
 #pragma once
 
-typedef bool (*Take)(void *semaphore, unsigned int blockTime);
+typedef bool (*Take)(void *semaphore, unsigned int blockTime); // todo add Millis to time parameter names
 typedef bool (*Give)(void *semaphore);
 typedef long (*Time)();
 typedef void (*Delay)(unsigned int time);
+typedef void (*DelayUntil)(unsigned int *prevoiusWakeTimeMillis, unsigned int timeIncrementMillis);
 typedef void (*Resume)(void *handle);
 typedef void (*Suspend)(void *handle);
 typedef void (*Log)(const char *source, const char *message, ...);
@@ -15,6 +16,7 @@ typedef struct
     Log log;
     Time time;
     Delay delay;
+    DelayUntil delayUntil;
     Suspend suspend;
     Resume resume;
 } SystemApi;

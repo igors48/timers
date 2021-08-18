@@ -1,4 +1,5 @@
 #include "supervisor.hpp"
+#include "tools/tools.hpp"
 
 #define uS_TO_S_FACTOR 1000000 /* Conversion factor for micro seconds to seconds */
 #define SLEEP_TIME_TRESHOLD 3 
@@ -35,17 +36,10 @@ void supervisorSleep(void *v, unsigned short sleepTimeSec)
     resumeTasks(p->tasks, p->tasksCount, p->systemApi->resume); // todo seems not needed
 }
 
-unsigned short calcSleepTime(SupervisorParameters *p)
+unsigned long calcSleepTime(SupervisorParameters *p)
 {
     Date now = p->rtcApi->getDate();
-    unsigned char seconds = now.second;
-    unsigned char minutes = now.minute;
-    if (seconds == 0 && minutes == 0) {
-        return 0;
-    }
-    seconds = 60 - seconds;
-    minutes = 59 - minutes;
-    return minutes * 60 + seconds;
+    return secondsToNextHourStart(now);
 }
 
 void supervisor(SupervisorParameters *p)
@@ -59,7 +53,7 @@ void supervisor(SupervisorParameters *p)
         bool sleep = diff >= p->goToSleepTime; // todo extract the logic from here
         if (sleep)
         {
-            short sleepTime = calcSleepTime(p);
+            unsigned long sleepTime = calcSleepTime(p);
             sleepTime = sleepTime - SLEEP_TIME_TRESHOLD;// todo consinder the new parameter
             if (sleepTime > 1)
             {

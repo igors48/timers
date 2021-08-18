@@ -13,9 +13,4 @@ typedef struct
     SystemApi *systemApi;
 } StepCounterResetParameters;
 
-enum StepCounterResetResult
-{
-    SUCCESS, FAIL_ON_MUTEX, FAIL_ON_BMA, OUTDATED
-};
-
 void stepCounterReset(StepCounterResetParameters *p);

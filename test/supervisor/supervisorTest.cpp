@@ -5,6 +5,7 @@
 #include "../rtcMock.hpp"
 
 #include "supervisor/supervisor.cpp"
+#include "tools/tools.cpp"
 
 long timeResult;
 Date dateResult;
@@ -121,52 +122,6 @@ void whenSleepModeAndEvent()
     TEST_ASSERT_EQUAL_UINT8(0, goToSleepCalled); // THEN wake up
 }
 
-void calcSleepTimeTests()
-{
-    rtcApi.getDate = getDateStub;
-
-    dateResult = {
-        .year = 2021,
-        .month = 8,
-        .day = 13,
-        .hour = 7,
-        .minute = 00,
-        .second = 00,
-    };
-    unsigned short sleepTime = calcSleepTime(&p);
-    TEST_ASSERT_EQUAL_UINT16(0, sleepTime);
-
-    dateResult.minute = 0;
-    dateResult.second = 1;
-    sleepTime = calcSleepTime(&p);
-    TEST_ASSERT_EQUAL_UINT16(59 * 60 + 59, sleepTime);
-
-    dateResult.minute = 0;
-    dateResult.second = 59;
-    sleepTime = calcSleepTime(&p);
-    TEST_ASSERT_EQUAL_UINT16(59 * 60 + 1, sleepTime);
-
-    dateResult.minute = 1;
-    dateResult.second = 0;
-    sleepTime = calcSleepTime(&p);
-    TEST_ASSERT_EQUAL_UINT16(58 * 60 + 60, sleepTime);
-
-    dateResult.minute = 59;
-    dateResult.second = 0;
-    sleepTime = calcSleepTime(&p);
-    TEST_ASSERT_EQUAL_UINT16(0 * 60 + 60, sleepTime);
-
-    dateResult.minute = 59;
-    dateResult.second = 59;
-    sleepTime = calcSleepTime(&p);
-    TEST_ASSERT_EQUAL_UINT16(0 * 60 + 1, sleepTime);
-
-    dateResult.minute = 59;
-    dateResult.second = 58;
-    sleepTime = calcSleepTime(&p);
-    TEST_ASSERT_EQUAL_UINT16(0 * 60 + 2, sleepTime);
-}
-
 void whenSleepTimeLesserThanGotoSleepPeriod()
 {
     rtcApi.getDate = getDateStub;
@@ -215,7 +170,6 @@ int main()
     RUN_TEST(whenAfterWakeUp);
     RUN_TEST(whenActionModeAndIdleTimeNotPassed);
     RUN_TEST(whenSleepModeAndEvent);
-    RUN_TEST(calcSleepTimeTests);
     RUN_TEST(whenSleepTimeLesserThanGotoSleepPeriod);
     RUN_TEST(whenSleepTimeGreaterThanGotoSleepPeriod);
     UNITY_END();
