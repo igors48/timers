@@ -10,7 +10,7 @@ void stepCounterReset(StepCounterResetParameters *p)
     {
         p->bmaApi->resetStepCounter();
         Date now = p->rtcApi->getDate();
-        unsigned long nextExecution = secondsToNextHourStart(now);
+        unsigned long nextExecution = secondsToNextHourStart(now) * 1000;
         p->systemApi->delayUntil(p->lastWakeTime, nextExecution);
         p->systemApi->give(p->watchMutex);
     }

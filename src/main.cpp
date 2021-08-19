@@ -13,6 +13,7 @@
 #include "task/watchStateProducer.hpp"
 #include "task/watchStateRender.hpp"
 #include "task/touchScreenListener.hpp"
+#include "task/stepCounterReset.hpp"
 
 #include "component/component.hpp"
 #include "component/batteryDisplayComponent.hpp"
@@ -55,6 +56,8 @@ TaskHandle_t watchStateProducerTaskHandle;
 
 WatchStateRenderParameters watchStateRenderParameters;
 TaskHandle_t watchStateRenderTaskHandle;
+
+StepCounterResetParameters stepCounterResetParameters;
 
 HourMinuteComponentState hourMinuteComponentState;
 SecondComponentState secondComponentState;
@@ -253,6 +256,22 @@ void setup()
         };
         xTaskCreate(touchScreenListenerTask, "touchScreenListenerTask", 2048, (void *)&touchScreenListenerParameters, 1, &touchScreenListenerTaskHandle);
 
+        /*
+        typedef struct 
+{
+    void *watchMutex;
+    unsigned int *lastWakeTime;
+    RtcApi *rtcApi;
+    BmaApi *bmaApi;
+    SystemApi *systemApi;
+} StepCounterResetParameters;
+*/
+        stepCounterResetParameters = {
+            .watchMutex = &watchMutex,
+            .lastWakeTime = &xLastWakeTime,
+        };
+        xTaskCreate(periodicTask, "periodicTask", 2048, NULL, 1, NULL);
+
         tasks[0] = watchStateProducerTaskHandle;
         tasks[1] = watchStateRenderTaskHandle;
         tasks[2] = touchScreenListenerTaskHandle;
@@ -270,8 +289,6 @@ void setup()
             };
 
         xTaskCreate(supervisorTask, "supervisorTask", 2048, (void *)&supervisorParameters, 1, NULL);
-
-        xTaskCreate(periodicTask, "periodicTask", 2048, NULL, 1, NULL);
 
         xSemaphoreGive(watchMutex);
 

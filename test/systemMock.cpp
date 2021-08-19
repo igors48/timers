@@ -1,5 +1,7 @@
 #include "systemMock.hpp"
 
+// todo consider verification of take count and give count
+
 bool takeMock(void *semaphore, unsigned int blockTime)
 {
     return true;
