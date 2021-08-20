@@ -7,7 +7,7 @@
 typedef struct 
 {
     void *watchMutex;
-    unsigned int *lastWakeTime;
+    unsigned char lastReset;
     RtcApi *rtcApi;
     BmaApi *bmaApi;
     SystemApi *systemApi;
