@@ -113,16 +113,13 @@ void supervisorTask(void *p)
     }
 }
 
-TickType_t xLastWakeTime; //unsigned int
+TickType_t lastStepCounterReset; //unsigned int
 
-void periodicTask(void *p)
+void stepCounterResetTask(void *p)
 {
-    xLastWakeTime = xTaskGetTickCount();
     while (true)
     {
-        Serial.println("periodic");
-        //3 600 000ms = 1hr
-        vTaskDelayUntil(&xLastWakeTime, 500 / portTICK_PERIOD_MS);
+        stepCounterReset((StepCounterResetParameters *)p);
     }
 }
 
@@ -256,21 +253,15 @@ void setup()
         };
         xTaskCreate(touchScreenListenerTask, "touchScreenListenerTask", 2048, (void *)&touchScreenListenerParameters, 1, &touchScreenListenerTaskHandle);
 
-        /*
-        typedef struct 
-{
-    void *watchMutex;
-    unsigned int *lastWakeTime;
-    RtcApi *rtcApi;
-    BmaApi *bmaApi;
-    SystemApi *systemApi;
-} StepCounterResetParameters;
-*/
+        lastStepCounterReset = xTaskGetTickCount();
         stepCounterResetParameters = {
             .watchMutex = &watchMutex,
-            .lastWakeTime = &xLastWakeTime,
+            .lastWakeTime = &lastStepCounterReset,
+            .rtcApi = &rtcApi,
+            .bmaApi = &bmaApi,
+            .systemApi = &systemApi,
         };
-        xTaskCreate(periodicTask, "periodicTask", 2048, NULL, 1, NULL);
+        xTaskCreate(stepCounterResetTask, "stepCounterResetTask", 2048, (void *)&stepCounterResetParameters, 1, NULL);
 
         tasks[0] = watchStateProducerTaskHandle;
         tasks[1] = watchStateRenderTaskHandle;
