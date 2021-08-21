@@ -6,6 +6,7 @@
 #include "watch/rtc.hpp"
 #include "watch/tft.hpp"
 #include "watch/bma.hpp"
+#include "watch/motor.hpp"
 
 #include "supervisor/supervisor.hpp"
 
@@ -13,7 +14,7 @@
 #include "task/watchStateProducer.hpp"
 #include "task/watchStateRender.hpp"
 #include "task/touchScreenListener.hpp"
-#include "task/stepCounterReset.hpp"
+#include "task/serviceProcedure.hpp"
 
 #include "component/component.hpp"
 #include "component/batteryDisplayComponent.hpp"
@@ -33,6 +34,7 @@ SystemApi systemApi;
 RtcApi rtcApi;
 TftApi tftApi;
 BmaApi bmaApi;
+MotorApi motorApi;
 
 time_t lastUserEventTimestamp; // todo consider rename. this value is updated by timer wakeup also
 WatchState watchState;
@@ -57,7 +59,7 @@ TaskHandle_t watchStateProducerTaskHandle;
 WatchStateRenderParameters watchStateRenderParameters;
 TaskHandle_t watchStateRenderTaskHandle;
 
-StepCounterResetParameters stepCounterResetParameters;
+ServiceProcedureParameters serviceProcedureParameters;
 
 HourMinuteComponentState hourMinuteComponentState;
 SecondComponentState secondComponentState;
@@ -113,11 +115,11 @@ void supervisorTask(void *p)
     }
 }
 
-void stepCounterResetTask(void *p)
+void serviceProcedureTask(void *p)
 {
     while (true)
     {
-        stepCounterReset((StepCounterResetParameters *)p);
+        serviceProcedure((ServiceProcedureParameters *)p);
         vTaskDelay(500 / portTICK_PERIOD_MS);
     }
 }
@@ -131,6 +133,7 @@ void buttonInterruptHandler(void)
 void onScreenTouchStub(signed short x, signed short y)
 {
     Serial.printf("%d %d \r\n", x, y);
+    motorApi.buzz(50);
     // called from watchMutex critical section, so we can update safely
     watchState.touchX = x;
     watchState.touchY = y;
@@ -165,6 +168,7 @@ void setup()
         rtcApi = watchRtcApi();
         tftApi = watchTftApi();
         bmaApi = watchBmaApi();
+        motorApi = watchMotorApi();
 
         lastUserEventTimestamp = systemApi.time();
 
@@ -252,14 +256,16 @@ void setup()
         };
         xTaskCreate(touchScreenListenerTask, "touchScreenListenerTask", 2048, (void *)&touchScreenListenerParameters, 1, &touchScreenListenerTaskHandle);
 
-        stepCounterResetParameters = {
+        serviceProcedureParameters = {
             .watchMutex = &watchMutex,
-            .lastReset = 0,
+            .lastBuzzHour = 0,
+            .lastStepCounterResetDay = 0,
             .rtcApi = &rtcApi,
             .bmaApi = &bmaApi,
             .systemApi = &systemApi,
+            .motorApi = &motorApi,
         };
-        xTaskCreate(stepCounterResetTask, "stepCounterResetTask", 2048, (void *)&stepCounterResetParameters, 1, NULL);
+        xTaskCreate(serviceProcedureTask, "serviceProcedureTask", 2048, (void *)&serviceProcedureParameters, 1, NULL);
 
         tasks[0] = watchStateProducerTaskHandle;
         tasks[1] = watchStateRenderTaskHandle;

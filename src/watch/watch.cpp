@@ -40,6 +40,8 @@ void watchInit()
     WiFi.mode(WIFI_OFF);
 
     watchInitBma();
+
+    watch->motor_begin();
 }
 
 void watchAfterWakeUp()
