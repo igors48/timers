@@ -35,7 +35,7 @@ void setUp(void)
         .year = 2021,
         .month = 8,
         .day = 19,
-        .hour = 7,
+        .hour = 21,
         .minute = 0,
         .second = 0, // start of the the new hour 
     };
@@ -55,39 +55,40 @@ void setUp(void)
     };
 }
 
-void whenHourStartAndLastResetWasHourAgo()
+void whenPeriodStartAndLastResetWasDayAgo()
 {
-    p.lastReset = 6;
+    p.lastReset = 18;
     stepCounterReset(&p);  
 
     TEST_ASSERT_EQUAL_UINT8(1, resetStepCounterCalled); // THEN step counter reset  
-    TEST_ASSERT_EQUAL_UINT8(7, p.lastReset); // THEN last reset value set to current hour  
+    TEST_ASSERT_EQUAL_UINT8(19, p.lastReset); // THEN last reset value set to current day  
 }
 
-void whenHourMiddleAndLastResetWasHourAgo()
+void whenPeriodMiddleAndLastResetWasDayAgo()
 {
+    dateResult.hour = 15;
     dateResult.minute = 48;
-    p.lastReset = 6;
+    p.lastReset = 18;
     stepCounterReset(&p);  
 
     TEST_ASSERT_EQUAL_UINT8(0, resetStepCounterCalled); // THEN no step counter reset  
-    TEST_ASSERT_EQUAL_UINT8(6, p.lastReset); // THEN last reset value not changed  
+    TEST_ASSERT_EQUAL_UINT8(18, p.lastReset); // THEN last reset value not changed  
 }
 
-void whenHourStartAndLastResetWasInCurrentHour()
+void whenPeriodStartAndLastResetWasInCurrentDay()
 {
-    p.lastReset = 7;
+    p.lastReset = 19;
     stepCounterReset(&p);  
 
     TEST_ASSERT_EQUAL_UINT8(0, resetStepCounterCalled); // THEN no step counter reset  
-    TEST_ASSERT_EQUAL_UINT8(7, p.lastReset); // THEN last reset value not changed  
+    TEST_ASSERT_EQUAL_UINT8(19, p.lastReset); // THEN last reset value not changed  
 }
 
 int main()
 {
     UNITY_BEGIN();
-    RUN_TEST(whenHourStartAndLastResetWasHourAgo);
-    RUN_TEST(whenHourMiddleAndLastResetWasHourAgo);
-    RUN_TEST(whenHourStartAndLastResetWasInCurrentHour);
+    RUN_TEST(whenPeriodStartAndLastResetWasDayAgo);
+    RUN_TEST(whenPeriodMiddleAndLastResetWasDayAgo);
+    RUN_TEST(whenPeriodStartAndLastResetWasInCurrentDay);
     UNITY_END();
 }

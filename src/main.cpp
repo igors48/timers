@@ -118,7 +118,7 @@ void stepCounterResetTask(void *p)
     while (true)
     {
         stepCounterReset((StepCounterResetParameters *)p);
-        vTaskDelay(250 / portTICK_PERIOD_MS);
+        vTaskDelay(500 / portTICK_PERIOD_MS);
     }
 }
 
@@ -131,7 +131,6 @@ void buttonInterruptHandler(void)
 void onScreenTouchStub(signed short x, signed short y)
 {
     Serial.printf("%d %d \r\n", x, y);
-    watch->motor->onec(50);
     // called from watchMutex critical section, so we can update safely
     watchState.touchX = x;
     watchState.touchY = y;
@@ -160,8 +159,6 @@ void setup()
         delay(500);
         watchApi.afterWakeUp();
         delay(500);
-
-        watch->motor_begin();
 
         powerApi = watchPowerApi();
         systemApi = defaultSystemApi();
