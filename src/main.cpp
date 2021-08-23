@@ -40,7 +40,7 @@ TaskHandle_t buttonListenerTaskHandle;
 const unsigned char TASK_COUNT = 3;
 TaskHandle_t tasks[TASK_COUNT];
 
-const unsigned char COMPONENTS_COUNT = 6;
+const unsigned char COMPONENTS_COUNT = 7;
 Component components[COMPONENTS_COUNT];
 
 SupervisorParameters supervisorParameters;
@@ -119,7 +119,6 @@ void buttonInterruptHandler(void)
 void onScreenTouchStub(signed short x, signed short y)
 {
     Serial.printf("%d %d \r\n", x, y);
-    motorApi.buzz(50);
     // called from watchMutex critical section, so we can update safely
     watchState.touchX = x;
     watchState.touchY = y;
@@ -129,6 +128,7 @@ void onScreenTouchStub(signed short x, signed short y)
         if ((x > current.x) && (x < current.x + current.w) && (y > current.y) && (y < current.y + current.h))
         {
             Serial.println("bingo");
+            motorApi.buzz(50);
             current.onTouch(current);
         }
     }

@@ -4,7 +4,7 @@
 
 void hourMinuteComponentRender(Component component, WatchState watchState, TftApi *tftApi)
 {
-    HourMinuteComponentState *state = (HourMinuteComponentState *)component.state;    
+    HourMinuteComponentState *state = (HourMinuteComponentState *)component.state;
     char buf[16];
     snprintf(buf, sizeof(buf), "%02d:%02d", watchState.date.hour, watchState.date.minute);
     tftApi->setCursor(component.x, component.y);
@@ -16,33 +16,36 @@ void hourMinuteComponentRender(Component component, WatchState watchState, TftAp
 
 void hourMinuteComponentOnTouch(Component component)
 {
-    HourMinuteComponentState *state = (HourMinuteComponentState *)component.state;   
-    if (state->color == 0xFDA0) {
+    HourMinuteComponentState *state = (HourMinuteComponentState *)component.state;
+    if (state->color == 0xFDA0)
+    {
         state->color = 0x9999;
-    } else {
+    }
+    else
+    {
         state->color = 0xFDA0;
     }
 }
 
 bool hourMinuteComponentNewState(Component component, WatchState watchState)
 {
-    HourMinuteComponentState *state = (HourMinuteComponentState *)component.state;   
+    HourMinuteComponentState *state = (HourMinuteComponentState *)component.state;
 
     bool changed = false;
 
-    if (state->color != state->_color) 
+    if (state->color != state->_color)
     {
         changed = true;
         state->_color = state->color;
     }
 
-    if (watchState.date.minute != state->_minute) 
+    if (watchState.date.minute != state->_minute)
     {
         changed = true;
         state->_minute = watchState.date.minute;
     }
 
-    if (watchState.date.hour != state->_hour) 
+    if (watchState.date.hour != state->_hour)
     {
         changed = true;
         state->_hour = watchState.date.hour;
@@ -63,4 +66,16 @@ Component createHourMinuteComponent(unsigned char x, unsigned char y, unsigned c
         .onTouch = hourMinuteComponentOnTouch,
         .newState = hourMinuteComponentNewState,
     };
+}
+
+void hourMinuteComponentColorChange(HourMinuteComponentState *state)
+{
+    if (state->color == 0xFDA0)
+    {
+        state->color = 0x9999;
+    }
+    else
+    {
+        state->color = 0xFDA0;
+    }
 }

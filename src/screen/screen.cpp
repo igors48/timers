@@ -1,3 +1,5 @@
+#include <Arduino.h>
+
 #include "screen.hpp"
 
 #include "component/batteryDisplayComponent.hpp"
@@ -6,15 +8,21 @@
 #include "component/secondComponent.hpp"
 #include "component/stepCounterComponent.hpp"
 #include "component/dateComponent.hpp"
+#include "component/changeColorComponent.hpp"
 
 HourMinuteComponentState hourMinuteComponentState;
 SecondComponentState secondComponentState;
-
 TouchDisplayComponentState touchDisplayComponentState;
 BatteryDisplayComponentState batteryDisplayComponentState;
-
 StepCounterComponentState stepCounterComponentState;
 DateComponentState dateComponentState;
+ChangeColorComponentState changeColorComponentState;
+
+void changeColor()
+{
+    hourMinuteComponentColorChange(&hourMinuteComponentState);
+    Serial.println("changeColor");
+}
 
 void createComponents(Component components[])
 {
@@ -32,7 +40,6 @@ void createComponents(Component components[])
         ._color = 0,
         ._hour = 0,
         ._minute = 0,
-
     };
 
     secondComponentState = {
@@ -51,10 +58,15 @@ void createComponents(Component components[])
         ._day = 0,
     };
 
+    changeColorComponentState = {
+        .handler = changeColor
+    };
+
     components[0] = createHourMinuteComponent(10, 90, 140, 48, &hourMinuteComponentState);
     components[1] = createSecondComponent(150, 90, 75, 48, &secondComponentState);
     components[2] = createBatteryDisplayComponent(135, 150, 50, 50, &batteryDisplayComponentState);
     components[3] = createTouchDisplayComponent(0, 232, 200, 50, &touchDisplayComponentState);
     components[4] = createDateComponent(60, 175, 50, 50, &dateComponentState);
     components[5] = createStepCounterComponent(35, 150, 50, 50, &stepCounterComponentState);
+    components[6] = createChangeColorComponent(10, 40, 50, 50, &changeColorComponentState);
 }
