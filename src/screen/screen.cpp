@@ -8,7 +8,7 @@
 #include "component/secondComponent.hpp"
 #include "component/stepCounterComponent.hpp"
 #include "component/dateComponent.hpp"
-#include "component/changeColorComponent.hpp"
+#include "component/buttonComponent.hpp"
 
 HourMinuteComponentState hourMinuteComponentState;
 SecondComponentState secondComponentState;
@@ -16,7 +16,7 @@ TouchDisplayComponentState touchDisplayComponentState;
 BatteryDisplayComponentState batteryDisplayComponentState;
 StepCounterComponentState stepCounterComponentState;
 DateComponentState dateComponentState;
-ChangeColorComponentState changeColorComponentState;
+ButtonComponentState buttonComponentState;
 
 void changeColor()
 {
@@ -58,7 +58,7 @@ void createComponents(Component components[])
         ._day = 0,
     };
 
-    changeColorComponentState = {
+    buttonComponentState = {
         .handler = changeColor
     };
 
@@ -68,5 +68,5 @@ void createComponents(Component components[])
     components[3] = createTouchDisplayComponent(0, 232, 200, 50, &touchDisplayComponentState);
     components[4] = createDateComponent(60, 175, 50, 50, &dateComponentState);
     components[5] = createStepCounterComponent(35, 150, 50, 50, &stepCounterComponentState);
-    components[6] = createChangeColorComponent(10, 40, 50, 50, &changeColorComponentState);
+    components[6] = createButtonComponent(10, 40, 50, 50, &buttonComponentState);
 }
