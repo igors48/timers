@@ -2,8 +2,6 @@
 
 #include "touchScreenListener.hpp"
 
-#define TOUCH_TRESHOLD 3
-
 void _updateLastUserEventTimestamp(TouchScreenListenerParameters *p)
 {
     long now = p->systemApi->time();
@@ -12,10 +10,14 @@ void _updateLastUserEventTimestamp(TouchScreenListenerParameters *p)
 
 void _touched(TouchScreenListenerParameters *p, signed short x, signed short y)
 {
-    bool firstTouch = (p->touched == false);
+    bool firstTouch = (p->target == NULL);
     if (firstTouch)
     {
-        p->touched = true;
+        p->target = p->findTarget(x, y);
+        if (p != NULL) 
+        {
+            p->target->onTouch(*(p->target));
+        }
         p->firstX = x;
         p->firstY = y;
         p->lastX = x;
@@ -26,23 +28,32 @@ void _touched(TouchScreenListenerParameters *p, signed short x, signed short y)
         p->lastX = x;
         p->lastY = y;
     }
+    _updateLastUserEventTimestamp(p);
+}
+
+bool _insideComponent(signed short x, signed short y, Component *component)
+{
+    return false;
 }
 
 void _notTouched(TouchScreenListenerParameters *p)
 {
-    bool touchedBefore = (p->touched == true);
+    Component *target = p->target;
+    bool touchedBefore = (target != NULL);
     if (touchedBefore)
     {
-        p->touched = 0;
-        signed short deltaX = abs(p->lastX - p->firstX);
-        signed short deltaY = abs(p->lastY - p->firstY);
-        bool releasedAroundTheSamePoint = (deltaX < TOUCH_TRESHOLD) && (deltaY < TOUCH_TRESHOLD);
-        if (releasedAroundTheSamePoint)
-        {
-            _updateLastUserEventTimestamp(p);
-            p->onScreenTouch(p->firstX, p->firstY);
+        bool releasedInsideComponent = _insideComponent(p->lastX, p->lastY, p->target);    
+        if (releasedInsideComponent)
+        {            
+            target->onRelease(*target);
         }
+        else
+        {
+            target->onSkip(*target);
+        }
+        p->target = NULL;
     }
+    _updateLastUserEventTimestamp(p); 
 }
 
 void touchScreenListener(void *v)

@@ -5,9 +5,11 @@
 
 typedef struct Component_ Component;
 
+// todo use pointer to a Component instead copy
+// todo use pointer to a WatchState instead copy
 typedef void (*Render)(Component component, WatchState watchState, TftApi *tftApi);
-typedef void (*OnTouch)(Component component);
 typedef bool (*NewState)(Component component, WatchState watchState);
+typedef void (*TouchEventHandler)(Component component);
 
 struct Component_
 {
@@ -15,10 +17,12 @@ struct Component_
     unsigned char y;
     unsigned char w;
     unsigned char h;
-    void *state;    
+    TouchEventHandler onTouch;  
+    TouchEventHandler onRelease;  
+    TouchEventHandler onSkip;  
     Render render;  
-    OnTouch onTouch;  
-    NewState newState;
+    NewState newState; // todo consider better name
+    void *state;    
 };
 
 void componentOnTouch(Component component);
