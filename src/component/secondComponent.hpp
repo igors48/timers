@@ -11,3 +11,5 @@ typedef struct
 } SecondComponentState;
 
 Component createSecondComponent(unsigned char x, unsigned char y, unsigned char w, unsigned char h, SecondComponentState *state);
+
+void secondComponentColorChange(SecondComponentState *state);

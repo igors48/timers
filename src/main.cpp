@@ -40,7 +40,7 @@ TaskHandle_t buttonListenerTaskHandle;
 const unsigned char TASK_COUNT = 3;
 TaskHandle_t tasks[TASK_COUNT];
 
-const unsigned char COMPONENTS_COUNT = 7;
+const unsigned char COMPONENTS_COUNT = 8;
 Component components[COMPONENTS_COUNT];
 
 SupervisorParameters supervisorParameters;

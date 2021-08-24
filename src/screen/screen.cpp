@@ -16,12 +16,17 @@ TouchDisplayComponentState touchDisplayComponentState;
 BatteryDisplayComponentState batteryDisplayComponentState;
 StepCounterComponentState stepCounterComponentState;
 DateComponentState dateComponentState;
-ButtonComponentState buttonComponentState;
+ButtonComponentState hourMinuteColorChangeButton;
+ButtonComponentState secondColorChangeButton;
 
-void changeColor()
+void changeHourMinuteColor()
 {
     hourMinuteComponentColorChange(&hourMinuteComponentState);
-    Serial.println("changeColor");
+}
+
+void changeSecondColor()
+{
+    secondComponentColorChange(&secondComponentState);
 }
 
 void createComponents(Component components[])
@@ -58,8 +63,12 @@ void createComponents(Component components[])
         ._day = 0,
     };
 
-    buttonComponentState = {
-        .handler = changeColor
+    hourMinuteColorChangeButton = {
+        .handler = changeHourMinuteColor
+    };
+
+    secondColorChangeButton = {
+        .handler = changeSecondColor
     };
 
     components[0] = createHourMinuteComponent(10, 90, 140, 48, &hourMinuteComponentState);
@@ -68,5 +77,6 @@ void createComponents(Component components[])
     components[3] = createTouchDisplayComponent(0, 232, 200, 50, &touchDisplayComponentState);
     components[4] = createDateComponent(60, 175, 50, 50, &dateComponentState);
     components[5] = createStepCounterComponent(35, 150, 50, 50, &stepCounterComponentState);
-    components[6] = createButtonComponent(10, 40, 50, 50, &buttonComponentState);
+    components[6] = createButtonComponent(10, 20, 50, 50, &hourMinuteColorChangeButton);
+    components[7] = createButtonComponent(160, 20, 50, 50, &secondColorChangeButton);
 }
