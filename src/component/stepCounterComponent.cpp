@@ -33,9 +33,11 @@ Component createStepCounterComponent(unsigned char x, unsigned char y, unsigned 
         .y = y,
         .w = w,
         .h = h,
-        .state = state,
+        .onTouch = componentNoopHandler,
+        .onRelease = componentNoopHandler,
+        .onSkip = componentNoopHandler,
         .render = stepCounterComponentRender,
-        .onTouch = componentOnTouch,
         .newState = stepCounterComponentNewState,
+        .state = state,
     };
 }

@@ -16,9 +16,9 @@ void batteryDisplayComponentRender(Component component, WatchState watchState, T
 
 bool batteryDisplayComponentNewState(Component component, WatchState watchState)
 {
-    BatteryDisplayComponentState *state = (BatteryDisplayComponentState *)component.state;   
+    BatteryDisplayComponentState *state = (BatteryDisplayComponentState *)component.state;
     bool changed = false;
-    if (state->_battPercentage != watchState.battPercentage) 
+    if (state->_battPercentage != watchState.battPercentage)
     {
         changed = true;
         state->_battPercentage = watchState.battPercentage;
@@ -33,9 +33,11 @@ Component createBatteryDisplayComponent(unsigned char x, unsigned char y, unsign
         .y = y,
         .w = w,
         .h = h,
-        .state = state,
+        .onTouch = componentNoopHandler,
+        .onRelease = componentNoopHandler,
+        .onSkip = componentNoopHandler,
         .render = batteryDisplayComponentRender,
-        .onTouch = componentOnTouch,
         .newState = batteryDisplayComponentNewState,
+        .state = state,
     };
 }

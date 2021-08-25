@@ -38,9 +38,11 @@ Component createTouchDisplayComponent(unsigned char x, unsigned char y, unsigned
         .y = y,
         .w = w,
         .h = h,
-        .state = state,
+        .onTouch = componentNoopHandler,
+        .onRelease = componentNoopHandler,
+        .onSkip = componentNoopHandler,
         .render = touchDisplayComponentRender,
-        .onTouch = componentOnTouch,
         .newState = touchDisplayComponentNewState,
+        .state = state,
     };
 }

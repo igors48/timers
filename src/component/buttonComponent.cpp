@@ -10,7 +10,7 @@ void buttonComponentRender(Component component, WatchState watchState, TftApi *t
     tftApi->print("Color");
 }
 
-void buttonComponentOnTouch(Component component)
+void buttonComponentOnRelease(Component component)
 {
     ButtonComponentState *state = (ButtonComponentState *)component.state;
     state->handler();
@@ -23,9 +23,11 @@ Component createButtonComponent(unsigned char x, unsigned char y, unsigned char 
         .y = y,
         .w = w,
         .h = h,
-        .state = state,
+        .onTouch = componentNoopHandler,
+        .onRelease = buttonComponentOnRelease,
+        .onSkip = componentNoopHandler,
         .render = buttonComponentRender,
-        .onTouch = buttonComponentOnTouch,
         .newState = componentNewState,
+        .state = state,
     };
 }

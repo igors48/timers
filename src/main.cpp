@@ -116,7 +116,7 @@ void buttonInterruptHandler(void)
 }
 
 // todo take it from here
-void onScreenTouchStub(signed short x, signed short y)
+Component* findTarget(signed short x, signed short y)
 {
     Serial.printf("%d %d \r\n", x, y);
     // called from watchMutex critical section, so we can update safely
@@ -129,9 +129,11 @@ void onScreenTouchStub(signed short x, signed short y)
         {
             Serial.println("bingo");
             motorApi.buzz(50);
-            current.onTouch(current);
+            //current.onTouch(current);
+            return &components[i];
         }
     }
+    return NULL;
 }
 
 void setup()
@@ -190,14 +192,14 @@ void setup()
         xTaskCreate(watchStateRenderTask, "watchStateRenderTask", 2048, (void *)&watchStateRenderParameters, 1, &watchStateRenderTaskHandle);
 
         touchScreenListenerParameters = {
-            .touched = false,
+            .target = NULL,
             .firstX = 0,
             .firstY = 0,
             .lastX = 0,
             .lastY = 0,
             .watchMutex = &watchMutex,
             .lastUserEventTimestamp = &lastUserEventTimestamp,
-            .onScreenTouch = onScreenTouchStub,
+            .findTarget = findTarget,
             .watchApi = &watchApi,
             .systemApi = &systemApi,
         };

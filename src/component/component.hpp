@@ -25,6 +25,6 @@ struct Component_
     void *state;    
 };
 
-void componentOnTouch(Component component);
+void componentNoopHandler(Component component);
 
 bool componentNewState(Component component, WatchState watchState);

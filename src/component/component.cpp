@@ -1,6 +1,6 @@
 #include "component.hpp"
 
-void componentOnTouch(Component component)
+void componentNoopHandler(Component component)
 {
     // empty
 }

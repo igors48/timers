@@ -61,10 +61,12 @@ Component createHourMinuteComponent(unsigned char x, unsigned char y, unsigned c
         .y = y,
         .w = w,
         .h = h,
-        .state = state,
+        .onTouch = componentNoopHandler,
+        .onRelease = componentNoopHandler,
+        .onSkip = componentNoopHandler,
         .render = hourMinuteComponentRender,
-        .onTouch = hourMinuteComponentOnTouch,
         .newState = hourMinuteComponentNewState,
+        .state = state,
     };
 }
 

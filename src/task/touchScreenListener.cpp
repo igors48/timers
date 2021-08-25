@@ -33,7 +33,7 @@ void _touched(TouchScreenListenerParameters *p, signed short x, signed short y)
 
 bool _insideComponent(signed short x, signed short y, Component *component)
 {
-    return false;
+    return false; // todo reuse code from find target
 }
 
 void _notTouched(TouchScreenListenerParameters *p)

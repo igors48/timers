@@ -47,9 +47,11 @@ Component createDateComponent(unsigned char x, unsigned char y, unsigned char w,
         .y = y,
         .w = w,
         .h = h,
-        .state = state,
+        .onTouch = componentNoopHandler,
+        .onRelease = componentNoopHandler,
+        .onSkip = componentNoopHandler,
         .render = dateComponentRender,
-        .onTouch = componentOnTouch,
         .newState = dateComponentNewState,
+        .state = state,
     };
 }
