@@ -16,7 +16,7 @@ void _touched(TouchScreenListenerParameters *p, signed short x, signed short y)
         p->target = p->findTarget(x, y);
         if (p != NULL) 
         {
-            p->target->onTouch(*(p->target));
+            p->target->onTouch(p->target, x, y);
         }
         p->firstX = x;
         p->firstY = y;
@@ -27,13 +27,9 @@ void _touched(TouchScreenListenerParameters *p, signed short x, signed short y)
     {
         p->lastX = x;
         p->lastY = y;
+        p->target->onMove(p->target, x, y);
     }
     _updateLastUserEventTimestamp(p);
-}
-
-bool _insideComponent(signed short x, signed short y, Component *component)
-{
-    return false; // todo reuse code from find target
 }
 
 void _notTouched(TouchScreenListenerParameters *p)
@@ -42,15 +38,7 @@ void _notTouched(TouchScreenListenerParameters *p)
     bool touchedBefore = (target != NULL);
     if (touchedBefore)
     {
-        bool releasedInsideComponent = _insideComponent(p->lastX, p->lastY, p->target);    
-        if (releasedInsideComponent)
-        {            
-            target->onRelease(*target);
-        }
-        else
-        {
-            target->onSkip(*target);
-        }
+        target->onRelease(target, p->lastX, p->lastY);
         p->target = NULL;
     }
     _updateLastUserEventTimestamp(p); 

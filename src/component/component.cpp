@@ -1,6 +1,6 @@
 #include "component.hpp"
 
-void componentNoopHandler(Component component)
+void componentNoopHandler(Component *component, signed short x, signed short y)
 {
     // empty
 }

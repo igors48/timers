@@ -14,9 +14,9 @@ void secondComponentRender(Component component, WatchState watchState, TftApi *t
     tftApi->print(buf);
 }
 
-void secondComponentOnRelease(Component component)
+void secondComponentOnRelease(Component *component, signed short x, signed short y)
 {
-    SecondComponentState *state = (SecondComponentState *)component.state;
+    SecondComponentState *state = (SecondComponentState *)(component->state);
     if (state->color == 0xFDA0)
     {
         state->color = 0x9999;
@@ -56,8 +56,8 @@ Component createSecondComponent(unsigned char x, unsigned char y, unsigned char 
         .w = w,
         .h = h,
         .onTouch = componentNoopHandler,
+        .onMove = componentNoopHandler,
         .onRelease = secondComponentOnRelease,
-        .onSkip = componentNoopHandler,
         .render = secondComponentRender,
         .newState = secondComponentNewState,
         .state = state,

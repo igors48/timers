@@ -14,19 +14,6 @@ void hourMinuteComponentRender(Component component, WatchState watchState, TftAp
     tftApi->print(buf);
 }
 
-void hourMinuteComponentOnTouch(Component component)
-{
-    HourMinuteComponentState *state = (HourMinuteComponentState *)component.state;
-    if (state->color == 0xFDA0)
-    {
-        state->color = 0x9999;
-    }
-    else
-    {
-        state->color = 0xFDA0;
-    }
-}
-
 bool hourMinuteComponentNewState(Component component, WatchState watchState)
 {
     HourMinuteComponentState *state = (HourMinuteComponentState *)component.state;
@@ -62,8 +49,8 @@ Component createHourMinuteComponent(unsigned char x, unsigned char y, unsigned c
         .w = w,
         .h = h,
         .onTouch = componentNoopHandler,
+        .onMove = componentNoopHandler,
         .onRelease = componentNoopHandler,
-        .onSkip = componentNoopHandler,
         .render = hourMinuteComponentRender,
         .newState = hourMinuteComponentNewState,
         .state = state,
