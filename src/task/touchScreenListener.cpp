@@ -2,6 +2,10 @@
 
 #include "touchScreenListener.hpp"
 
+#include <stdio.h>
+
+static const char TOUCH_SCREEN_LISTENER[] = "touchScreenListener";
+
 void _updateLastUserEventTimestamp(TouchScreenListenerParameters *p)
 {
     long now = p->systemApi->time();
@@ -10,24 +14,20 @@ void _updateLastUserEventTimestamp(TouchScreenListenerParameters *p)
 
 void _touched(TouchScreenListenerParameters *p, signed short x, signed short y)
 {
+    p->lastX = x;
+    p->lastY = y;
     bool firstTouch = (p->target == NULL);
     if (firstTouch)
     {
         p->target = p->findTarget(x, y);
-        if (p != NULL) 
+        if (p->target != NULL)
         {
             p->target->onTouch(p->target, x, y);
         }
-        p->firstX = x;
-        p->firstY = y;
-        p->lastX = x;
-        p->lastY = y;
     }
     else
     {
-        p->lastX = x;
-        p->lastY = y;
-        p->target->onMove(p->target, x, y);
+        printf("not first touch\r\n");
     }
     _updateLastUserEventTimestamp(p);
 }
@@ -40,8 +40,8 @@ void _notTouched(TouchScreenListenerParameters *p)
     {
         target->onRelease(target, p->lastX, p->lastY);
         p->target = NULL;
+        _updateLastUserEventTimestamp(p);
     }
-    _updateLastUserEventTimestamp(p); 
 }
 
 void touchScreenListener(void *v)
@@ -54,7 +54,6 @@ void touchScreenListener(void *v)
         bool touched = p->watchApi->getTouch(x, y);
         if (touched)
         {
-            _updateLastUserEventTimestamp(p);
             _touched(p, x, y);
         }
         else
@@ -62,5 +61,9 @@ void touchScreenListener(void *v)
             _notTouched(p);
         }
         p->systemApi->give(p->watchMutex);
+    }
+    else
+    {
+        p->systemApi->log(TOUCH_SCREEN_LISTENER, "failed to take last event watch mutex");
     }
 }

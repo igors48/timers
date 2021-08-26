@@ -17,10 +17,10 @@ struct Component_
     unsigned char y;
     unsigned char w;
     unsigned char h;
-    TouchEventHandler onTouch;  
+    TouchEventHandler onTouch; // todo consider interface EventListener 
     TouchEventHandler onMove;  
     TouchEventHandler onRelease;  
-    Render render;  
+    Render render;  // todo consider interface Renderable
     NewState newState; // todo consider better name
     void *state;    
 };
