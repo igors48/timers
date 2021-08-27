@@ -1,8 +1,6 @@
-#include <stdlib.h>
+#include <stddef.h>
 
 #include "touchScreenListener.hpp"
-
-#include <stdio.h>
 
 static const char TOUCH_SCREEN_LISTENER[] = "touchScreenListener";
 
@@ -27,7 +25,7 @@ void _touched(TouchScreenListenerParameters *p, signed short x, signed short y)
     }
     else
     {
-        printf("not first touch\r\n");
+        p->target->onMove(p->target, x, y);
     }
     _updateLastUserEventTimestamp(p);
 }

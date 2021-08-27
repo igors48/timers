@@ -15,6 +15,14 @@ signed short yTouch;
 long timeResult;
 Component component;
 bool onTouchHandlerCalled;
+signed short onTouchHandlerX;
+signed short onTouchHandlerY;
+bool onMoveHandlerCalled;
+signed short onMoveHandlerX;
+signed short onMoveHandlerY;
+bool onReleaseHandlerCalled;
+signed short onReleaseHandlerX;
+signed short onReleaseHandlerY;
 
 WatchApi watchApi;
 SystemApi systemApi;
@@ -28,13 +36,13 @@ bool getTouchStub(signed short &x, signed short &y)
     return getTouchResult;
 }
 
-Component* noTargetStub(signed short x, signed short y)
+Component *noTargetStub(signed short x, signed short y)
 {
     return NULL;
 }
 
-Component* findTargetStub(signed short x, signed short y)
-{    
+Component *findTargetStub(signed short x, signed short y)
+{
     return &component;
 }
 
@@ -46,6 +54,22 @@ long timeStub()
 void componentOnTouchStub(Component *component, signed short x, signed short y)
 {
     onTouchHandlerCalled = true;
+    onTouchHandlerX = x;
+    onTouchHandlerY = y;
+}
+
+void componentOnMoveStub(Component *component, signed short x, signed short y)
+{
+    onMoveHandlerCalled = true;
+    onMoveHandlerX = x;
+    onMoveHandlerY = y;
+}
+
+void componentOnReleaseStub(Component *component, signed short x, signed short y)
+{
+    onReleaseHandlerCalled = true;
+    onReleaseHandlerX = x;
+    onReleaseHandlerY = y;
 }
 
 void setUp(void)
@@ -64,8 +88,18 @@ void setUp(void)
     watchApi.getTouch = getTouchStub;
 
     onTouchHandlerCalled = false;
+    onTouchHandlerX = 0;
+    onTouchHandlerY = 0;
+    onMoveHandlerCalled = false;
+    onMoveHandlerX = 0;
+    onMoveHandlerY = 0;
+    onReleaseHandlerCalled = false;
+    onReleaseHandlerX = 0;
+    onReleaseHandlerY = 0;
     component = {};
     component.onTouch = componentOnTouchStub;
+    component.onMove = componentOnMoveStub;
+    component.onRelease = componentOnReleaseStub;
 
     p = {
         .target = NULL,
@@ -87,10 +121,12 @@ void whenFirstTouchOutsideComponent()
 
     touchScreenListener(&p);
 
-    TEST_ASSERT_NULL(p.target);  // THEN target is NULL
-    TEST_ASSERT_EQUAL_CHAR(0, onTouchHandlerCalled); // THEN component onTouch handler not called
-    TEST_ASSERT_EQUAL_INT16(48, p.lastX);  // THEN last coordinates updated
-    TEST_ASSERT_EQUAL_INT16(49, p.lastY);  // THEN last coordinates updated
+    TEST_ASSERT_NULL(p.target);                        // THEN target is NULL
+    TEST_ASSERT_EQUAL_CHAR(0, onTouchHandlerCalled);   // THEN component onTouch handler not called
+    TEST_ASSERT_EQUAL_CHAR(0, onMoveHandlerCalled);    // THEN component onMove handler not called
+    TEST_ASSERT_EQUAL_CHAR(0, onReleaseHandlerCalled); // THEN component onRelease handler not called
+    TEST_ASSERT_EQUAL_INT16(48, p.lastX);              // THEN last coordinates updated
+    TEST_ASSERT_EQUAL_INT16(49, p.lastY);
     TEST_ASSERT_EQUAL_INT64(42, lastUserEventTimestamp); //THEN last user event timestamp updated
 }
 
@@ -99,91 +135,93 @@ void whenFirstTouchInsideComponent()
     xResult = 48;
     yResult = 49;
     getTouchResult = true;
+    p.findTarget = findTargetStub;
 
     touchScreenListener(&p);
 
-    TEST_ASSERT_NOT_NULL(p.target); // THEN target is set to found component
+    TEST_ASSERT_NOT_NULL(p.target);                  // THEN target is set to found component
     TEST_ASSERT_EQUAL_CHAR(1, onTouchHandlerCalled); // THEN component onTouch handler called
-    TEST_ASSERT_EQUAL_INT16(48, p.lastX);  // THEN last coordinates updated
-    TEST_ASSERT_EQUAL_INT16(49, p.lastY);  // THEN last coordinates updated
+    TEST_ASSERT_EQUAL_INT16(48, onTouchHandlerX);    // THEN last coordinates passed to handler
+    TEST_ASSERT_EQUAL_INT16(49, onTouchHandlerY);
+    TEST_ASSERT_EQUAL_CHAR(0, onMoveHandlerCalled);    // THEN component onMove handler not called
+    TEST_ASSERT_EQUAL_CHAR(0, onReleaseHandlerCalled); // THEN component onRelease handler not called
+    TEST_ASSERT_EQUAL_INT16(48, p.lastX);              // THEN last coordinates updated
+    TEST_ASSERT_EQUAL_INT16(49, p.lastY);
     TEST_ASSERT_EQUAL_INT64(42, lastUserEventTimestamp); //THEN last user event timestamp updated
 }
-/*
+
 void whenNotFirstTouch()
 {
     xResult = 48;
     yResult = 49;
     getTouchResult = true;
+    p.findTarget = findTargetStub;
 
     touchScreenListener(&p);
 
     xResult = 50;
     yResult = 51;
-    getTouchResult = true;
-    timeResult = 52;
-    
+    timeResult = 43;
+    onTouchHandlerCalled = 0;
+
     touchScreenListener(&p);
 
-    TEST_ASSERT_EQUAL_INT(1, p.touched);  // THEN touched flag still raised 
-    TEST_ASSERT_EQUAL_INT16(48, p.firstX);  // THEN first and not changed 
-    TEST_ASSERT_EQUAL_INT16(49, p.firstY);  // THEN first and not changed
-    TEST_ASSERT_EQUAL_INT16(50, p.lastX);  // THEN last coordinates are updated 
-    TEST_ASSERT_EQUAL_INT16(51, p.lastY);  // THEN last coordinates are updated
-    TEST_ASSERT_EQUAL_INT64(52, lastUserEventTimestamp); //THEN last user event timestamp updated
+    TEST_ASSERT_NOT_NULL(p.target);                  // THEN target is set to found component
+    TEST_ASSERT_EQUAL_CHAR(0, onTouchHandlerCalled); // THEN component onTouch handler not called
+    TEST_ASSERT_EQUAL_CHAR(1, onMoveHandlerCalled);  // THEN component onMove handler called
+    TEST_ASSERT_EQUAL_INT16(50, onMoveHandlerX);     // THEN last coordinates passed to handler
+    TEST_ASSERT_EQUAL_INT16(51, onMoveHandlerY);
+    TEST_ASSERT_EQUAL_CHAR(0, onReleaseHandlerCalled);   // THEN component onRelease handler not called
+    TEST_ASSERT_EQUAL_INT16(50, p.lastX);                // THEN last coordinates updated
+    TEST_ASSERT_EQUAL_INT16(51, p.lastY);                // THEN last coordinates updated
+    TEST_ASSERT_EQUAL_INT64(43, lastUserEventTimestamp); //THEN last user event timestamp updated
 }
 
-void whenReleasedAroundTheFirstTouchPoint()
+void whenReleasedWithoutTouchComponentBefore()
+{
+    getTouchResult = false;
+
+    touchScreenListener(&p);
+
+    TEST_ASSERT_EQUAL_CHAR(0, onTouchHandlerCalled);   // THEN component onTouch handler not called
+    TEST_ASSERT_EQUAL_CHAR(0, onMoveHandlerCalled);    // THEN component onMove handler not called
+    TEST_ASSERT_EQUAL_CHAR(0, onReleaseHandlerCalled); // THEN component onRelease handler not called
+    TEST_ASSERT_EQUAL_INT64(0, lastUserEventTimestamp); //THEN last user event timestamp not changed
+}
+
+void whenReleasedWithtTouchComponentBefore()
 {
     xResult = 48;
     yResult = 49;
     getTouchResult = true;
+    p.findTarget = findTargetStub;
+
     touchScreenListener(&p);
 
     xResult = 50;
     yResult = 51;
-    getTouchResult = true;
+    timeResult = 43;
+    onTouchHandlerCalled = 0;
+
     touchScreenListener(&p);
-
-    getTouchResult = false;
-    timeResult = 52;
-    touchScreenListener(&p);
-
-    TEST_ASSERT_EQUAL_INT(0, p.touched);  // THEN touched flag reset
-    TEST_ASSERT_EQUAL_INT16(48, xTouch);  // THEN onTouch handler called with correct x touch coord 
-    TEST_ASSERT_EQUAL_INT16(49, yTouch);  // THEN onTouch handler called with correct y touch coord
-    TEST_ASSERT_EQUAL_INT64(52, lastUserEventTimestamp); //THEN last user event timestamp updated
-}
-
-void whenReleasedFarFromTheFirstTouchPoint()
-{
-    timeResult = 47;
-    xResult = 48;
-    yResult = 49;
-    getTouchResult = true;
-    touchScreenListener(&p);
-
-    timeResult = 149;
-    xResult = 150;
-    yResult = 151;
-    getTouchResult = true;
-    touchScreenListener(&p);
-
     getTouchResult = false;
 
     touchScreenListener(&p);
 
-    TEST_ASSERT_EQUAL_INT(0, p.touched);  // THEN touched flag reset
-    TEST_ASSERT_EQUAL_INT16(0, xTouch);  // THEN onTouch handler does not called  
-    TEST_ASSERT_EQUAL_INT16(0, yTouch);  // THEN onTouch handler does not called
-    TEST_ASSERT_EQUAL_INT64(149, lastUserEventTimestamp); //THEN last user event timestamp not changed sinse second touch
+    TEST_ASSERT_EQUAL_CHAR(0, onTouchHandlerCalled);   // THEN component onTouch handler not called
+    TEST_ASSERT_EQUAL_CHAR(0, onMoveHandlerCalled);    // THEN component onMove handler not called
+    TEST_ASSERT_EQUAL_CHAR(1, onReleaseHandlerCalled); // THEN component onRelease handler not called
+    TEST_ASSERT_EQUAL_INT16(50, onReleaseHandlerX);     // THEN last coordinates passed to handler
+    TEST_ASSERT_EQUAL_INT16(51, onReleaseHandlerY);
+    TEST_ASSERT_EQUAL_INT64(42, lastUserEventTimestamp); //THEN last user event timestamp not changed
 }
-*/
+
 int main()
 {
     UNITY_BEGIN();
     RUN_TEST(whenFirstTouchOutsideComponent);
-    // RUN_TEST(whenNotFirstTouch);
-    // RUN_TEST(whenReleasedAroundTheFirstTouchPoint);
-    // RUN_TEST(whenReleasedFarFromTheFirstTouchPoint);
+    RUN_TEST(whenFirstTouchInsideComponent);
+    RUN_TEST(whenNotFirstTouch);
+    RUN_TEST(whenReleasedWithoutTouchComponentBefore);
     UNITY_END();
 }
