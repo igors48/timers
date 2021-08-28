@@ -11,12 +11,14 @@ void watchStateRender(void *v)
         for (int i = 0; i < p->componentsCount; i++)
         {
             Component current = p->components[i];
-            bool needRender = current.newState(current, watchState);
+            bool needRender = current.newState(&current, &watchState);
             if (needRender)
             {
-                current.render(current, watchState, p->tftApi);
+                current.render(&current, &watchState, p->tftApi);
             }
         }
         p->systemApi->give(p->watchMutex);
     }
+    // todo tests
+    // todo log message when mutex is busy
 }

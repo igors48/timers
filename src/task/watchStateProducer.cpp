@@ -16,4 +16,5 @@ void watchStateProducer(void *v)
         p->state->stepCount = p->bmaApi->getCounter();
         p->systemApi->give(p->watchMutex);    
     }
+    // todo log message when mutex is busy
 }

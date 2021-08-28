@@ -2,12 +2,12 @@
 #include "component.hpp"
 #include "secondComponent.hpp"
 
-void secondComponentRender(Component component, WatchState watchState, TftApi *tftApi)
+void secondComponentRender(Component *component, WatchState *watchState, TftApi *tftApi)
 {
-    SecondComponentState *state = (SecondComponentState *)component.state;
+    SecondComponentState *state = (SecondComponentState *)component->state;
     char buf[16];
-    snprintf(buf, sizeof(buf), ":%02d", watchState.date.second);
-    tftApi->setCursor(component.x, component.y);
+    snprintf(buf, sizeof(buf), ":%02d", watchState->date.second);
+    tftApi->setCursor(component->x, component->y);
     tftApi->setTextSize(1);
     tftApi->setTextFont(7);
     tftApi->setTextColor(state->color, 0x0000);
@@ -27,9 +27,9 @@ void secondComponentOnRelease(Component *component, signed short x, signed short
     }
 }
 
-bool secondComponentNewState(Component component, WatchState watchState)
+bool secondComponentNewState(Component *component, WatchState *watchState)
 {
-    SecondComponentState *state = (SecondComponentState *)component.state;
+    SecondComponentState *state = (SecondComponentState *)component->state;
 
     bool changed = false;
 
@@ -39,10 +39,10 @@ bool secondComponentNewState(Component component, WatchState watchState)
         state->_color = state->color;
     }
 
-    if (watchState.date.second != state->_second)
+    if (watchState->date.second != state->_second)
     {
         changed = true;
-        state->_second = watchState.date.second;
+        state->_second = watchState->date.second;
     }
 
     return changed;

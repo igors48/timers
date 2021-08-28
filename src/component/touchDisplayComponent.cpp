@@ -3,30 +3,30 @@
 #include "component.hpp"
 #include "touchDisplayComponent.hpp"
 
-void touchDisplayComponentRender(Component component, WatchState watchState, TftApi *tftApi)
+void touchDisplayComponentRender(Component *component, WatchState *watchState, TftApi *tftApi)
 {
     char buf[32];
-    snprintf(buf, sizeof(buf), "x:%03d, y:%03d", watchState.touchX, watchState.touchY);
-    tftApi->setCursor(component.x, component.y);
+    snprintf(buf, sizeof(buf), "x:%03d, y:%03d", watchState->touchX, watchState->touchY);
+    tftApi->setCursor(component->x, component->y);
     tftApi->setTextFont(1);
     tftApi->setTextSize(1);
     tftApi->setTextColor(0xFDA0, 0x0000);
     tftApi->print(buf);
 }
 
-bool touchDisplayComponentNewState(Component component, WatchState watchState)
+bool touchDisplayComponentNewState(Component *component, WatchState *watchState)
 {
-    TouchDisplayComponentState *state = (TouchDisplayComponentState *)component.state;   
+    TouchDisplayComponentState *state = (TouchDisplayComponentState *)component->state;   
     bool changed = false;
-    if (state->_touchX != watchState.touchX)
+    if (state->_touchX != watchState->touchX)
     {
         changed = true;
-        state->_touchX = watchState.touchX;
+        state->_touchX = watchState->touchX;
     }
-    if (state->_touchY != watchState.touchY)
+    if (state->_touchY != watchState->touchY)
     {
         changed = true;
-        state->_touchY = watchState.touchY;
+        state->_touchY = watchState->touchY;
     }
     return changed;
 }

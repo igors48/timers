@@ -5,15 +5,13 @@
 
 typedef struct Component_ Component;
 
-// todo use pointer to a Component instead copy
-// todo use pointer to a WatchState instead copy
-typedef void (*Render)(Component component, WatchState watchState, TftApi *tftApi);
-typedef bool (*NewState)(Component component, WatchState watchState);
+typedef void (*Render)(Component *component, WatchState *watchState, TftApi *tftApi);
+typedef bool (*NewState)(Component *component, WatchState *watchState);
 typedef void (*TouchEventHandler)(Component *component, signed short x, signed short y);
 
 struct Component_
 {
-    signed short x; // todo consider short
+    signed short x;
     signed short y;
     signed short w;
     signed short h;
@@ -27,4 +25,4 @@ struct Component_
 
 void componentNoopHandler(Component *component, signed short x, signed short y);
 
-bool componentNewState(Component component, WatchState watchState);
+bool componentNewState(Component *component, WatchState *watchState);

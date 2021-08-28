@@ -62,6 +62,6 @@ void touchScreenListener(void *v)
     }
     else
     {
-        p->systemApi->log(TOUCH_SCREEN_LISTENER, "failed to take last event watch mutex");
+        p->systemApi->log(TOUCH_SCREEN_LISTENER, "failed to take last event watch mutex"); // todo fix message -> watch mutex
     }
 }
