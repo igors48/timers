@@ -17,9 +17,9 @@ bool systemGive(void *semaphore)
     //return xSemaphoreGive((SemaphoreHandle_t *)semaphore);
 }
 
-bool systemTake(void *semaphore, unsigned int blockTime) // todo add time measure unit to the blockTime
+bool systemTake(void *semaphore, unsigned int blockTimeMillis)
 {
-    return xSemaphoreTake(*(SemaphoreHandle_t *)semaphore, (TickType_t)blockTime / portTICK_PERIOD_MS); // should be exactly *(SemaphoreHandle_t *)semaphore
+    return xSemaphoreTake(*(SemaphoreHandle_t *)semaphore, (TickType_t)blockTimeMillis / portTICK_PERIOD_MS); // should be exactly *(SemaphoreHandle_t *)semaphore
     //return xSemaphoreTake((SemaphoreHandle_t *)semaphore, (TickType_t)blockTime / portTICK_PERIOD_MS);
 }
 

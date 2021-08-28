@@ -65,6 +65,6 @@ void supervisor(SupervisorParameters *p)
     }
     else
     {
-        p->systemApi->log(SUPERVISOR, "failed to take last event timestamp mutex"); // todo fix log message -> watch mutex
+        p->systemApi->log(SUPERVISOR, "failed to take watch mutex");
     }
 }

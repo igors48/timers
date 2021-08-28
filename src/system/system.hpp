@@ -1,6 +1,6 @@
 #pragma once
 
-typedef bool (*Take)(void *semaphore, unsigned int blockTime); // todo add Millis to time parameter names
+typedef bool (*Take)(void *semaphore, unsigned int blockTimeMillis);
 typedef bool (*Give)(void *semaphore);
 typedef long (*Time)();
 typedef void (*Delay)(unsigned int time);

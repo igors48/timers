@@ -32,7 +32,7 @@ void changeSecondColor()
 void createComponents(Component components[])
 {
     batteryDisplayComponentState = {
-        ._battPercentage = 0, // todo set to -1
+        ._battPercentage = -1,
     };
 
     touchDisplayComponentState = {
