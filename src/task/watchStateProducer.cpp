@@ -1,5 +1,7 @@
 #include "watchStateProducer.hpp"
 
+static const char WATCH_STATE_PRODUCER[] = "watchStateProducer";
+
 void watchStateProducer(void *v)
 {
     WatchStateProducerParameters *p = (WatchStateProducerParameters *)v;
@@ -16,5 +18,8 @@ void watchStateProducer(void *v)
         p->state->stepCount = p->bmaApi->getCounter();
         p->systemApi->give(p->watchMutex);    
     }
-    // todo log message when mutex is busy
+    else
+    {
+        p->systemApi->log(WATCH_STATE_PRODUCER, "failed to take watch mutex");
+    }
 }
