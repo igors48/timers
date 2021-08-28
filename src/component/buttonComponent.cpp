@@ -4,16 +4,16 @@
 void buttonComponentRender(Component *component, WatchState *watchState, TftApi *tftApi)
 {
     ButtonComponentState *state = (ButtonComponentState *)(component->state);
-    unsigned int rectColor = 0x0000;
+    unsigned int rectColor = COLOR_BLACK;
     if (state->pressed)
     {
-        rectColor = 0x07E0;
+        rectColor = COLOR_INTERACTION;
     }
     tftApi->drawRect(component->x, component->y, component->w, component->h, rectColor);
     tftApi->setCursor(component->x + 4, component->y + 4);
     tftApi->setTextSize(2);
     tftApi->setTextFont(1);
-    tftApi->setTextColor(0x07E0, 0x0000);
+    tftApi->setTextColor(COLOR_INTERACTION, COLOR_BLACK);
     tftApi->print("Color");
 }
 

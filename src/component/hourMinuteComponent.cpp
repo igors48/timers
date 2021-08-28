@@ -10,7 +10,7 @@ void hourMinuteComponentRender(Component *component, WatchState *watchState, Tft
     tftApi->setCursor(component->x, component->y);
     tftApi->setTextSize(1);
     tftApi->setTextFont(7);
-    tftApi->setTextColor(state->color, 0x0000);
+    tftApi->setTextColor(state->color, COLOR_BLACK);
     tftApi->print(buf);
 }
 
@@ -59,12 +59,12 @@ Component createHourMinuteComponent(signed short x, signed short y, signed short
 
 void hourMinuteComponentColorChange(HourMinuteComponentState *state)
 {
-    if (state->color == 0xFDA0)
+    if (state->color == COLOR_INFORMATION)
     {
-        state->color = 0x9999;
+        state->color = COLOR_ACTION;
     }
     else
     {
-        state->color = 0xFDA0;
+        state->color = COLOR_INFORMATION;
     }
 }

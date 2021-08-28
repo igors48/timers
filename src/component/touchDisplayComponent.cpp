@@ -10,7 +10,7 @@ void touchDisplayComponentRender(Component *component, WatchState *watchState, T
     tftApi->setCursor(component->x, component->y);
     tftApi->setTextFont(1);
     tftApi->setTextSize(1);
-    tftApi->setTextColor(0xFDA0, 0x0000);
+    tftApi->setTextColor(COLOR_INFORMATION, COLOR_BLACK);
     tftApi->print(buf);
 }
 

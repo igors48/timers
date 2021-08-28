@@ -9,7 +9,7 @@ void dateComponentRender(Component *component, WatchState *watchState, TftApi *t
     tftApi->setCursor(component->x, component->y);
     tftApi->setTextSize(2);
     tftApi->setTextFont(1);
-    tftApi->setTextColor(0xFDA0, 0x0000);
+    tftApi->setTextColor(COLOR_ACTION, COLOR_BLACK);
     tftApi->print(buf);
 }
 

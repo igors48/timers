@@ -128,7 +128,7 @@ Component* findTarget(signed short x, signed short y)
         if ((x > current.x) && (x < current.x + current.w) && (y > current.y) && (y < current.y + current.h))
         {
             Serial.println("bingo");
-            motorApi.buzz(50);
+            motorApi.buzz(10);
             //current.onTouch(current);
             return &components[i];
         }

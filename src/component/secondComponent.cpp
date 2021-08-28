@@ -10,20 +10,20 @@ void secondComponentRender(Component *component, WatchState *watchState, TftApi 
     tftApi->setCursor(component->x, component->y);
     tftApi->setTextSize(1);
     tftApi->setTextFont(7);
-    tftApi->setTextColor(state->color, 0x0000);
+    tftApi->setTextColor(state->color, COLOR_BLACK);
     tftApi->print(buf);
 }
 
 void secondComponentOnRelease(Component *component, signed short x, signed short y)
 {
     SecondComponentState *state = (SecondComponentState *)(component->state);
-    if (state->color == 0xFDA0)
+    if (state->color == COLOR_INFORMATION)
     {
-        state->color = 0x9999;
+        state->color = COLOR_INTERACTION;
     }
     else
     {
-        state->color = 0xFDA0;
+        state->color = COLOR_INFORMATION;
     }
 }
 
@@ -66,12 +66,12 @@ Component createSecondComponent(signed short x, signed short y, signed short w, 
 
 void secondComponentColorChange(SecondComponentState *state)
 {
-    if (state->color == 0xFDA0)
+    if (state->color == COLOR_INFORMATION)
     {
-        state->color = 0x9999;
+        state->color = COLOR_INTERACTION;
     }
     else
     {
-        state->color = 0xFDA0;
+        state->color = COLOR_INFORMATION;
     }
 }

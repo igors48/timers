@@ -41,14 +41,14 @@ void createComponents(Component components[])
     };
 
     hourMinuteComponentState = {
-        .color = 0xFFFF,
+        .color = COLOR_INFORMATION,
         ._color = 0,
         ._hour = 0,
         ._minute = 0,
     };
 
     secondComponentState = {
-        .color = 0xFFFF,
+        .color = COLOR_INFORMATION,
         ._color = 0,
         ._second = 0,
     };

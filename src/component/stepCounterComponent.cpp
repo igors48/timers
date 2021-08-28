@@ -10,7 +10,7 @@ void stepCounterComponentRender(Component *component, WatchState *watchState, Tf
     tftApi->setCursor(component->x, component->y);
     tftApi->setTextFont(1);
     tftApi->setTextSize(2);
-    tftApi->setTextColor(0xFDA0, 0x0000);
+    tftApi->setTextColor(COLOR_INFORMATION, COLOR_BLACK);
     tftApi->print(buf);
 }
 
