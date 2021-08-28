@@ -26,6 +26,11 @@ void tftPrint(const char str[])
     watch->tft->print(str);
 }
 
+void tftDrawRect(signed int x, signed int y, signed int w, signed int h, unsigned int color)
+{
+    watch->tft->drawRect(x, y, w, h, color);
+}
+
 void tftFillRect(signed int x, signed int y, signed int w, signed int h, unsigned int color)
 {
     watch->tft->fillRect(x, y, w, h, color);
@@ -39,6 +44,7 @@ TftApi watchTftApi()
         .setTextFont = tftSetTextFont,
         .setTextColor = tftSetTextColor,
         .print = tftPrint,
+        .drawRect = tftDrawRect,
         .fillRect = tftFillRect,
     };
 }

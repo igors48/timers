@@ -64,10 +64,12 @@ void createComponents(Component components[])
     };
 
     hourMinuteColorChangeButton = {
+        .pressed = false,
         .handler = changeHourMinuteColor
     };
 
     secondColorChangeButton = {
+        .pressed = false,
         .handler = changeSecondColor
     };
 
@@ -77,6 +79,6 @@ void createComponents(Component components[])
     components[3] = createTouchDisplayComponent(0, 232, 200, 50, &touchDisplayComponentState);
     components[4] = createDateComponent(60, 175, 50, 50, &dateComponentState);
     components[5] = createStepCounterComponent(35, 150, 50, 50, &stepCounterComponentState);
-    components[6] = createButtonComponent(10, 20, 50, 50, &hourMinuteColorChangeButton);
-    components[7] = createButtonComponent(160, 20, 50, 50, &secondColorChangeButton);
+    components[6] = createButtonComponent(10, 20, 66, 25, &hourMinuteColorChangeButton);
+    components[7] = createButtonComponent(160, 20, 66, 25, &secondColorChangeButton);
 }
