@@ -31,7 +31,7 @@ bool touchDisplayComponentNewState(Component component, WatchState watchState)
     return changed;
 }
 
-Component createTouchDisplayComponent(unsigned char x, unsigned char y, unsigned char w, unsigned char h, TouchDisplayComponentState *state)
+Component createTouchDisplayComponent(signed short x, signed short y, signed short w, signed short h, TouchDisplayComponentState *state)
 {
     return {
         .x = x,

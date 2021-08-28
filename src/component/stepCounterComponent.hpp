@@ -7,4 +7,4 @@ typedef struct
     int _stepCount;
 } StepCounterComponentState;
 
-Component createStepCounterComponent(unsigned char x, unsigned char y, unsigned char w, unsigned char h, StepCounterComponentState *state);
+Component createStepCounterComponent(signed short x, signed short y, signed short w, signed short h, StepCounterComponentState *state);

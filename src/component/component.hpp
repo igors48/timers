@@ -13,10 +13,10 @@ typedef void (*TouchEventHandler)(Component *component, signed short x, signed s
 
 struct Component_
 {
-    unsigned char x; // todo consider short
-    unsigned char y;
-    unsigned char w;
-    unsigned char h;
+    signed short x; // todo consider short
+    signed short y;
+    signed short w;
+    signed short h;
     TouchEventHandler onTouch; // todo consider interface EventListener 
     TouchEventHandler onMove;  
     TouchEventHandler onRelease;  

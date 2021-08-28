@@ -45,7 +45,7 @@ void buttonComponentOnRelease(Component *component, signed short x, signed short
     state->pressed = false;
 }
 
-Component createButtonComponent(unsigned char x, unsigned char y, unsigned char w, unsigned char h, ButtonComponentState *state)
+Component createButtonComponent(signed short x, signed short y, signed short w, signed short h, ButtonComponentState *state)
 {
     return {
         .x = x,

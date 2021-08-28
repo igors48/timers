@@ -9,4 +9,4 @@ typedef struct
     unsigned char _day;
 } DateComponentState;
 
-Component createDateComponent(unsigned char x, unsigned char y, unsigned char w, unsigned char h, DateComponentState *state);
+Component createDateComponent(signed short x, signed short y, signed short w, signed short h, DateComponentState *state);

@@ -10,6 +10,6 @@ typedef struct
     unsigned char _second;
 } SecondComponentState;
 
-Component createSecondComponent(unsigned char x, unsigned char y, unsigned char w, unsigned char h, SecondComponentState *state);
+Component createSecondComponent(signed short x, signed short y, signed short w, signed short h, SecondComponentState *state);
 
 void secondComponentColorChange(SecondComponentState *state);

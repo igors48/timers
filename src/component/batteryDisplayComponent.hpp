@@ -7,4 +7,4 @@ typedef struct
     int _battPercentage;
 } BatteryDisplayComponentState;
 
-Component createBatteryDisplayComponent(unsigned char x, unsigned char y, unsigned char w, unsigned char h, BatteryDisplayComponentState *state);
+Component createBatteryDisplayComponent(signed short x, signed short y, signed short w, signed short h, BatteryDisplayComponentState *state);

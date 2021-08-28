@@ -48,7 +48,7 @@ bool secondComponentNewState(Component component, WatchState watchState)
     return changed;
 }
 
-Component createSecondComponent(unsigned char x, unsigned char y, unsigned char w, unsigned char h, SecondComponentState *state)
+Component createSecondComponent(signed short x, signed short y, signed short w, signed short h, SecondComponentState *state)
 {
     return {
         .x = x,

@@ -11,6 +11,6 @@ typedef struct
     unsigned char _minute;
 } HourMinuteComponentState;
 
-Component createHourMinuteComponent(unsigned char x, unsigned char y, unsigned char w, unsigned char h, HourMinuteComponentState *state);
+Component createHourMinuteComponent(signed short x, signed short y, signed short w, signed short h, HourMinuteComponentState *state);
 
 void hourMinuteComponentColorChange(HourMinuteComponentState *state);
