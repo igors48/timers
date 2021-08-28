@@ -12,7 +12,7 @@ typedef void (*TouchEventHandler)(Component *component, signed short x, signed s
 const unsigned int COLOR_BLACK = 0x0000;
 const unsigned int COLOR_INFORMATION = 0xFDA0;
 const unsigned int COLOR_INTERACTION = 0x03E0;
-const unsigned int COLOR_ACTION = 0xF800;
+const unsigned int COLOR_ATTENTION = 0xF800;
 
 struct Component_
 {

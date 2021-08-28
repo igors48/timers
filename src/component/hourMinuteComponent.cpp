@@ -61,7 +61,7 @@ void hourMinuteComponentColorChange(HourMinuteComponentState *state)
 {
     if (state->color == COLOR_INFORMATION)
     {
-        state->color = COLOR_ACTION;
+        state->color = COLOR_ATTENTION;
     }
     else
     {
