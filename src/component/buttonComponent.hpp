@@ -7,6 +7,7 @@ typedef void (*Handler)();
 typedef struct
 {
     bool pressed;
+    bool _pressed;
     Handler handler;
 } ButtonComponentState;
 

@@ -65,11 +65,13 @@ void createComponents(Component components[])
 
     hourMinuteColorChangeButton = {
         .pressed = false,
+        ._pressed = true,
         .handler = changeHourMinuteColor
     };
 
     secondColorChangeButton = {
         .pressed = false,
+        ._pressed = true,
         .handler = changeSecondColor
     };
 

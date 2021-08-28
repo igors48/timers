@@ -5,7 +5,7 @@ void buttonComponentRender(Component component, WatchState watchState, TftApi *t
 {
     ButtonComponentState *state = (ButtonComponentState *)(component.state);
     unsigned int rectColor = 0x0000;
-    if (state->pressed) 
+    if (state->pressed)
     {
         rectColor = 0x07E0;
     }
@@ -15,6 +15,21 @@ void buttonComponentRender(Component component, WatchState watchState, TftApi *t
     tftApi->setTextFont(1);
     tftApi->setTextColor(0x07E0, 0x0000);
     tftApi->print("Color");
+}
+
+bool buttonComponentNewState(Component component, WatchState watchState)
+{
+    ButtonComponentState *state = (ButtonComponentState *)component.state;
+
+    bool changed = false;
+
+    if (state->pressed != state->_pressed)
+    {
+        changed = true;
+        state->_pressed = state->pressed;
+    }
+
+    return changed;
 }
 
 void buttonComponentOnTouch(Component *component, signed short x, signed short y)
@@ -41,7 +56,7 @@ Component createButtonComponent(unsigned char x, unsigned char y, unsigned char 
         .onMove = componentNoopHandler,
         .onRelease = buttonComponentOnRelease,
         .render = buttonComponentRender,
-        .newState = componentNewState,
+        .newState = buttonComponentNewState,
         .state = state,
     };
 }
