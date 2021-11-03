@@ -47,6 +47,7 @@ Component createDateComponent(signed short x, signed short y, signed short w, si
         .y = y,
         .w = w,
         .h = h,
+        .contains = componentContains,
         .onTouch = componentNoopHandler,
         .onMove = componentNoopHandler,
         .onRelease = componentNoopHandler,

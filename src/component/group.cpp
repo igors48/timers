@@ -1,14 +1,6 @@
 #include <stddef.h>
+
 #include "group.hpp"
-
-/*
-   TouchEventHandler onTouch; // todo consider interface EventListener 
-    TouchEventHandler onMove;  
-    TouchEventHandler onRelease;  
-    Render render;  // todo consider interface Renderable
-    NewState newState; // todo consider better name  -- always true
-
-*/
 
 void groupRender(Component *group, WatchState *watchState, TftApi *tftApi)
 {
@@ -24,27 +16,49 @@ void groupRender(Component *group, WatchState *watchState, TftApi *tftApi)
     }
 }
 
-void groupOnTouch(Component *group, signed short x, signed short y)
+bool groupNewState(Component *component, WatchState *watchState)
 {
-    Component *target = findTarget(group, x, y);
-    if (target != NULL)
-    {
-       signed short translatedX = x - group->x; 
-       signed short translatedY = y - group->y;
-       target->onTouch(target, translatedX, translatedY);
-    }
-}
-
-Component* findTarget(Component *group, signed short x, signed short y) 
-{
-    GroupState *state = (GroupState *)(group->state);
+    GroupState *state = (GroupState *)(component->state);
     for (int i = 0; i < state->childrenCount; i++)
     {
         Component *current = (Component *)(state->children[i]);
-        if ((x > current->x) && (x < current->x + current->w) && (y > current->y) && (y < current->y + current->h))
+        if (current->newState(current, watchState))
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+Component* groupContains(Component *component, signed short x, signed short y)
+{
+    GroupState *state = (GroupState *)(component->state);
+    signed short translatedX = x - component->x; 
+    signed short translatedY = y - component->y;
+    for (int i = 0; i < state->childrenCount; i++)
+    {
+        Component *current = (Component *)(state->children[i]);
+        if (current->contains(current, translatedX, translatedY))
         {
             return current;
         }
-    }
+    }    
     return NULL;
+}
+
+Component createGroupComponent(signed short x, signed short y, GroupState *state)
+{
+return {
+        .x = x,
+        .y = y,
+        .w = 0,
+        .h = 0,
+        .contains = groupContains,
+        .onTouch = componentNoopHandler,
+        .onMove = componentNoopHandler,
+        .onRelease = componentNoopHandler,
+        .render = groupRender,
+        .newState = groupNewState,
+        .state = state,
+    };
 }
