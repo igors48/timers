@@ -29,7 +29,7 @@ void changeSecondColor()
     secondComponentColorChange(&secondComponentState);
 }
 
-void createComponents(Component components[])
+void createComponents(void* components[])
 {
     batteryDisplayComponentState = {
         ._battPercentage = -1,

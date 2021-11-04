@@ -17,6 +17,7 @@
 #include "task/serviceProcedure.hpp"
 
 #include "component/component.hpp"
+#include "component/group.hpp"
 #include "screen/screen.hpp"
 
 TTGOClass *watch;
@@ -41,7 +42,9 @@ const unsigned char TASK_COUNT = 3;
 TaskHandle_t tasks[TASK_COUNT];
 
 const unsigned char COMPONENTS_COUNT = 8;
-Component components[COMPONENTS_COUNT];
+void* components[COMPONENTS_COUNT];
+GroupState screenState;
+Component screen;
 
 SupervisorParameters supervisorParameters;
 
@@ -180,7 +183,12 @@ void setup()
         };
         xTaskCreate(watchStateProducerTask, "watchStateProducerTask", 2048, (void *)&watchStateProducerParameters, 1, &watchStateProducerTaskHandle);
 
-        createComponents(components);        
+        createComponents(components);       
+        screenState = {
+            .childrenCount = COMPONENTS_COUNT,
+            .children = components
+        };
+        //screen =  
         watchStateRenderParameters = {
             .watchMutex = &watchMutex,
             .state = &watchState,

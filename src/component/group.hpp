@@ -8,4 +8,4 @@ typedef struct
     void **children;    
 } GroupState;
 
-Component createGroupComponent(signed short x, signed short y, signed short w, signed short h, GroupState *state);
+Component createGroupComponent(signed short x, signed short y, GroupState *state);

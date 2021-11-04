@@ -2,4 +2,4 @@
 
 #include "component/component.hpp"
 
-void createComponents(Component components[]);
+void createComponents(void* components[]);
