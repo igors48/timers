@@ -3,7 +3,7 @@
 #include "component.hpp"
 #include "touchDisplayComponent.hpp"
 
-void touchDisplayComponentRender(Component *component, WatchState *watchState, TftApi *tftApi)
+void touchDisplayComponentRender(signed short x, signed short y, Component *component, WatchState *watchState, TftApi *tftApi)
 {
     char buf[32];
     snprintf(buf, sizeof(buf), "x:%03d, y:%03d", watchState->touchX, watchState->touchY);

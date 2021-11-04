@@ -15,7 +15,7 @@ void watchStateRender(void *v)
             bool needRender = current.newState(&current, &watchState);
             if (needRender)
             {
-                current.render(&current, &watchState, p->tftApi);
+                current.render(0, 0, &current, &watchState, p->tftApi);
             }
         }
         p->systemApi->give(p->watchMutex);

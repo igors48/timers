@@ -3,7 +3,7 @@
 #include "component.hpp"
 #include "batteryDisplayComponent.hpp"
 
-void batteryDisplayComponentRender(Component *component, WatchState *watchState, TftApi *tftApi)
+void batteryDisplayComponentRender(signed short x, signed short y, Component *component, WatchState *watchState, TftApi *tftApi)
 {
     char buf[16];
     snprintf(buf, sizeof(buf), "B:%03d%%", watchState->battPercentage);

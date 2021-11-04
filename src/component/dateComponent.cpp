@@ -2,7 +2,7 @@
 #include "component.hpp"
 #include "dateComponent.hpp"
 
-void dateComponentRender(Component *component, WatchState *watchState, TftApi *tftApi)
+void dateComponentRender(signed short x, signed short y, Component *component, WatchState *watchState, TftApi *tftApi)
 {
     char buf[16];
     snprintf(buf, sizeof(buf), "%02d/%02d/%04d", watchState->date.day, watchState->date.month, watchState->date.year);

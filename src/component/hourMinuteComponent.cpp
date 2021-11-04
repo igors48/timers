@@ -2,7 +2,7 @@
 #include "component.hpp"
 #include "hourMinuteComponent.hpp"
 
-void hourMinuteComponentRender(Component *component, WatchState *watchState, TftApi *tftApi)
+void hourMinuteComponentRender(signed short x, signed short y, Component *component, WatchState *watchState, TftApi *tftApi)
 {
     HourMinuteComponentState *state = (HourMinuteComponentState *)component->state;
     char buf[16];
