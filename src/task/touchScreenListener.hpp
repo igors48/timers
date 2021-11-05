@@ -4,9 +4,9 @@
 #include "../system/system.hpp"
 #include "../component/component.hpp"
 
-typedef void (*OnScreenTouch)(signed short x, signed short y);
+//typedef void (*OnScreenTouch)(signed short x, signed short y);
 
-typedef Component* (*FindTarget)(signed short x, signed short y);
+//typedef Component* (*FindTarget)(signed short x, signed short y);
 
 typedef struct {
     Component *target;
@@ -14,7 +14,7 @@ typedef struct {
     signed short lastY;
     void *watchMutex;
     long *lastUserEventTimestamp;
-    FindTarget findTarget;
+    Component *screen;
     WatchApi *watchApi;
     SystemApi *systemApi;
 } TouchScreenListenerParameters;

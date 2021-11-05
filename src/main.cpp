@@ -205,7 +205,7 @@ void setup()
             .lastY = 0,
             .watchMutex = &watchMutex,
             .lastUserEventTimestamp = &lastUserEventTimestamp,
-            .findTarget = findTarget,
+            .screen = &screen,
             .watchApi = &watchApi,
             .systemApi = &systemApi,
         };

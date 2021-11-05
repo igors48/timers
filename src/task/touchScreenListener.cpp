@@ -15,9 +15,10 @@ void _touched(TouchScreenListenerParameters *p, signed short x, signed short y)
     p->lastX = x;
     p->lastY = y;
     bool firstTouch = (p->target == NULL);
+    Component *screen = p->screen;
     if (firstTouch)
     {
-        p->target = p->findTarget(x, y);
+        p->target = screen->contains(screen, x, y);
         if (p->target != NULL)
         {
             p->target->onTouch(p->target, x, y);
