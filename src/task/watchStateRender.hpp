@@ -12,8 +12,7 @@ typedef struct
     WatchState *state;
     SystemApi *systemApi;
     TftApi *tftApi;
-    Component *components;
-    unsigned char componentsCount;
+    Component *screen;
 } WatchStateRenderParameters;
 
 void watchStateRender(void *v);

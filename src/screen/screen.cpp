@@ -11,13 +11,21 @@
 #include "component/buttonComponent.hpp"
 
 HourMinuteComponentState hourMinuteComponentState;
+Component hourMinuteComponent;
 SecondComponentState secondComponentState;
+Component secondComponent;
 TouchDisplayComponentState touchDisplayComponentState;
+Component touchDisplayComponent;
 BatteryDisplayComponentState batteryDisplayComponentState;
+Component batteryDisplayComponent;
 StepCounterComponentState stepCounterComponentState;
+Component stepCounterComponent;
 DateComponentState dateComponentState;
-ButtonComponentState hourMinuteColorChangeButton;
-ButtonComponentState secondColorChangeButton;
+Component dateComponent;
+ButtonComponentState hourMinuteColorChangeButtonState;
+Component hourMinuteColorChangeButton;
+ButtonComponentState secondColorChangeButtonState;
+Component secondColorChangeButton;
 
 void changeHourMinuteColor()
 {
@@ -63,24 +71,33 @@ void createComponents(void* components[])
         ._day = 0,
     };
 
-    hourMinuteColorChangeButton = {
+    hourMinuteColorChangeButtonState = {
         .pressed = false,
         ._pressed = true,
         .handler = changeHourMinuteColor
     };
 
-    secondColorChangeButton = {
+    secondColorChangeButtonState = {
         .pressed = false,
         ._pressed = true,
         .handler = changeSecondColor
     };
 
-    components[0] = createHourMinuteComponent(10, 90, 140, 48, &hourMinuteComponentState);
-    components[1] = createSecondComponent(150, 90, 75, 48, &secondComponentState);
-    components[2] = createBatteryDisplayComponent(135, 150, 50, 50, &batteryDisplayComponentState);
-    components[3] = createTouchDisplayComponent(0, 232, 200, 50, &touchDisplayComponentState);
-    components[4] = createDateComponent(60, 175, 50, 50, &dateComponentState);
-    components[5] = createStepCounterComponent(35, 150, 50, 50, &stepCounterComponentState);
-    components[6] = createButtonComponent(10, 20, 66, 25, &hourMinuteColorChangeButton);
-    components[7] = createButtonComponent(160, 20, 66, 25, &secondColorChangeButton);
+    hourMinuteComponent = createHourMinuteComponent(10, 90, 140, 48, &hourMinuteComponentState);
+    secondComponent = createSecondComponent(150, 90, 75, 48, &secondComponentState);
+    batteryDisplayComponent = createBatteryDisplayComponent(135, 150, 50, 50, &batteryDisplayComponentState);
+    touchDisplayComponent = createTouchDisplayComponent(0, 232, 200, 50, &touchDisplayComponentState);
+    dateComponent = createDateComponent(60, 175, 50, 50, &dateComponentState);
+    stepCounterComponent = createStepCounterComponent(35, 150, 50, 50, &stepCounterComponentState);
+    hourMinuteColorChangeButton = createButtonComponent(10, 20, 66, 25, &hourMinuteColorChangeButtonState);
+    secondColorChangeButton = createButtonComponent(160, 20, 66, 25, &secondColorChangeButtonState);
+
+    components[0] = &hourMinuteComponent;
+    components[1] = &secondComponent;
+    components[2] = &batteryDisplayComponent;
+    components[3] = &touchDisplayComponent;
+    components[4] = &dateComponent;
+    components[5] = &stepCounterComponent;
+    components[6] = &hourMinuteColorChangeButton;
+    components[7] = &secondColorChangeButton;
 }

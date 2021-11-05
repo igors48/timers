@@ -121,21 +121,21 @@ void buttonInterruptHandler(void)
 // todo take it from here
 Component* findTarget(signed short x, signed short y)
 {
-    Serial.printf("%d %d \r\n", x, y);
     // called from watchMutex critical section, so we can update safely
+    Serial.printf("%d %d \r\n", x, y);
     watchState.touchX = x;
     watchState.touchY = y;
-    for (int i = 0; i < COMPONENTS_COUNT; i++)
-    {
-        Component current = components[i];
-        if ((x > current.x) && (x < current.x + current.w) && (y > current.y) && (y < current.y + current.h))
-        {
-            Serial.println("bingo");
-            motorApi.buzz(10);
-            //current.onTouch(current);
-            return &components[i];
-        }
-    }
+    // for (int i = 0; i < COMPONENTS_COUNT; i++)
+    // {
+    //     Component current = components[i];
+    //     if ((x > current.x) && (x < current.x + current.w) && (y > current.y) && (y < current.y + current.h))
+    //     {
+    //         Serial.println("bingo");
+    //         motorApi.buzz(10);
+    //         //current.onTouch(current);
+    //         return &components[i];
+    //     }
+    // }
     return NULL;
 }
 
@@ -188,14 +188,14 @@ void setup()
             .childrenCount = COMPONENTS_COUNT,
             .children = components
         };
-        //screen =  
+        screen = createGroupComponent(0, 0, &screenState);
+
         watchStateRenderParameters = {
             .watchMutex = &watchMutex,
             .state = &watchState,
             .systemApi = &systemApi,
             .tftApi = &tftApi,
-            .components = components,
-            .componentsCount = COMPONENTS_COUNT,
+            .screen = &screen,
         };
         xTaskCreate(watchStateRenderTask, "watchStateRenderTask", 2048, (void *)&watchStateRenderParameters, 1, &watchStateRenderTaskHandle);
 
