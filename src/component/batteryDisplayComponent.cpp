@@ -34,6 +34,7 @@ Component createBatteryDisplayComponent(signed short x, signed short y, signed s
         .w = w,
         .h = h,
         .contains = componentContains,
+        .mount = componentMount,
         .onTouch = componentNoopHandler,
         .onMove = componentNoopHandler,
         .onRelease = componentNoopHandler,

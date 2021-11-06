@@ -34,6 +34,7 @@ Component createStepCounterComponent(signed short x, signed short y, signed shor
         .w = w,
         .h = h,
         .contains = componentContains,
+        .mount = componentMount,
         .onTouch = componentNoopHandler,
         .onMove = componentNoopHandler,
         .onRelease = componentNoopHandler,

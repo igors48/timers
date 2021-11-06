@@ -9,6 +9,7 @@ typedef void (*Render)(signed short x, signed short y, Component *component, Wat
 typedef bool (*NewState)(Component *component, WatchState *watchState);
 typedef void (*TouchEventHandler)(Component *component, signed short x, signed short y);
 typedef Component* (*Contains)(Component *component, signed short x, signed short y);
+typedef void (*Mount)(Component *component, signed short x, signed short y);
 
 const unsigned int COLOR_BLACK = 0x0000;
 const unsigned int COLOR_INFORMATION = 0xFDA0;
@@ -22,6 +23,7 @@ struct Component_
     signed short w;
     signed short h;
     Contains contains;
+    Mount mount;
     TouchEventHandler onTouch; // todo consider interface EventListener 
     TouchEventHandler onMove;  
     TouchEventHandler onRelease;  
@@ -35,3 +37,5 @@ void componentNoopHandler(Component *component, signed short x, signed short y);
 bool componentNewState(Component *component, WatchState *watchState);
 
 Component* componentContains(Component *component, signed short x, signed short y);
+
+void componentMount(Component *component, signed short x, signed short y);

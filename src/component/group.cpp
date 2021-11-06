@@ -33,17 +33,27 @@ bool groupNewState(Component *component, WatchState *watchState)
 Component* groupContains(Component *component, signed short x, signed short y)
 {
     GroupState *state = (GroupState *)(component->state);
-    signed short translatedX = x - component->x; 
-    signed short translatedY = y - component->y;
     for (int i = 0; i < state->childrenCount; i++)
     {
         Component *current = (Component *)(state->children[i]);
-        if (current->contains(current, translatedX, translatedY))
+        if ((current->contains)(current, x, y))
         {
             return current;
         }
     }    
     return NULL;
+}
+
+void groupMount(Component *component, signed short x, signed short y)
+{
+    component->x += x;
+    component->y += y;
+    GroupState *state = (GroupState *)(component->state);
+    for (int i = 0; i < state->childrenCount; i++)
+    {
+        Component *current = (Component *)(state->children[i]);
+        (current->mount)(current, component->x, component->y);
+    }
 }
 
 Component createGroupComponent(signed short x, signed short y, GroupState *state)
@@ -54,6 +64,7 @@ return {
         .w = 0,
         .h = 0,
         .contains = groupContains,
+        .mount = groupMount,
         .onTouch = componentNoopHandler,
         .onMove = componentNoopHandler,
         .onRelease = componentNoopHandler,

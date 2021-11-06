@@ -49,6 +49,7 @@ Component createHourMinuteComponent(signed short x, signed short y, signed short
         .w = w,
         .h = h,
         .contains = componentContains,
+        .mount = componentMount,
         .onTouch = componentNoopHandler,
         .onMove = componentNoopHandler,
         .onRelease = componentNoopHandler,

@@ -39,6 +39,7 @@ Component createTouchDisplayComponent(signed short x, signed short y, signed sho
         .w = w,
         .h = h,
         .contains = componentContains,
+        .mount = componentMount,
         .onTouch = componentNoopHandler,
         .onMove = componentNoopHandler,
         .onRelease = componentNoopHandler,

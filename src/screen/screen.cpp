@@ -37,6 +37,12 @@ void changeSecondColor()
     secondComponentColorChange(&secondComponentState);
 }
 
+Component* mount(Component *component)
+{
+    (component->mount)(component, 0, 0);
+    return component;
+}
+
 void createComponents(void* components[])
 {
     batteryDisplayComponentState = {
@@ -92,12 +98,12 @@ void createComponents(void* components[])
     hourMinuteColorChangeButton = createButtonComponent(10, 20, 66, 25, &hourMinuteColorChangeButtonState);
     secondColorChangeButton = createButtonComponent(160, 20, 66, 25, &secondColorChangeButtonState);
 
-    components[0] = &hourMinuteComponent;
-    components[1] = &secondComponent;
-    components[2] = &batteryDisplayComponent;
-    components[3] = &touchDisplayComponent;
-    components[4] = &dateComponent;
-    components[5] = &stepCounterComponent;
-    components[6] = &hourMinuteColorChangeButton;
-    components[7] = &secondColorChangeButton;
+    components[0] = mount(&hourMinuteComponent);
+    components[1] = mount(&secondComponent);
+    components[2] = mount(&batteryDisplayComponent);
+    components[3] = mount(&touchDisplayComponent);
+    components[4] = mount(&dateComponent);
+    components[5] = mount(&stepCounterComponent);
+    components[6] = mount(&hourMinuteColorChangeButton);
+    components[7] = mount(&secondColorChangeButton);
 }

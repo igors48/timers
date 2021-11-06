@@ -20,3 +20,9 @@ Component* componentContains(Component *component, signed short x, signed short 
     }
     return NULL;
 }
+
+void componentMount(Component *component, signed short x, signed short y)
+{
+    component->x += x;
+    component->y += y;
+}
