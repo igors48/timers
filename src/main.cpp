@@ -41,7 +41,7 @@ TaskHandle_t buttonListenerTaskHandle;
 const unsigned char TASK_COUNT = 3;
 TaskHandle_t tasks[TASK_COUNT];
 
-const unsigned char COMPONENTS_COUNT = 8;
+const unsigned char COMPONENTS_COUNT = 7;
 void* components[COMPONENTS_COUNT];
 GroupState screenState;
 Component screen;
@@ -116,27 +116,6 @@ void serviceProcedureTask(void *p)
 void buttonInterruptHandler(void)
 {
     vTaskResume(buttonListenerTaskHandle);
-}
-
-// todo take it from here
-Component* findTarget(signed short x, signed short y)
-{
-    // called from watchMutex critical section, so we can update safely
-    Serial.printf("%d %d \r\n", x, y);
-    watchState.touchX = x;
-    watchState.touchY = y;
-    // for (int i = 0; i < COMPONENTS_COUNT; i++)
-    // {
-    //     Component current = components[i];
-    //     if ((x > current.x) && (x < current.x + current.w) && (y > current.y) && (y < current.y + current.h))
-    //     {
-    //         Serial.println("bingo");
-    //         motorApi.buzz(10);
-    //         //current.onTouch(current);
-    //         return &components[i];
-    //     }
-    // }
-    return NULL;
 }
 
 void setup()

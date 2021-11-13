@@ -3,7 +3,6 @@
 #include "screen.hpp"
 
 #include "component/batteryDisplayComponent.hpp"
-#include "component/touchDisplayComponent.hpp"
 #include "component/hourMinuteComponent.hpp"
 #include "component/secondComponent.hpp"
 #include "component/stepCounterComponent.hpp"
@@ -14,7 +13,6 @@ HourMinuteComponentState hourMinuteComponentState;
 Component hourMinuteComponent;
 SecondComponentState secondComponentState;
 Component secondComponent;
-TouchDisplayComponentState touchDisplayComponentState;
 Component touchDisplayComponent;
 BatteryDisplayComponentState batteryDisplayComponentState;
 Component batteryDisplayComponent;
@@ -47,11 +45,6 @@ void createComponents(void* components[])
 {
     batteryDisplayComponentState = {
         ._battPercentage = -1,
-    };
-
-    touchDisplayComponentState = {
-        ._touchX = -1,
-        ._touchY = -1,
     };
 
     hourMinuteComponentState = {
@@ -92,7 +85,6 @@ void createComponents(void* components[])
     hourMinuteComponent = createHourMinuteComponent(10, 90, 140, 48, &hourMinuteComponentState);
     secondComponent = createSecondComponent(150, 90, 75, 48, &secondComponentState);
     batteryDisplayComponent = createBatteryDisplayComponent(135, 150, 50, 50, &batteryDisplayComponentState);
-    touchDisplayComponent = createTouchDisplayComponent(0, 232, 200, 50, &touchDisplayComponentState);
     dateComponent = createDateComponent(60, 175, 50, 50, &dateComponentState);
     stepCounterComponent = createStepCounterComponent(35, 150, 50, 50, &stepCounterComponentState);
     hourMinuteColorChangeButton = createButtonComponent(10, 20, 66, 25, &hourMinuteColorChangeButtonState);
@@ -101,9 +93,8 @@ void createComponents(void* components[])
     components[0] = mount(&hourMinuteComponent);
     components[1] = mount(&secondComponent);
     components[2] = mount(&batteryDisplayComponent);
-    components[3] = mount(&touchDisplayComponent);
-    components[4] = mount(&dateComponent);
-    components[5] = mount(&stepCounterComponent);
-    components[6] = mount(&hourMinuteColorChangeButton);
-    components[7] = mount(&secondColorChangeButton);
+    components[3] = mount(&dateComponent);
+    components[4] = mount(&stepCounterComponent);
+    components[5] = mount(&hourMinuteColorChangeButton);
+    components[6] = mount(&secondColorChangeButton);
 }

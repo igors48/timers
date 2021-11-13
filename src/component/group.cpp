@@ -11,7 +11,7 @@ void groupRender(signed short x, signed short y, Component *group, WatchState *w
         bool needRender = current->newState(current, watchState);
         if (needRender)
         {
-            current->render(group->x + x, group->y + y, current, watchState, tftApi);
+            current->render(group->x, group->y, current, watchState, tftApi);
         }
     }
 }

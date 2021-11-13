@@ -16,7 +16,7 @@ void serviceProcedure(ServiceProcedureParameters *p)
         bool needHourBuzz = hourStart && buzzAllowedHour && (now.hour != p->lastBuzzHour);
         if (needHourBuzz)
         {
-            p->motorApi->buzz(100);
+            // p->motorApi->buzz(100); temporarily disabled
             p->lastBuzzHour = now.hour;
             p->systemApi->log(SERVICE_PROCEDURE, "hour buzz");
         } 
