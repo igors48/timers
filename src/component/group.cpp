@@ -8,10 +8,10 @@ void groupRender(signed short x, signed short y, Component *group, WatchState *w
     for (int i = 0; i < state->childrenCount; i++)
     {
         Component *current = (Component *)(state->children[i]);
-        bool needRender = current->newState(current, watchState);
+        bool needRender = (current->newState)(current, watchState);
         if (needRender)
         {
-            current->render(group->x, group->y, current, watchState, tftApi);
+            (current->render)(group->x, group->y, current, watchState, tftApi);
         }
     }
 }
@@ -19,15 +19,16 @@ void groupRender(signed short x, signed short y, Component *group, WatchState *w
 bool groupNewState(Component *component, WatchState *watchState)
 {
     GroupState *state = (GroupState *)(component->state);
+    bool result = false;
     for (int i = 0; i < state->childrenCount; i++)
     {
         Component *current = (Component *)(state->children[i]);
-        if (current->newState(current, watchState))
+        if ((current->newState)(current, watchState))
         {
-            return true;
+            result = true;
         }
     }
-    return false;
+    return result;
 }
 
 Component* groupContains(Component *component, signed short x, signed short y)
