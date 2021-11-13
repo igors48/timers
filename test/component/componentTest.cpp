@@ -10,8 +10,8 @@ void whenMount()
 
     componentMount(&component, 5 ,6);
 
-    TEST_ASSERT_EQUAL_INT16(47, component.x); // THEN x coordinate adjusted
-    TEST_ASSERT_EQUAL_INT16(50, component.y); // THEN y coordinate adjusted
+    TEST_ASSERT_EQUAL_INT16(42 + 5, component.x); // THEN x coordinate adjusted
+    TEST_ASSERT_EQUAL_INT16(44 + 6, component.y); // THEN y coordinate adjusted
 }
 
 void whenPointOnBorder() 
