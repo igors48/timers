@@ -18,15 +18,15 @@ void _touched(TouchScreenListenerParameters *p, signed short x, signed short y)
     Component *screen = p->screen;
     if (firstTouch)
     {
-        p->target = screen->contains(screen, x, y);
+        p->target = (screen->contains)(screen, x, y);
         if (p->target != NULL)
         {
-            p->target->onTouch(p->target, x, y);
+            (p->target->onTouch)(p->target, x, y);
         }
     }
     else
     {
-        p->target->onMove(p->target, x, y);
+        (p->target->onMove)(p->target, x, y);
     }
     _updateLastUserEventTimestamp(p);
 }

@@ -23,6 +23,7 @@ signed short onMoveHandlerY;
 bool onReleaseHandlerCalled;
 signed short onReleaseHandlerX;
 signed short onReleaseHandlerY;
+Component screen;
 
 WatchApi watchApi;
 SystemApi systemApi;
@@ -36,12 +37,12 @@ bool getTouchStub(signed short &x, signed short &y)
     return getTouchResult;
 }
 
-Component *noTargetStub(signed short x, signed short y)
+Component *noTargetStub(Component *c, signed short x, signed short y)
 {
     return NULL;
 }
 
-Component *findTargetStub(signed short x, signed short y)
+Component *findTargetStub(Component *c, signed short x, signed short y)
 {
     return &component;
 }
@@ -101,13 +102,16 @@ void setUp(void)
     component.onMove = componentOnMoveStub;
     component.onRelease = componentOnReleaseStub;
 
+    screen = {};
+    screen.contains = noTargetStub;
+
     p = {
         .target = NULL,
         .lastX = 0,
         .lastY = 0,
         .watchMutex = &watchMutex,
         .lastUserEventTimestamp = &lastUserEventTimestamp,
-        .findTarget = noTargetStub,
+        .screen = &screen,
         .watchApi = &watchApi,
         .systemApi = &systemApi,
     };
@@ -135,7 +139,7 @@ void whenFirstTouchInsideComponent()
     xResult = 48;
     yResult = 49;
     getTouchResult = true;
-    p.findTarget = findTargetStub;
+    screen.contains = findTargetStub;
 
     touchScreenListener(&p);
 
@@ -155,7 +159,7 @@ void whenNotFirstTouch()
     xResult = 48;
     yResult = 49;
     getTouchResult = true;
-    p.findTarget = findTargetStub;
+    screen.contains = findTargetStub;
 
     touchScreenListener(&p);
 
@@ -194,7 +198,7 @@ void whenReleasedWithtTouchComponentBefore()
     xResult = 48;
     yResult = 49;
     getTouchResult = true;
-    p.findTarget = findTargetStub;
+    screen.contains = findTargetStub;
 
     touchScreenListener(&p);
 
