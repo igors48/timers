@@ -2,7 +2,7 @@
 
 #include "group.hpp"
 
-void groupRender(signed short x, signed short y, Component *group, WatchState *watchState, TftApi *tftApi)
+void groupRender(Component *group, WatchState *watchState, TftApi *tftApi)
 {
     GroupState *state = (GroupState *)(group->state);
     for (int i = 0; i < state->childrenCount; i++)
@@ -11,7 +11,7 @@ void groupRender(signed short x, signed short y, Component *group, WatchState *w
         bool needRender = (current->newState)(current, watchState);
         if (needRender)
         {
-            (current->render)(group->x, group->y, current, watchState, tftApi);
+            (current->render)(current, watchState, tftApi);
         }
     }
 }

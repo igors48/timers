@@ -2,7 +2,7 @@
 #include "component.hpp"
 #include "secondComponent.hpp"
 
-void secondComponentRender(signed short x, signed short y, Component *component, WatchState *watchState, TftApi *tftApi)
+void secondComponentRender(Component *component, WatchState *watchState, TftApi *tftApi)
 {
     SecondComponentState *state = (SecondComponentState *)component->state;
     char buf[16];

@@ -6,15 +6,15 @@ static const char WATCH_STATE_RENDER[] = "watchStateRender";
 void watchStateRender(void *v)
 {
     WatchStateRenderParameters *p = (WatchStateRenderParameters *)v;
-    if (p->systemApi->take(p->watchMutex, 10))
+    if ((p->systemApi->take)(p->watchMutex, 10))
     {
         WatchState watchState = *p->state;
         Component *screen = p->screen;
-        screen->render(0, 0, screen, &watchState, p->tftApi);
-        p->systemApi->give(p->watchMutex);
+        (screen->render)(screen, &watchState, p->tftApi);
+        (p->systemApi->give)(p->watchMutex);
     }
         else
     {
-        p->systemApi->log(WATCH_STATE_RENDER, "failed to take watch mutex");
+        (p->systemApi->log)(WATCH_STATE_RENDER, "failed to take watch mutex");
     }
 }

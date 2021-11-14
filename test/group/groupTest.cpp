@@ -20,10 +20,15 @@ Component child02;
 ChildState child02State;
 GroupState groupState;
 
-void childRender(signed short x, signed short y, Component *component, WatchState *watchState, TftApi *tftApi)
+void childRenderStub(Component *component, WatchState *watchState, TftApi *tftApi)
 {
     ChildState *state = (ChildState *)component->state;
     state->rendered = true;
+}
+
+bool childNewStateStub(Component *component, WatchState *watchState)
+{
+    return true;
 }
 
 void setUp(void)
@@ -38,6 +43,8 @@ void setUp(void)
     child00.h = 5;
     child00.mount = componentMount;
     child00.contains = componentContains;
+    child00.render = childRenderStub;
+    child00.newState = childNewStateStub;
     child00.state = &child00State;
 
     child01State = {
@@ -50,7 +57,9 @@ void setUp(void)
     child01.h = 5;
     child01.mount = componentMount;
     child01.contains = componentContains;
-    child01.state = &child00State;
+    child01.render = childRenderStub;
+    child01.newState = childNewStateStub;
+    child01.state = &child01State;
 
     child02State = {
         .rendered = false,
@@ -62,7 +71,9 @@ void setUp(void)
     child02.h = 5;
     child02.mount = componentMount;
     child02.contains = componentContains;
-    child02.state = &child00State;
+    child02.render = childRenderStub;
+    child02.newState = childNewStateStub;
+    child02.state = &child02State;
 
     children[0] = &child00;
     children[1] = &child01;
@@ -102,11 +113,21 @@ void whenNotContains()
     TEST_ASSERT_EQUAL_UINT64(NULL, groupContains(&group, 28, 40)); // THEN NULL returns
 }
 
+void whenRender()
+{
+    groupRender(&group, NULL, NULL);
+
+    TEST_ASSERT_EQUAL_UINT8(1, child00State.rendered); // THEN all children rendered
+    TEST_ASSERT_EQUAL_UINT8(1, child01State.rendered); // THEN all children rendered
+    TEST_ASSERT_EQUAL_UINT8(1, child02State.rendered); // THEN all children rendered
+}
+
 int main()
 {
     UNITY_BEGIN();
     RUN_TEST(whenMount);
     RUN_TEST(whenContains);
     RUN_TEST(whenNotContains);
+    RUN_TEST(whenRender);
     UNITY_END();
 }

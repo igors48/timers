@@ -3,7 +3,7 @@
 #include "component.hpp"
 #include "stepCounterComponent.hpp"
 
-void stepCounterComponentRender(signed short x, signed short y, Component *component, WatchState *watchState, TftApi *tftApi)
+void stepCounterComponentRender(Component *component, WatchState *watchState, TftApi *tftApi)
 {
     char buf[16];
     snprintf(buf, sizeof(buf), "S:%05d", watchState->stepCount);
