@@ -6,6 +6,7 @@
 typedef struct
 {
     bool rendered;
+    bool updated;
 } ChildState;
 
 const unsigned char CHILDREN_COUNT = 3;
@@ -26,15 +27,25 @@ void childRenderStub(Component *component, WatchState *watchState, TftApi *tftAp
     state->rendered = true;
 }
 
-bool childNewStateStub(Component *component, WatchState *watchState)
+bool childNewStateTrueStub(Component *component, WatchState *watchState)
 {
+    ChildState *state = (ChildState *)component->state;
+    state->updated = true;
     return true;
+}
+
+bool childNewStateFalseStub(Component *component, WatchState *watchState)
+{
+    ChildState *state = (ChildState *)component->state;
+    state->updated = true;
+    return false;
 }
 
 void setUp(void)
 {
     child00State = {
         .rendered = false,
+        .updated = false,
     };
     child00 = {};
     child00.x = 10;
@@ -44,11 +55,12 @@ void setUp(void)
     child00.mount = componentMount;
     child00.contains = componentContains;
     child00.render = childRenderStub;
-    child00.newState = childNewStateStub;
+    child00.newState = childNewStateTrueStub;
     child00.state = &child00State;
 
     child01State = {
         .rendered = false,
+        .updated = false,
     };
     child01 = {};
     child01.x = 30;
@@ -58,11 +70,12 @@ void setUp(void)
     child01.mount = componentMount;
     child01.contains = componentContains;
     child01.render = childRenderStub;
-    child01.newState = childNewStateStub;
+    child01.newState = childNewStateTrueStub;
     child01.state = &child01State;
 
     child02State = {
         .rendered = false,
+        .updated = false,
     };
     child02 = {};
     child02.x = 50;
@@ -72,7 +85,7 @@ void setUp(void)
     child02.mount = componentMount;
     child02.contains = componentContains;
     child02.render = childRenderStub;
-    child02.newState = childNewStateStub;
+    child02.newState = childNewStateTrueStub;
     child02.state = &child02State;
 
     children[0] = &child00;
@@ -104,12 +117,14 @@ void whenMount()
 void whenContains()
 {
     groupMount(&group, 12, 13);
+
     TEST_ASSERT_EQUAL_UINT64(&child00, groupContains(&group, 28, 40)); // THEN pointer to child returns
 }
 
 void whenNotContains()
 {
     groupMount(&group, 112, 113);
+
     TEST_ASSERT_EQUAL_UINT64(NULL, groupContains(&group, 28, 40)); // THEN NULL returns
 }
 
@@ -122,6 +137,43 @@ void whenRender()
     TEST_ASSERT_EQUAL_UINT8(1, child02State.rendered); // THEN all children rendered
 }
 
+void whenNewState()
+{
+    bool newState = groupNewState(&group, NULL);
+
+    TEST_ASSERT_EQUAL_UINT8(1, newState); // THEN true as a result
+    TEST_ASSERT_EQUAL_UINT8(1, child00State.updated); // THEN all children rendered
+    TEST_ASSERT_EQUAL_UINT8(1, child01State.updated); // THEN all children rendered
+    TEST_ASSERT_EQUAL_UINT8(1, child02State.updated); // THEN all children rendered
+}
+
+void whenAllChildrenNewStateReturnedFalse()
+{
+    child00.newState = childNewStateFalseStub;
+    child01.newState = childNewStateFalseStub;
+    child02.newState = childNewStateFalseStub;
+
+    bool newState = groupNewState(&group, NULL);
+
+    TEST_ASSERT_EQUAL_UINT8(0, newState); // THEN false as a result
+    TEST_ASSERT_EQUAL_UINT8(1, child00State.updated); // THEN all children rendered
+    TEST_ASSERT_EQUAL_UINT8(1, child01State.updated); // THEN all children rendered
+    TEST_ASSERT_EQUAL_UINT8(1, child02State.updated); // THEN all children rendered
+}
+
+void whenNotAllChildrenNewStateReturnedFalse()
+{
+    child00.newState = childNewStateFalseStub;
+    child02.newState = childNewStateFalseStub;
+
+    bool newState = groupNewState(&group, NULL);
+
+    TEST_ASSERT_EQUAL_UINT8(1, newState); // THEN true as a result
+    TEST_ASSERT_EQUAL_UINT8(1, child00State.updated); // THEN all children rendered
+    TEST_ASSERT_EQUAL_UINT8(1, child01State.updated); // THEN all children rendered
+    TEST_ASSERT_EQUAL_UINT8(1, child02State.updated); // THEN all children rendered
+}
+
 int main()
 {
     UNITY_BEGIN();
@@ -129,5 +181,8 @@ int main()
     RUN_TEST(whenContains);
     RUN_TEST(whenNotContains);
     RUN_TEST(whenRender);
+    RUN_TEST(whenNewState);
+    RUN_TEST(whenAllChildrenNewStateReturnedFalse);
+    RUN_TEST(whenNotAllChildrenNewStateReturnedFalse);
     UNITY_END();
 }
