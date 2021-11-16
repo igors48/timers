@@ -8,6 +8,7 @@
 #include "component/stepCounterComponent.hpp"
 #include "component/dateComponent.hpp"
 #include "component/buttonComponent.hpp"
+#include "component/textComponent.hpp"
 
 HourMinuteComponentState hourMinuteComponentState;
 Component hourMinuteComponent;
@@ -24,6 +25,13 @@ ButtonComponentState hourMinuteColorChangeButtonState;
 Component hourMinuteColorChangeButton;
 ButtonComponentState secondColorChangeButtonState;
 Component secondColorChangeButton;
+
+TextState battery;
+
+void provideBatteryState(TextState *state, WatchState *watchState)
+{
+    snprintf(state->content, sizeof(state->content), "B:%03d%%", watchState->battPercentage);
+}
 
 void changeHourMinuteColor()
 {
@@ -46,6 +54,8 @@ void createComponents(void* components[])
     batteryDisplayComponentState = {
         ._battPercentage = -1,
     };
+
+    battery = createTextState(1, 2, provideBatteryState);
 
     hourMinuteComponentState = {
         .color = COLOR_INFORMATION,
@@ -84,7 +94,8 @@ void createComponents(void* components[])
 
     hourMinuteComponent = createHourMinuteComponent(10, 90, 140, 48, &hourMinuteComponentState);
     secondComponent = createSecondComponent(150, 90, 75, 48, &secondComponentState);
-    batteryDisplayComponent = createBatteryDisplayComponent(135, 150, 50, 50, &batteryDisplayComponentState);
+    //batteryDisplayComponent = createBatteryDisplayComponent(135, 150, 50, 50, &batteryDisplayComponentState);
+    batteryDisplayComponent = createTextComponent(135, 150, 50, 50, &battery);
     dateComponent = createDateComponent(60, 175, 50, 50, &dateComponentState);
     stepCounterComponent = createStepCounterComponent(35, 150, 50, 50, &stepCounterComponentState);
     hourMinuteColorChangeButton = createButtonComponent(10, 20, 66, 25, &hourMinuteColorChangeButtonState);
