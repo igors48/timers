@@ -34,21 +34,21 @@ bool textComponentNewState(Component *component, WatchState *watchState)
     return false;
 }
 
-TextState createTextState(unsigned char font, unsigned char size, Provide provide)
+TextState createTextState(unsigned char font, unsigned char size, unsigned int fontColor, Provide provide)
 {
-    TextState s = {};
-    strcpy(s.content, "");
-    strcpy(s.content, "_");
-    s.size = size;
-    s._size = 0;
-    s.fontColor = COLOR_INFORMATION;
-    s._fontColor = 0;
-    s.backColor = COLOR_BLACK;
-    s._backColor = 0;
-    s.font = font;
-    s._font = 0;
-    s.provide = provide;
-    return s;
+    TextState textState = {};
+    strcpy(textState.content, "");
+    strcpy(textState.content, "_");
+    textState.size = size;
+    textState._size = 0;
+    textState.fontColor = fontColor;
+    textState._fontColor = 0;
+    textState.backColor = COLOR_BLACK;
+    textState._backColor = 0;
+    textState.font = font;
+    textState._font = 0;
+    textState.provide = provide;
+    return textState;
 }
 
 Component createTextComponent(signed short x, signed short y, signed short w, signed short h, TextState *state)

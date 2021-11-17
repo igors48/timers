@@ -6,7 +6,7 @@ typedef struct TextState_ TextState;
 
 typedef void (*Provide)(TextState *state, WatchState *watchState);
 
-const unsigned char CONTENT_LENGTH = 8;
+const unsigned char CONTENT_LENGTH = 16;
 
 struct TextState_
 {
@@ -23,6 +23,6 @@ struct TextState_
     Provide provide;
 };
 
-TextState createTextState(unsigned char font, unsigned char size, Provide provide);
+TextState createTextState(unsigned char font, unsigned char size, unsigned int fontColor, Provide provide);
 
 Component createTextComponent(signed short x, signed short y, signed short w, signed short h, TextState *state);
