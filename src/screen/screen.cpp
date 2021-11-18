@@ -53,12 +53,26 @@ void provideSecondState(TextState *state, WatchState *watchState)
 
 void changeHourMinuteColor()
 {
-    //hourMinuteComponentColorChange(&hourMinuteComponentState);
+    if (hourMinute.fontColor == COLOR_INFORMATION)
+    {
+        hourMinute.fontColor = COLOR_INTERACTION;
+    }
+    else
+    {
+        hourMinute.fontColor = COLOR_INFORMATION;
+    }
 }
 
 void changeSecondColor()
 {
-    //secondComponentColorChange(&secondComponentState);
+    if (second.fontColor == COLOR_INFORMATION)
+    {
+        second.fontColor = COLOR_INTERACTION;
+    }
+    else
+    {
+        second.fontColor = COLOR_INFORMATION;
+    }
 }
 
 Component* mount(Component *component)
