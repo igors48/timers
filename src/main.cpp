@@ -16,8 +16,6 @@
 #include "task/touchScreenListener.hpp"
 #include "task/serviceProcedure.hpp"
 
-#include "component/component.hpp"
-#include "component/group.hpp"
 #include "screen/screen.hpp"
 
 TTGOClass *watch;
@@ -41,9 +39,6 @@ TaskHandle_t buttonListenerTaskHandle;
 const unsigned char TASK_COUNT = 3;
 TaskHandle_t tasks[TASK_COUNT];
 
-const unsigned char COMPONENTS_COUNT = 7;
-void* components[COMPONENTS_COUNT];
-GroupState screenState;
 Component screen;
 
 SupervisorParameters supervisorParameters;
@@ -162,12 +157,7 @@ void setup()
         };
         xTaskCreate(watchStateProducerTask, "watchStateProducerTask", 2048, (void *)&watchStateProducerParameters, 1, &watchStateProducerTaskHandle);
 
-        createComponents(components);       
-        screenState = {
-            .childrenCount = COMPONENTS_COUNT,
-            .children = components
-        };
-        screen = createGroupComponent(0, 0, &screenState);
+        screen = createScreen();
 
         watchStateRenderParameters = {
             .watchMutex = &watchMutex,

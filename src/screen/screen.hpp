@@ -2,4 +2,6 @@
 
 #include "component/component.hpp"
 
-void createComponents(void* components[]);
+typedef void (*SetActiveTile)(unsigned short activeTile);
+
+Component createScreen();

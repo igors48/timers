@@ -4,7 +4,9 @@
 
 typedef struct TextState_ TextState;
 
-typedef void (*Provide)(TextState *state, WatchState *watchState);
+// todo return boolean "dirty" flag and reduce logic in the newState
+// todo or even just pass newState function as a parameter
+typedef void (*Provide)(TextState *state, WatchState *watchState); 
 
 const unsigned char CONTENT_LENGTH = 16;
 
