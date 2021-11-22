@@ -6,9 +6,9 @@
 #include "component/group.hpp"
 #include "component/textComponent.hpp"
 
-const unsigned char STEP_COUNTER_TILE_COMPONENTS_COUNT = 4;
-void* stepCounterTileComponents[STEP_COUNTER_TILE_COMPONENTS_COUNT];
-GroupState stepCounterTileState;
+static const unsigned char COMPONENTS_COUNT = 4;
+static void* components[COMPONENTS_COUNT];
+static GroupState state;
 
 static TextState hourMinute;
 static Component hourMinuteComponent;
@@ -63,12 +63,12 @@ Component createStepCounterTile(SetActiveTile setActiveTile)
     stepCounterComponent = createTextComponent(55, 120, 50, 50, &stepCounter);
     backButton = createButtonComponent(60, 195, 66, 25, &backButtonState);
 
-    stepCounterTileComponents[0] = &hourMinuteComponent;
-    stepCounterTileComponents[1] = &secondComponent;
-    stepCounterTileComponents[2] = &stepCounterComponent;
-    stepCounterTileComponents[3] = &backButton;
+    components[0] = &hourMinuteComponent;
+    components[1] = &secondComponent;
+    components[2] = &stepCounterComponent;
+    components[3] = &backButton;
 
-    stepCounterTileState = createGroupState(STEP_COUNTER_TILE_COMPONENTS_COUNT, stepCounterTileComponents);
+    state = createGroupState(COMPONENTS_COUNT, components);
 
-    return createGroupComponent(0, 0, &stepCounterTileState);
+    return createGroupComponent(0, 0, &state);
 }

@@ -6,24 +6,24 @@
 #include "component/buttonComponent.hpp"
 #include "component/textComponent.hpp"
 
-const unsigned char CLOCK_TILE_COMPONENTS_COUNT = 8;
-void* clockTileComponents[CLOCK_TILE_COMPONENTS_COUNT];
-GroupState clockTileState;
+static const unsigned char COMPONENTS_COUNT = 8;
+static void* components[COMPONENTS_COUNT];
+static GroupState state;
 
-ButtonComponentState hourMinuteColorChangeButtonState;
-Component hourMinuteColorChangeButton;
+static ButtonComponentState hourMinuteColorChangeButtonState;
+static Component hourMinuteColorChangeButton;
 
-ButtonComponentState secondColorChangeButtonState;
-Component secondColorChangeButton;
+static ButtonComponentState secondColorChangeButtonState;
+static Component secondColorChangeButton;
 
-TextState battery;
-Component batteryDisplayComponent;
+static TextState battery;
+static Component batteryDisplayComponent;
 
 static TextState stepCounter;
 static Component stepCounterComponent;
 
-TextState date;
-Component dateComponent;
+static TextState date;
+static Component dateComponent;
 
 static TextState hourMinute;
 static Component hourMinuteComponent;
@@ -37,7 +37,7 @@ static Component backButton;
 static SetActiveTile setActiveTilePtr;
 
 // todo extract provideXXXX functions to utilities
-void provideBatteryState(TextState *state, WatchState *watchState)
+static void provideBatteryState(TextState *state, WatchState *watchState)
 {
     snprintf(state->content, sizeof(state->content), "B:%03d%%", watchState->battPercentage);
 }
@@ -47,7 +47,7 @@ static void provideStepCounterState(TextState *state, WatchState *watchState)
     snprintf(state->content, sizeof(state->content), "S:%05d", watchState->stepCount);
 }
 
-void provideDateState(TextState *state, WatchState *watchState)
+static void provideDateState(TextState *state, WatchState *watchState)
 {
     snprintf(state->content, sizeof(state->content), "%02d/%02d/%04d", watchState->date.day, watchState->date.month, watchState->date.year);
 }
@@ -62,7 +62,7 @@ static void provideSecondState(TextState *state, WatchState *watchState)
     snprintf(state->content, sizeof(state->content), ":%02d", watchState->date.second);
 }
 
-void changeHourMinuteColor()
+static void changeHourMinuteColor()
 {
     if (hourMinute.fontColor == COLOR_INFORMATION)
     {
@@ -74,7 +74,7 @@ void changeHourMinuteColor()
     }
 }
 
-void changeSecondColor()
+static void changeSecondColor()
 {
     if (second.fontColor == COLOR_INFORMATION)
     {
@@ -130,16 +130,16 @@ Component createClockTile(SetActiveTile setActiveTile)
 
     backButton = createButtonComponent(60, 195, 66, 45, &backButtonState);
 
-    clockTileComponents[0] = &hourMinuteComponent;
-    clockTileComponents[1] = &secondComponent;
-    clockTileComponents[2] = &batteryDisplayComponent;
-    clockTileComponents[3] = &dateComponent;
-    clockTileComponents[4] = &stepCounterComponent;
-    clockTileComponents[5] = &hourMinuteColorChangeButton;
-    clockTileComponents[6] = &secondColorChangeButton;
-    clockTileComponents[7] = &backButton;
+    components[0] = &hourMinuteComponent;
+    components[1] = &secondComponent;
+    components[2] = &batteryDisplayComponent;
+    components[3] = &dateComponent;
+    components[4] = &stepCounterComponent;
+    components[5] = &hourMinuteColorChangeButton;
+    components[6] = &secondColorChangeButton;
+    components[7] = &backButton;
 
-    clockTileState = createGroupState(CLOCK_TILE_COMPONENTS_COUNT, clockTileComponents);
+    state = createGroupState(COMPONENTS_COUNT, components);
 
-    return createGroupComponent(0, 0, &clockTileState);
+    return createGroupComponent(0, 0, &state);
 }
