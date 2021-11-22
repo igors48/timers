@@ -86,12 +86,6 @@ void changeSecondColor()
     }
 }
 
-Component* mount(Component *component)
-{
-    (component->mount)(component, 0, 0);
-    return component;
-}
-
 static void onClick()
 {
     setActiveTilePtr(1);
@@ -136,14 +130,14 @@ Component createClockTile(SetActiveTile setActiveTile)
 
     backButton = createButtonComponent(60, 195, 66, 45, &backButtonState);
 
-    clockTileComponents[0] = mount(&hourMinuteComponent);
-    clockTileComponents[1] = mount(&secondComponent);
-    clockTileComponents[2] = mount(&batteryDisplayComponent);
-    clockTileComponents[3] = mount(&dateComponent);
-    clockTileComponents[4] = mount(&stepCounterComponent);
-    clockTileComponents[5] = mount(&hourMinuteColorChangeButton);
-    clockTileComponents[6] = mount(&secondColorChangeButton);
-    clockTileComponents[7] = mount(&backButton);
+    clockTileComponents[0] = &hourMinuteComponent;
+    clockTileComponents[1] = &secondComponent;
+    clockTileComponents[2] = &batteryDisplayComponent;
+    clockTileComponents[3] = &dateComponent;
+    clockTileComponents[4] = &stepCounterComponent;
+    clockTileComponents[5] = &hourMinuteColorChangeButton;
+    clockTileComponents[6] = &secondColorChangeButton;
+    clockTileComponents[7] = &backButton;
 
     clockTileState = createGroupState(CLOCK_TILE_COMPONENTS_COUNT, clockTileComponents);
 

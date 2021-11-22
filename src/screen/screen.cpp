@@ -4,14 +4,15 @@
 #include "clockTile.hpp"
 #include "stepCounterTile.hpp"
 
-Component clockTile;
-Component stepCounterTile;
+static Component clockTile;
+static Component stepCounterTile;
 
-const unsigned char TILES_COUNT = 2;
-void* tiles[TILES_COUNT];
-ScreenState screenState;
+static const unsigned char TILES_COUNT = 2;
+static void* tiles[TILES_COUNT];
+static ScreenState screenState;
+static Component screen;
 
-void setActiveTile(unsigned short activeTile)
+static void setActiveTile(unsigned short activeTile)
 {
     screenState.activeTile = activeTile;
 }
@@ -31,5 +32,8 @@ Component createScreen()
         ._activeTile = 65535,
     };
 
-    return createScreenComponent(&screenState);
+    screen = createScreenComponent(&screenState);
+    screen.mount(&screen, 0, 0);
+
+    return screen;
 }
