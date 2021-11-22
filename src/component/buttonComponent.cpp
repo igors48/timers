@@ -1,7 +1,7 @@
 #include "component.hpp"
 #include "buttonComponent.hpp"
 
-void buttonComponentRender(Component *component, WatchState *watchState, TftApi *tftApi)
+void buttonComponentRender(Component *component, bool forced, WatchState *watchState, TftApi *tftApi)
 {
     ButtonComponentState *state = (ButtonComponentState *)(component->state);
     unsigned int rectColor = COLOR_BLACK;

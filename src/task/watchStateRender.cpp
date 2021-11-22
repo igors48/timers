@@ -10,7 +10,7 @@ void watchStateRender(void *v)
     {
         WatchState watchState = *p->state;
         Component *screen = p->screen;
-        (screen->render)(screen, &watchState, p->tftApi);
+        (screen->render)(screen, false, &watchState, p->tftApi);
         (p->systemApi->give)(p->watchMutex);
     }
         else

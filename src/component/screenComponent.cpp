@@ -8,20 +8,16 @@ Component* getActiveTile(Component *component)
     return (Component *)(state->tiles[state->activeTile]);
 }
 
-void screenComponentRender(Component *component, WatchState *watchState, TftApi *tftApi)
+void screenComponentRender(Component *component, bool forced, WatchState *watchState, TftApi *tftApi)
 {
     Component* active = getActiveTile(component);
     bool activeTileChanged = (component->newState)(component, watchState);
-    if (activeTileChanged) 
+    bool forcedRender = forced || activeTileChanged;
+    if (forcedRender) 
     {
         (tftApi->fillRect)(0, 0, 240, 240, COLOR_BLACK);
-        GroupState *state = (GroupState *)active->state;
-        (state->forcedRender)(active, watchState, tftApi);
     } 
-    else
-    {
-        (active->render)(active, watchState, tftApi);
-    }
+    (active->render)(active, forcedRender, watchState, tftApi);
 }
 
 bool screenComponentNewState(Component *component, WatchState *watchState)

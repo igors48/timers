@@ -5,7 +5,7 @@
 
 typedef struct Component_ Component;
 
-typedef void (*Render)(Component *component, WatchState *watchState, TftApi *tftApi);
+typedef void (*Render)(Component *component, bool forced, WatchState *watchState, TftApi *tftApi);
 typedef bool (*NewState)(Component *component, WatchState *watchState);
 typedef void (*TouchEventHandler)(Component *component, signed short x, signed short y);
 typedef Component* (*Contains)(Component *component, signed short x, signed short y);
