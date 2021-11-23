@@ -25,13 +25,7 @@ Component createScreen()
     tiles[0] = &clockTile;
     tiles[1] = &stepCounterTile;
 
-    screenState = {
-        .tilesCount = TILES_COUNT,
-        .tiles = tiles,
-        .activeTile = 0,
-        ._activeTile = 65535,
-    };
-
+    screenState = createScreenState(TILES_COUNT, tiles);
     screen = createScreenComponent(&screenState);
     screen.mount(&screen, 0, 0);
 

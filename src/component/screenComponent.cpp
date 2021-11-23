@@ -46,6 +46,16 @@ void screenComponentMount(Component *component, signed short x, signed short y)
     }
 }
 
+ScreenState createScreenState(unsigned short tilesCount, void **tiles)
+{
+    return {
+        .tilesCount = tilesCount,
+        .tiles = tiles,
+        .activeTile = 0,
+        ._activeTile = 65535,
+    };    
+}
+
 Component createScreenComponent(ScreenState *state)
 {
     return {

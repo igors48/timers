@@ -21,7 +21,7 @@ Component child02;
 ChildState child02State;
 GroupState groupState;
 
-void childRenderStub(Component *component, WatchState *watchState, TftApi *tftApi)
+void childRenderStub(Component *component, bool forced, WatchState *watchState, TftApi *tftApi)
 {
     ChildState *state = (ChildState *)component->state;
     state->rendered = true;
@@ -130,7 +130,33 @@ void whenNotContains()
 
 void whenRender()
 {
-    groupRender(&group, NULL, NULL);
+    groupRender(&group, false, NULL, NULL);
+
+    TEST_ASSERT_EQUAL_UINT8(1, child00State.rendered); // THEN all children rendered
+    TEST_ASSERT_EQUAL_UINT8(1, child01State.rendered); // THEN all children rendered
+    TEST_ASSERT_EQUAL_UINT8(1, child02State.rendered); // THEN all children rendered
+}
+
+void whenRenderNotChangedChildren()
+{
+    child00.newState = childNewStateFalseStub;
+    child01.newState = childNewStateFalseStub;
+    child02.newState = childNewStateFalseStub;
+
+    groupRender(&group, false, NULL, NULL);
+
+    TEST_ASSERT_EQUAL_UINT8(0, child00State.rendered); // THEN children not rendered
+    TEST_ASSERT_EQUAL_UINT8(0, child01State.rendered); // THEN children not rendered
+    TEST_ASSERT_EQUAL_UINT8(0, child02State.rendered); // THEN children not rendered
+}
+
+void whenRenderNotChangedChildrenInForcedMode()
+{
+    child00.newState = childNewStateFalseStub;
+    child01.newState = childNewStateFalseStub;
+    child02.newState = childNewStateFalseStub;
+
+    groupRender(&group, true, NULL, NULL);
 
     TEST_ASSERT_EQUAL_UINT8(1, child00State.rendered); // THEN all children rendered
     TEST_ASSERT_EQUAL_UINT8(1, child01State.rendered); // THEN all children rendered
@@ -181,6 +207,8 @@ int main()
     RUN_TEST(whenContains);
     RUN_TEST(whenNotContains);
     RUN_TEST(whenRender);
+    RUN_TEST(whenRenderNotChangedChildren);
+    RUN_TEST(whenRenderNotChangedChildrenInForcedMode);    
     RUN_TEST(whenNewState);
     RUN_TEST(whenAllChildrenNewStateReturnedFalse);
     RUN_TEST(whenNotAllChildrenNewStateReturnedFalse);

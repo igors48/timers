@@ -10,4 +10,6 @@ typedef struct
     unsigned short _activeTile;
 } ScreenState;
 
+ScreenState createScreenState(unsigned short tilesCount, void **tiles);
+
 Component createScreenComponent(ScreenState *state);
