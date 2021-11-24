@@ -2,13 +2,13 @@
 #include "component.hpp"
 #include "group.hpp"
 
-Component* getActiveTile(Component *component)
+static Component* getActiveTile(Component *component)
 {
     ScreenState *state = (ScreenState *)component->state;
     return (Component *)(state->tiles[state->activeTile]);
 }
 
-void screenComponentRender(Component *component, bool forced, WatchState *watchState, TftApi *tftApi)
+static void screenComponentRender(Component *component, bool forced, WatchState *watchState, TftApi *tftApi)
 {
     Component* active = getActiveTile(component);
     bool activeTileChanged = (component->newState)(component, watchState);
@@ -20,7 +20,7 @@ void screenComponentRender(Component *component, bool forced, WatchState *watchS
     (active->render)(active, forcedRender, watchState, tftApi);
 }
 
-bool screenComponentNewState(Component *component, WatchState *watchState)
+static bool screenComponentNewState(Component *component, WatchState *watchState)
 {
     ScreenState *state = (ScreenState *)component->state;
     if (state->activeTile != state->_activeTile) { 
@@ -30,13 +30,13 @@ bool screenComponentNewState(Component *component, WatchState *watchState)
     return false;
 }
 
-Component* screenComponentContains(Component *component, signed short x, signed short y)
+static Component* screenComponentContains(Component *component, signed short x, signed short y)
 {
     Component* active = getActiveTile(component);
     return (active->contains)(active, x, y);
 }
 
-void screenComponentMount(Component *component, signed short x, signed short y)
+static void screenComponentMount(Component *component, signed short x, signed short y)
 {
     ScreenState *state = (ScreenState *)component->state;
     for (int i = 0; i < state->tilesCount; i++)
