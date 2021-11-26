@@ -5,6 +5,14 @@
 
 typedef struct Component_ Component;
 
+typedef enum {
+    NONE,
+    MOVE_UP,
+    MOVE_LEFT,
+    MOVE_DOWN,
+    MOVE_RIGHT,
+} Gesture;
+
 typedef void (*Render)(Component *component, bool forced, WatchState *watchState, TftApi *tftApi);
 typedef bool (*NewState)(Component *component, WatchState *watchState);
 typedef void (*TouchEventHandler)(Component *component, signed short x, signed short y);

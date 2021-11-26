@@ -6,6 +6,8 @@
 
 typedef struct {
     Component *target;
+    signed short firstX;
+    signed short firstY;
     signed short lastX;
     signed short lastY;
     void *watchMutex;

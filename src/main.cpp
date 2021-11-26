@@ -170,6 +170,8 @@ void setup()
 
         touchScreenListenerParameters = {
             .target = NULL,
+            .firstX = -1,
+            .firstY = -1,
             .lastX = 0,
             .lastY = 0,
             .watchMutex = &watchMutex,
