@@ -3,6 +3,7 @@
 #include "touchScreenListener.hpp"
 
 static const char TOUCH_SCREEN_LISTENER[] = "touchScreenListener";
+static unsigned char GESTURE_TRESHOLD = 120;
 
 static void updateLastUserEventTimestamp(TouchScreenListenerParameters *p)
 {
@@ -33,38 +34,37 @@ static void touched(TouchScreenListenerParameters *p, signed short x, signed sho
     updateLastUserEventTimestamp(p);
 }
 
-static bool inHotSpot(signed short x, signed short y)
-{
-    bool xInHotSpot = (x >= 60) && (x <= 180);
-    if (!xInHotSpot)
-    {
-        return xInHotSpot;
-    }
-    bool yInHotSpot = (y >= 60) && (y <= 180);
-    return yInHotSpot;
-}
-
 Gesture detectGesture(signed short firstX, signed short firstY, signed short lastX, signed short lastY)
 {
-    bool firstInHotSpot = inHotSpot(firstX, firstY);
-    if (!firstInHotSpot)
+    signed short dX = lastX - firstX;
+    signed short dY = lastY - firstY;
+    unsigned short absDx = abs(dX);
+    unsigned short absDy = abs(dY);
+    if ((absDx < GESTURE_TRESHOLD) && (absDy < GESTURE_TRESHOLD))
     {
         return NONE;
     }
-    bool lastInHotSpot = inHotSpot(lastX, lastY);
-    if (!lastInHotSpot)
+    if (absDx > absDy)
     {
-        return NONE;
-    }
-    signed short dX = abs(lastX - firstX);
-    signed short dY = abs(lastY - firstY);
-    if (dX > dY)
-    {
-
+        if (dX > 0)
+        {
+            return MOVE_RIGHT;
+        }
+        else
+        {
+            return MOVE_LEFT;
+        }        
     }
     else
     {
-        
+        if (dY > 0)
+        {
+            return MOVE_DOWN;
+        }
+        else
+        {
+            return MOVE_UP;
+        }        
     }
 }
 

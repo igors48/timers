@@ -222,6 +222,15 @@ void whenReleasedWithtTouchComponentBefore()
     TEST_ASSERT_EQUAL_INT64(42, lastUserEventTimestamp); //THEN last user event timestamp not changed
 }
 
+void whenGestureDetected()
+{
+    TEST_ASSERT_TRUE(detectGesture(10, 120, 220, 120) == MOVE_RIGHT);
+    TEST_ASSERT_TRUE(detectGesture(220, 120, 10, 120) == MOVE_LEFT);
+    TEST_ASSERT_TRUE(detectGesture(120, 10, 120, 220) == MOVE_DOWN);
+    TEST_ASSERT_TRUE(detectGesture(120, 220, 120, 10) == MOVE_UP);
+    TEST_ASSERT_TRUE(detectGesture(120, 120, 100, 130) == NONE);
+}
+
 int main()
 {
     UNITY_BEGIN();
@@ -229,5 +238,6 @@ int main()
     RUN_TEST(whenFirstTouchInsideComponent);
     RUN_TEST(whenNotFirstTouch);
     RUN_TEST(whenReleasedWithoutTouchComponentBefore);
+    RUN_TEST(whenGestureDetected);
     UNITY_END();
 }
