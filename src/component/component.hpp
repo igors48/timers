@@ -16,6 +16,7 @@ typedef enum {
 typedef void (*Render)(Component *component, bool forced, WatchState *watchState, TftApi *tftApi);
 typedef bool (*NewState)(Component *component, WatchState *watchState);
 typedef void (*TouchEventHandler)(Component *component, signed short x, signed short y);
+typedef void (*GestureEventHandler)(Component *component, Gesture gesture);
 typedef Component* (*Contains)(Component *component, signed short x, signed short y);
 typedef void (*Mount)(Component *component, signed short x, signed short y);
 
@@ -35,12 +36,15 @@ struct Component_
     TouchEventHandler onTouch; // todo consider interface EventListener 
     TouchEventHandler onMove;  
     TouchEventHandler onRelease;  
+    GestureEventHandler onGesture;
     Render render;  // todo consider interface Renderable
     NewState newState; // todo consider better name
     void *state;    
 };
 
 void componentNoopHandler(Component *component, signed short x, signed short y);
+
+void componentGestureNoopHandler(Component *component, Gesture gesture);
 
 bool componentNewState(Component *component, WatchState *watchState);
 

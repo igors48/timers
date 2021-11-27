@@ -63,6 +63,7 @@ Component createTextComponent(signed short x, signed short y, signed short w, si
         .onTouch = componentNoopHandler,
         .onMove = componentNoopHandler,
         .onRelease = componentNoopHandler,
+        .onGesture = componentGestureNoopHandler,
         .render = textComponentRender,
         .newState = textComponentNewState,
         .state = state,

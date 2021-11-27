@@ -77,6 +77,7 @@ Component createGroupComponent(signed short x, signed short y, GroupState *state
             .onTouch = componentNoopHandler,
             .onMove = componentNoopHandler,
             .onRelease = componentNoopHandler,
+            .onGesture = componentGestureNoopHandler,
             .render = groupRender,
             .newState = groupNewState,
             .state = state,

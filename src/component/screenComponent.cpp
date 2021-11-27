@@ -1,3 +1,5 @@
+#include <Arduino.h>
+
 #include "screenComponent.hpp"
 #include "component.hpp"
 #include "group.hpp"
@@ -46,6 +48,11 @@ static void screenComponentMount(Component *component, signed short x, signed sh
     }
 }
 
+static void screenComponentGestureEventHandler(Component *component, Gesture gesture)
+{
+    Serial.printf("gesture %d\n", (int)gesture);
+}
+
 ScreenState createScreenState(unsigned short tilesCount, void **tiles)
 {
     return {
@@ -68,6 +75,7 @@ Component createScreenComponent(ScreenState *state)
         .onTouch = componentNoopHandler,
         .onMove = componentNoopHandler,
         .onRelease = componentNoopHandler,
+        .onGesture = screenComponentGestureEventHandler,
         .render = screenComponentRender,
         .newState = screenComponentNewState,
         .state = state,

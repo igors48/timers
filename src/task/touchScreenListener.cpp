@@ -1,4 +1,5 @@
 #include <stddef.h>
+#include <stdlib.h>
 
 #include "touchScreenListener.hpp"
 
@@ -29,12 +30,39 @@ static void touched(TouchScreenListenerParameters *p, signed short x, signed sho
     }
     else
     {
-        (p->target->onMove)(p->target, x, y);
+        if (p->target != NULL) // todo test this
+        {
+            (p->target->onMove)(p->target, x, y);
+        }
     }
     updateLastUserEventTimestamp(p);
 }
 
-Gesture detectGesture(signed short firstX, signed short firstY, signed short lastX, signed short lastY)
+static Gesture detectHorizontalGesture(signed short dX)
+{
+    if (dX > 0)
+    {
+        return MOVE_RIGHT;
+    }
+    else
+    {
+        return MOVE_LEFT;
+    }        
+}
+
+static Gesture detectVerticalGesture(signed short dY)
+{
+    if (dY > 0)
+    {
+        return MOVE_DOWN;
+    }
+    else
+    {
+        return MOVE_UP;
+    }        
+}
+
+static Gesture detectGesture(signed short firstX, signed short firstY, signed short lastX, signed short lastY)
 {
     signed short dX = lastX - firstX;
     signed short dY = lastY - firstY;
@@ -46,25 +74,11 @@ Gesture detectGesture(signed short firstX, signed short firstY, signed short las
     }
     if (absDx > absDy)
     {
-        if (dX > 0)
-        {
-            return MOVE_RIGHT;
-        }
-        else
-        {
-            return MOVE_LEFT;
-        }        
+        return detectHorizontalGesture(dX);
     }
     else
     {
-        if (dY > 0)
-        {
-            return MOVE_DOWN;
-        }
-        else
-        {
-            return MOVE_UP;
-        }        
+        return detectVerticalGesture(dY);
     }
 }
 
@@ -78,6 +92,11 @@ static void notTouched(TouchScreenListenerParameters *p)
         {
             (target->onRelease)(target, p->lastX, p->lastY);
             p->target = NULL;
+        }
+        Gesture gesture = detectGesture(p->lastX, p->lastY, p->firstX, p->firstY);
+        if (gesture != NONE)
+        {
+            (p->screen->onGesture)(p->screen, gesture);
         }
         p->firstX = -1;
         p->firstY = -1;

@@ -7,6 +7,11 @@ void componentNoopHandler(Component *component, signed short x, signed short y)
     // empty
 }
 
+void componentGestureNoopHandler(Component *component, Gesture gesture)
+{
+    // empty
+}
+
 bool componentNewState(Component *component, WatchState *watchState)
 {
     return true;
