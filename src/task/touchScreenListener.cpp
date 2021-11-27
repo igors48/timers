@@ -30,7 +30,7 @@ static void touched(TouchScreenListenerParameters *p, signed short x, signed sho
     }
     else
     {
-        if (p->target != NULL) // todo test this
+        if (p->target != NULL) 
         {
             (p->target->onMove)(p->target, x, y);
         }

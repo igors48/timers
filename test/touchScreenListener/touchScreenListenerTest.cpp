@@ -153,6 +153,8 @@ void whenFirstTouchInsideComponent()
     TEST_ASSERT_EQUAL_CHAR(0, onReleaseHandlerCalled); // THEN component onRelease handler not called
     TEST_ASSERT_EQUAL_INT16(48, p.lastX);              // THEN last coordinates updated
     TEST_ASSERT_EQUAL_INT16(49, p.lastY);
+    TEST_ASSERT_EQUAL_INT16(48, p.firstX);              // THEN first coordinates updated
+    TEST_ASSERT_EQUAL_INT16(49, p.firstY);
     TEST_ASSERT_EQUAL_INT64(42, lastUserEventTimestamp); //THEN last user event timestamp updated
 }
 
@@ -177,6 +179,30 @@ void whenNotFirstTouch()
     TEST_ASSERT_EQUAL_CHAR(1, onMoveHandlerCalled);  // THEN component onMove handler called
     TEST_ASSERT_EQUAL_INT16(50, onMoveHandlerX);     // THEN last coordinates passed to handler
     TEST_ASSERT_EQUAL_INT16(51, onMoveHandlerY);
+    TEST_ASSERT_EQUAL_CHAR(0, onReleaseHandlerCalled);   // THEN component onRelease handler not called
+    TEST_ASSERT_EQUAL_INT16(50, p.lastX);                // THEN last coordinates updated
+    TEST_ASSERT_EQUAL_INT16(51, p.lastY);                // THEN last coordinates updated
+    TEST_ASSERT_EQUAL_INT64(43, lastUserEventTimestamp); //THEN last user event timestamp updated
+}
+
+void whenNotFirstTouchWithoutTarget()
+{
+    xResult = 48;
+    yResult = 49;
+    getTouchResult = true;
+
+    touchScreenListener(&p);
+
+    xResult = 50;
+    yResult = 51;
+    timeResult = 43;
+    onTouchHandlerCalled = 0;
+
+    touchScreenListener(&p);
+
+    TEST_ASSERT_NULL(p.target);                  // THEN target is set to found component
+    TEST_ASSERT_EQUAL_CHAR(0, onTouchHandlerCalled); // THEN component onTouch handler not called
+    TEST_ASSERT_EQUAL_CHAR(0, onMoveHandlerCalled);  // THEN component onMove handler not called
     TEST_ASSERT_EQUAL_CHAR(0, onReleaseHandlerCalled);   // THEN component onRelease handler not called
     TEST_ASSERT_EQUAL_INT16(50, p.lastX);                // THEN last coordinates updated
     TEST_ASSERT_EQUAL_INT16(51, p.lastY);                // THEN last coordinates updated
@@ -222,7 +248,7 @@ void whenReleasedWithtTouchComponentBefore()
     TEST_ASSERT_EQUAL_INT64(42, lastUserEventTimestamp); //THEN last user event timestamp not changed
 }
 
-void whenGestureDetected()
+void testGestureDetection()
 {
     TEST_ASSERT_TRUE(detectGesture(10, 120, 220, 120) == MOVE_RIGHT);
     TEST_ASSERT_TRUE(detectGesture(220, 120, 10, 120) == MOVE_LEFT);
@@ -231,13 +257,19 @@ void whenGestureDetected()
     TEST_ASSERT_TRUE(detectGesture(120, 120, 100, 130) == NONE);
 }
 
+void whenReleasedWithGesture()
+{
+
+}
+
 int main()
 {
     UNITY_BEGIN();
     RUN_TEST(whenFirstTouchOutsideComponent);
     RUN_TEST(whenFirstTouchInsideComponent);
     RUN_TEST(whenNotFirstTouch);
+    RUN_TEST(whenNotFirstTouchWithoutTarget);
     RUN_TEST(whenReleasedWithoutTouchComponentBefore);
-    RUN_TEST(whenGestureDetected);
+    RUN_TEST(testGestureDetection);
     UNITY_END();
 }
