@@ -44,6 +44,14 @@ static void onClick()
     setActiveTilePtr(0);
 }
 
+static void gestureEventHandler(Component *component, Gesture gesture)
+{
+    if (gesture == MOVE_RIGHT || gesture == MOVE_DOWN)
+    {
+        setActiveTilePtr(0);
+    }
+}
+
 Component createStepCounterTile(SetActiveTile setActiveTile)
 {
     setActiveTilePtr = setActiveTile;
@@ -70,5 +78,5 @@ Component createStepCounterTile(SetActiveTile setActiveTile)
 
     state = createGroupState(COMPONENTS_COUNT, components);
 
-    return createGroupComponent(0, 0, &state);
+    return createTile(&state, gestureEventHandler);
 }

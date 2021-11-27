@@ -12,3 +12,6 @@ typedef struct
 GroupState createGroupState(unsigned char childrenCount, void **children);
 
 Component createGroupComponent(signed short x, signed short y, GroupState *state);
+
+// todo consider Tile component
+Component createTile(GroupState *state, GestureEventHandler gestureEventHandler);

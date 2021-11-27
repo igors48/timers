@@ -1,5 +1,3 @@
-#include <Arduino.h>
-
 #include "screenComponent.hpp"
 #include "component.hpp"
 #include "group.hpp"
@@ -50,7 +48,8 @@ static void screenComponentMount(Component *component, signed short x, signed sh
 
 static void screenComponentGestureEventHandler(Component *component, Gesture gesture)
 {
-    Serial.printf("gesture %d\n", (int)gesture);
+    Component* active = getActiveTile(component);
+    (active->onGesture)(active, gesture);
 }
 
 ScreenState createScreenState(unsigned short tilesCount, void **tiles)

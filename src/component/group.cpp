@@ -83,3 +83,11 @@ Component createGroupComponent(signed short x, signed short y, GroupState *state
             .state = state,
         };
 }
+
+Component createTile(GroupState *state, GestureEventHandler gestureEventHandler)
+{
+    Component tile = createGroupComponent(0, 0, state);
+    tile.onGesture = gestureEventHandler;
+
+    return tile;
+}

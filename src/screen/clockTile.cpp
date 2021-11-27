@@ -91,6 +91,14 @@ static void onClick()
     setActiveTilePtr(1);
 }
 
+static void gestureEventHandler(Component *component, Gesture gesture)
+{
+    if (gesture == MOVE_LEFT || gesture == MOVE_UP)
+    {
+        setActiveTilePtr(1);
+    }
+}
+
 Component createClockTile(SetActiveTile setActiveTile)
 {
     setActiveTilePtr = setActiveTile;
@@ -140,6 +148,6 @@ Component createClockTile(SetActiveTile setActiveTile)
     components[7] = &backButton;
 
     state = createGroupState(COMPONENTS_COUNT, components);
-
-    return createGroupComponent(0, 0, &state);
+    
+    return createTile(&state, gestureEventHandler);
 }
