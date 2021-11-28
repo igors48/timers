@@ -24,6 +24,8 @@ bool onReleaseHandlerCalled;
 signed short onReleaseHandlerX;
 signed short onReleaseHandlerY;
 Component screen;
+bool screenOnGestureCalled;
+Gesture screenGesture;
 
 WatchApi watchApi;
 SystemApi systemApi;
@@ -73,6 +75,12 @@ void componentOnReleaseStub(Component *component, signed short x, signed short y
     onReleaseHandlerY = y;
 }
 
+void screenOnGestureSub(Component *component, Gesture gesture)
+{
+    screenOnGestureCalled = true;
+    screenGesture = gesture;
+}
+
 void setUp(void)
 {
     timeResult = 42;
@@ -104,6 +112,10 @@ void setUp(void)
 
     screen = {};
     screen.contains = noTargetStub;
+    screen.onGesture = screenOnGestureSub;
+
+    screenOnGestureCalled = false;
+    screenGesture = NONE;
 
     p = {
         .target = NULL,
@@ -134,6 +146,7 @@ void whenFirstTouchOutsideComponent()
     TEST_ASSERT_EQUAL_INT16(48, p.lastX);              // THEN last coordinates updated
     TEST_ASSERT_EQUAL_INT16(49, p.lastY);
     TEST_ASSERT_EQUAL_INT64(42, lastUserEventTimestamp); //THEN last user event timestamp updated
+    TEST_ASSERT_FALSE(screenOnGestureCalled); // THEN no gesture detected
 }
 
 void whenFirstTouchInsideComponent()
@@ -156,6 +169,7 @@ void whenFirstTouchInsideComponent()
     TEST_ASSERT_EQUAL_INT16(48, p.firstX);              // THEN first coordinates updated
     TEST_ASSERT_EQUAL_INT16(49, p.firstY);
     TEST_ASSERT_EQUAL_INT64(42, lastUserEventTimestamp); //THEN last user event timestamp updated
+    TEST_ASSERT_FALSE(screenOnGestureCalled); // THEN no gesture detected
 }
 
 void whenNotFirstTouch()
@@ -183,6 +197,7 @@ void whenNotFirstTouch()
     TEST_ASSERT_EQUAL_INT16(50, p.lastX);                // THEN last coordinates updated
     TEST_ASSERT_EQUAL_INT16(51, p.lastY);                // THEN last coordinates updated
     TEST_ASSERT_EQUAL_INT64(43, lastUserEventTimestamp); //THEN last user event timestamp updated
+    TEST_ASSERT_FALSE(screenOnGestureCalled); // THEN no gesture detected
 }
 
 void whenNotFirstTouchWithoutTarget()
@@ -207,6 +222,7 @@ void whenNotFirstTouchWithoutTarget()
     TEST_ASSERT_EQUAL_INT16(50, p.lastX);                // THEN last coordinates updated
     TEST_ASSERT_EQUAL_INT16(51, p.lastY);                // THEN last coordinates updated
     TEST_ASSERT_EQUAL_INT64(43, lastUserEventTimestamp); //THEN last user event timestamp updated
+    TEST_ASSERT_FALSE(screenOnGestureCalled); // THEN no gesture detected
 }
 
 void whenReleasedWithoutTouchComponentBefore()
@@ -219,9 +235,10 @@ void whenReleasedWithoutTouchComponentBefore()
     TEST_ASSERT_EQUAL_CHAR(0, onMoveHandlerCalled);    // THEN component onMove handler not called
     TEST_ASSERT_EQUAL_CHAR(0, onReleaseHandlerCalled); // THEN component onRelease handler not called
     TEST_ASSERT_EQUAL_INT64(0, lastUserEventTimestamp); //THEN last user event timestamp not changed
+    TEST_ASSERT_FALSE(screenOnGestureCalled); // THEN no gesture detected
 }
 
-void whenReleasedWithtTouchComponentBefore()
+void whenReleasedWithTouchComponentBefore()
 {
     xResult = 48;
     yResult = 49;
@@ -232,11 +249,13 @@ void whenReleasedWithtTouchComponentBefore()
 
     xResult = 50;
     yResult = 51;
-    timeResult = 43;
     onTouchHandlerCalled = 0;
 
     touchScreenListener(&p);
+
     getTouchResult = false;
+    onMoveHandlerCalled = 0;
+    timeResult = 43;
 
     touchScreenListener(&p);
 
@@ -245,7 +264,8 @@ void whenReleasedWithtTouchComponentBefore()
     TEST_ASSERT_EQUAL_CHAR(1, onReleaseHandlerCalled); // THEN component onRelease handler not called
     TEST_ASSERT_EQUAL_INT16(50, onReleaseHandlerX);     // THEN last coordinates passed to handler
     TEST_ASSERT_EQUAL_INT16(51, onReleaseHandlerY);
-    TEST_ASSERT_EQUAL_INT64(42, lastUserEventTimestamp); //THEN last user event timestamp not changed
+    TEST_ASSERT_EQUAL_INT64(43, lastUserEventTimestamp); //THEN last user event timestamp updated
+    TEST_ASSERT_FALSE(screenOnGestureCalled); // THEN no gesture detected (diff is small)
 }
 
 void testGestureDetection()
@@ -257,9 +277,61 @@ void testGestureDetection()
     TEST_ASSERT_TRUE(detectGesture(120, 120, 100, 130) == NONE);
 }
 
-void whenReleasedWithGesture()
+void whenReleasedWithoutTouchComponentBeforeButWithGesture()
 {
+    xResult = 48;
+    yResult = 9;
+    getTouchResult = true;
 
+    touchScreenListener(&p);
+
+    xResult = 50;
+    yResult = 209;
+
+    touchScreenListener(&p);
+
+    getTouchResult = false;
+    timeResult = 43;
+
+    touchScreenListener(&p);
+
+    TEST_ASSERT_EQUAL_CHAR(0, onTouchHandlerCalled);   // THEN component onTouch handler not called
+    TEST_ASSERT_EQUAL_CHAR(0, onMoveHandlerCalled);    // THEN component onMove handler not called
+    TEST_ASSERT_EQUAL_CHAR(0, onReleaseHandlerCalled); // THEN component onRelease handler not called
+    TEST_ASSERT_EQUAL_INT64(43, lastUserEventTimestamp); //THEN last user event timestamp updated
+    TEST_ASSERT_TRUE(screenOnGestureCalled); // THEN gesture detected
+    TEST_ASSERT_TRUE(screenGesture == MOVE_DOWN); // THEN gesture detected
+}
+
+void whenReleasedWithTouchComponentBeforeButWithGesture()
+{
+    xResult = 48;
+    yResult = 9;
+    getTouchResult = true;
+    screen.contains = findTargetStub;
+
+    touchScreenListener(&p);
+
+    xResult = 50;
+    yResult = 209;
+
+    touchScreenListener(&p);
+    
+    getTouchResult = false;
+    onTouchHandlerCalled = 0;
+    onMoveHandlerCalled = 0;
+    timeResult = 43;
+
+    touchScreenListener(&p);
+
+    TEST_ASSERT_EQUAL_CHAR(0, onTouchHandlerCalled);   // THEN component onTouch handler not called
+    TEST_ASSERT_EQUAL_CHAR(0, onMoveHandlerCalled);    // THEN component onMove handler not called
+    TEST_ASSERT_EQUAL_CHAR(1, onReleaseHandlerCalled); // THEN component onRelease handler not called
+    TEST_ASSERT_EQUAL_INT16(50, onReleaseHandlerX);     // THEN last coordinates passed to handler
+    TEST_ASSERT_EQUAL_INT16(209, onReleaseHandlerY);
+    TEST_ASSERT_EQUAL_INT64(43, lastUserEventTimestamp); //THEN last user event timestamp not changed
+    TEST_ASSERT_TRUE(screenOnGestureCalled); // THEN gesture detected
+    TEST_ASSERT_TRUE(screenGesture == MOVE_DOWN); // THEN gesture detected
 }
 
 int main()
@@ -270,6 +342,9 @@ int main()
     RUN_TEST(whenNotFirstTouch);
     RUN_TEST(whenNotFirstTouchWithoutTarget);
     RUN_TEST(whenReleasedWithoutTouchComponentBefore);
+    RUN_TEST(whenReleasedWithTouchComponentBefore);
     RUN_TEST(testGestureDetection);
+    RUN_TEST(whenReleasedWithoutTouchComponentBeforeButWithGesture);
+    RUN_TEST(whenReleasedWithTouchComponentBeforeButWithGesture);
     UNITY_END();
 }

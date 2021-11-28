@@ -9,6 +9,7 @@ typedef struct
     bool forcedRender;
     bool mounted;
     bool containsCalled;
+    Gesture gesture;
 } TileState;
 
 const unsigned char TILES_COUNT = 2;
@@ -44,6 +45,12 @@ Component* tileContainsStub(Component *component, signed short x, signed short y
     return component;
 }
 
+void tileGestureStub(Component *component, Gesture gesture)
+{
+    TileState *state = (TileState *)component->state;
+    state->gesture = gesture;
+}
+
 void fillRectStub(signed int x, signed int y, signed int w, signed int h, unsigned int color)
 {
     fillRectCalled = true;
@@ -60,24 +67,28 @@ void setUp(void)
         .forcedRender = false,
         .mounted = false,
         .containsCalled = false,
+        .gesture = NONE,
     };
     firstTile = {};
     firstTile.state = &firstTileState;
     firstTile.render = tileRenderStub;
     firstTile.mount = tileMountStub;
     firstTile.contains = tileContainsStub;
+    firstTile.onGesture = tileGestureStub;
     
     secondTileState = {
         .rendered = false,
         .forcedRender = false,
         .mounted = false,
         .containsCalled = false,
+        .gesture = NONE,
     };
     secondTile = {};
     secondTile.state = &secondTileState;
     secondTile.render = tileRenderStub;
     secondTile.mount = tileMountStub;
     secondTile.contains = tileContainsStub;
+    secondTile.onGesture = tileGestureStub;
 
     tiles[0] = &firstTile;
     tiles[1] = &secondTile;
@@ -118,7 +129,7 @@ void whenNewStateAndActiveTileTheSame()
 
     bool newState = screenComponentNewState(&screenComponent, NULL);
 
-    TEST_ASSERT_EQUAL_UINT8(0, newState); // THEN this old state
+    TEST_ASSERT_EQUAL_UINT8(0, newState); // THEN this is old state
 }
 
 void whenNewStateAndActiveTileChanged()
@@ -127,7 +138,7 @@ void whenNewStateAndActiveTileChanged()
 
     bool newState = screenComponentNewState(&screenComponent, NULL);
 
-    TEST_ASSERT_EQUAL_UINT8(1, newState); // THEN this new state
+    TEST_ASSERT_EQUAL_UINT8(1, newState); // THEN this is new state
 }
 
 void whenMount()
@@ -144,8 +155,18 @@ void whenContains()
 
     screenComponentContains(&screenComponent, 42, 42);
 
-    TEST_ASSERT_EQUAL_UINT8(0, firstTileState.containsCalled); // THEN 
-    TEST_ASSERT_EQUAL_UINT8(1, secondTileState.containsCalled); // THEN 
+    TEST_ASSERT_EQUAL_UINT8(0, firstTileState.containsCalled); // THEN not active tile not touched
+    TEST_ASSERT_EQUAL_UINT8(1, secondTileState.containsCalled); // THEN active tile contains called
+}
+
+void whenGesture()
+{
+    screenState.activeTile = 1;
+
+    screenComponentGestureEventHandler(&screenComponent, MOVE_DOWN);
+
+    TEST_ASSERT_TRUE(firstTileState.gesture == NONE); // THEN not active tile not touched
+    TEST_ASSERT_TRUE(secondTileState.gesture == MOVE_DOWN); // THEN active tile contains called
 }
 
 int main()
@@ -157,5 +178,6 @@ int main()
     RUN_TEST(whenNewStateAndActiveTileChanged);
     RUN_TEST(whenMount);
     RUN_TEST(whenContains);
+    RUN_TEST(whenGesture);
     UNITY_END();
 }
