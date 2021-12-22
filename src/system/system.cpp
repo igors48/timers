@@ -48,6 +48,11 @@ void systemResume(void *handle)
     vTaskResume(handle);
 }
 
+bool systemQueueReceive(void *queue, void *buffer, unsigned int blockTimeMillis)
+{
+    return xQueueReceive(*(QueueHandle_t *)queue, buffer, (TickType_t)blockTimeMillis / portTICK_PERIOD_MS) == pdTRUE;   
+}
+
 SystemApi defaultSystemApi()
 {
     return {
@@ -58,5 +63,7 @@ SystemApi defaultSystemApi()
         .delay = systemDelay,
         .delayUntil = systemDelayUntil,
         .suspend = systemSuspend,
-        .resume = systemResume};
+        .resume = systemResume,
+        .queueReceive = systemQueueReceive,
+    };
 }
