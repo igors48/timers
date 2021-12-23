@@ -1,5 +1,6 @@
 #include <WiFi.h>
 #include <Arduino.h>
+#include "driver/i2s.h"
 
 #include "ttgo.hpp"
 #include "watch.hpp"
@@ -22,6 +23,31 @@ void watchInitBma()
     sensor->enableWakeupInterrupt();
 }
 
+void watchInitI2S()
+{
+    i2s_config_t i2s_config = {
+        .mode = (i2s_mode_t)(I2S_MODE_MASTER | I2S_MODE_TX),
+        .sample_rate = 8000,
+        .bits_per_sample = I2S_BITS_PER_SAMPLE_16BIT,
+        .channel_format = I2S_CHANNEL_FMT_RIGHT_LEFT,
+        .communication_format = (i2s_comm_format_t)(I2S_COMM_FORMAT_I2S | I2S_COMM_FORMAT_I2S_MSB),
+        .intr_alloc_flags = ESP_INTR_FLAG_LEVEL1,
+        .dma_buf_count = 8,
+        .dma_buf_len = 1024,
+        .use_apll = false,
+    };
+    esp_err_t error = i2s_driver_install(I2S_NUM_0, &i2s_config, 0, NULL);
+    Serial.printf("after i2s driver install %d \r\n", error);
+
+    i2s_pin_config_t i2s_cfg;
+    i2s_cfg.bck_io_num = TWATCH_DAC_IIS_BCK;
+    i2s_cfg.ws_io_num = TWATCH_DAC_IIS_WS;
+    i2s_cfg.data_out_num = TWATCH_DAC_IIS_DOUT;
+    i2s_cfg.data_in_num = I2S_PIN_NO_CHANGE;
+    esp_err_t error = i2s_set_pin(I2S_NUM_0, &i2s_cfg);
+    Serial.printf("after i2s set pin %d \r\n", error);
+}
+
 void watchInit()
 {
     watch = TTGOClass::getWatch();
@@ -42,6 +68,8 @@ void watchInit()
     watchInitBma();
 
     watch->motor_begin();
+
+    watchInitI2S();
 }
 
 void watchAfterWakeUp()
@@ -78,18 +106,17 @@ void watchGoToSleep(unsigned long sleepTimeMicros)
     Serial.println("after esp_light_sleep_start");
 }
 
-bool watchGetTouch(signed short &x, signed short &y){
+bool watchGetTouch(signed short &x, signed short &y)
+{
     return watch->getTouch(x, y);
 }
 
 WatchApi defaultWatchApi()
 {
-    return
-    {
+    return {
         .init = watchInit,
         .afterWakeUp = watchAfterWakeUp,
         .beforeGoToSleep = watchBeforeGoToSleep,
         .goToSleep = watchGoToSleep,
-        .getTouch = watchGetTouch
-    };
+        .getTouch = watchGetTouch};
 }
