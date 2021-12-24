@@ -1,6 +1,6 @@
 #pragma once
 
-typedef signed int (*Write)(signed int i2sNum, const void *src, signed int size, signed int *bytesWritten, unsigned int waitInMillis);
+typedef signed int (*Write)(const void *src, signed int size, signed int *bytesWritten);
 
 typedef struct 
 {

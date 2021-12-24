@@ -5,7 +5,10 @@ static const char SOUND_PLAYER[] = "soundPlayer";
 static const unsigned short waveLength = 10;
 static const unsigned short volume = 2048;
 static const unsigned short samplesCount = 2000; // todo 1/4 sec -> 8000 / 4. it depends on sample rate defined not here. need to refactor
-static unsigned int buffer[samplesCount];
+static const unsigned char sampleSize = 4;
+static const unsigned short bufferSize = samplesCount * sampleSize;
+
+static unsigned int buffer[bufferSize];
 
 static void beep(SoundPlayerParameters *p)
 {
@@ -29,7 +32,8 @@ static void beep(SoundPlayerParameters *p)
         unsigned int output = (outputValue << 16) | (outputValue & 0xffff);
         buffer[i] = output;
     }
-    (p->i2sApi->write)();
+    int bytesWritten;
+    (p->i2sApi->write)(&buffer, bufferSize, &bytesWritten);
 }
 
 void soundPlayer(SoundPlayerParameters *p)

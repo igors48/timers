@@ -7,6 +7,7 @@
 #include "watch/tft.hpp"
 #include "watch/bma.hpp"
 #include "watch/motor.hpp"
+#include "watch/i2s.hpp"
 
 #include "supervisor/supervisor.hpp"
 
@@ -15,6 +16,7 @@
 #include "task/watchStateRender.hpp"
 #include "task/touchScreenListener.hpp"
 #include "task/serviceProcedure.hpp"
+#include "task/soundPlayer.hpp"
 
 #include "screen/screen.hpp"
 
@@ -29,6 +31,7 @@ RtcApi rtcApi;
 TftApi tftApi;
 BmaApi bmaApi;
 MotorApi motorApi;
+I2sApi i2sApi;
 
 time_t lastUserEventTimestamp; // todo consider rename. this value is updated by timer wakeup also
 WatchState watchState;
@@ -53,6 +56,9 @@ WatchStateRenderParameters watchStateRenderParameters;
 TaskHandle_t watchStateRenderTaskHandle;
 
 ServiceProcedureParameters serviceProcedureParameters;
+
+QueueHandle_t soundQueue;
+SoundPlayerParameters soundPlayerParameters;
 
 void buttonListenerTask(void *p)
 {
@@ -108,6 +114,14 @@ void serviceProcedureTask(void *p)
     }
 }
 
+void soundPlayerTask(void *p)
+{
+    while (true)
+    {
+        soundPlayer((SoundPlayerParameters *)p);
+    }
+}
+
 void buttonInterruptHandler(void)
 {
     vTaskResume(buttonListenerTaskHandle);
@@ -119,6 +133,7 @@ void setup()
     delay(4000);
 
     watchMutex = xSemaphoreCreateMutex();
+    soundQueue = xQueueCreate(1, sizeof(char));
 
     if (xSemaphoreTake(watchMutex, 1000 / portTICK_PERIOD_MS))
     {
@@ -134,6 +149,7 @@ void setup()
         tftApi = watchTftApi();
         bmaApi = watchBmaApi();
         motorApi = watchMotorApi();
+        i2sApi = watchI2sApi();
 
         lastUserEventTimestamp = systemApi.time();
 
@@ -192,6 +208,13 @@ void setup()
             .motorApi = &motorApi,
         };
         xTaskCreate(serviceProcedureTask, "serviceProcedureTask", 2048, (void *)&serviceProcedureParameters, 1, NULL);
+
+        soundPlayerParameters = {
+            .queue = &soundQueue,
+            .i2sApi = &i2sApi,
+            .systemApi = &systemApi,    
+        };
+        xTaskCreate(soundPlayerTask, "soundPlayerTask", 2048, (void *)&soundPlayerParameters, 1, NULL);
 
         tasks[0] = watchStateProducerTaskHandle;
         tasks[1] = watchStateRenderTaskHandle;

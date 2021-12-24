@@ -2,9 +2,9 @@
 #include "driver/i2s.h"
 #include "i2s.hpp"
 
-signed int i2sWrite(signed int i2sNum, const void *src, signed int size, signed int *bytesWritten, unsigned int waitInMillis)
+signed int i2sWrite(const void *src, signed int size, signed int *bytesWritten)
 {
-    return i2s_write((i2s_port_t)i2sNum, src, size, (size_t *)bytesWritten, (TickType_t)waitInMillis / portTICK_PERIOD_MS);
+    return i2s_write(I2S_NUM_0, src, size, (size_t *)bytesWritten, portMAX_DELAY);
 }
 
 I2sApi watchI2sApi()
