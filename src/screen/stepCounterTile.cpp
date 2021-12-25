@@ -23,6 +23,7 @@ static ButtonComponentState backButtonState;
 static Component backButton;
 
 static SetActiveTile setActiveTilePtr;
+static SoundApi *soundApiPtr;
 
 static void provideHourMinuteState(TextState *state, WatchState *watchState)
 {
@@ -41,7 +42,8 @@ static void provideStepCounterState(TextState *state, WatchState *watchState)
 
 static void onClick()
 {
-    setActiveTilePtr(0);
+    soundApiPtr->beep();
+    //setActiveTilePtr(0);
 }
 
 static void gestureEventHandler(Component *component, Gesture gesture)
@@ -52,9 +54,10 @@ static void gestureEventHandler(Component *component, Gesture gesture)
     }
 }
 
-Component createStepCounterTile(SetActiveTile setActiveTile)
+Component createStepCounterTile(SetActiveTile setActiveTile, SoundApi *soundApi)
 {
     setActiveTilePtr = setActiveTile;
+    soundApiPtr = soundApi;
 
     hourMinute = createTextState(7, 1, COLOR_INFORMATION, provideHourMinuteState);
     second = createTextState(7, 1, COLOR_INFORMATION, provideSecondState);

@@ -79,6 +79,8 @@ void watchAfterWakeUp()
     watch->displayWakeup();
     watch->setBrightness(255);
     watch->touchWakup();
+
+    watchInitI2S();
 }
 
 void watchBeforeGoToSleep()

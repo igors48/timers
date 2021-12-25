@@ -2,5 +2,6 @@
 
 #include "component/component.hpp"
 #include "screen.hpp"
+#include "system/sound.hpp"
 
-Component createStepCounterTile(SetActiveTile setActiveTile);
+Component createStepCounterTile(SetActiveTile setActiveTile, SoundApi *soundApi);

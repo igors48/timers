@@ -33,7 +33,8 @@ static void beep(SoundPlayerParameters *p)
         buffer[i] = output;
     }
     int bytesWritten;
-    (p->i2sApi->write)(&buffer, bufferSize, &bytesWritten);
+    int error = (p->i2sApi->write)(&buffer, bufferSize, &bytesWritten);
+    (p->systemApi->log)(SOUND_PLAYER, "after write %d status %d", bytesWritten, error);
 }
 
 void soundPlayer(SoundPlayerParameters *p)
@@ -41,6 +42,7 @@ void soundPlayer(SoundPlayerParameters *p)
     unsigned char code;
     if ((p->systemApi->queueReceive)(p->queue, &code, 0xffffffffUL)) // todo consider how to use the portMAX_DELAY const here
     {
+        (p->systemApi->log)(SOUND_PLAYER, "before beep");
         beep(p);
     }
 }

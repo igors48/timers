@@ -17,10 +17,10 @@ static void setActiveTile(unsigned short activeTile)
     screenState.activeTile = activeTile;
 }
 
-Component createScreen()
+Component createScreen(SoundApi *soundApi)
 {
     clockTile = createClockTile(setActiveTile);
-    stepCounterTile = createStepCounterTile(setActiveTile);
+    stepCounterTile = createStepCounterTile(setActiveTile, soundApi);
 
     tiles[0] = &clockTile;
     tiles[1] = &stepCounterTile;

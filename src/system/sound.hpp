@@ -1,5 +1,7 @@
 #pragma once
 
+#include "system.hpp"
+
 typedef void (*Beep)();
 
 typedef struct {

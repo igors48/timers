@@ -178,7 +178,7 @@ void setup()
         };
         xTaskCreate(watchStateProducerTask, "watchStateProducerTask", 2048, (void *)&watchStateProducerParameters, 1, &watchStateProducerTaskHandle);
 
-        screen = createScreen();
+        screen = createScreen(&soundApi);
 
         watchStateRenderParameters = {
             .watchMutex = &watchMutex,
