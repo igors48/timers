@@ -32,7 +32,7 @@ void watchInitI2S()
         .channel_format = I2S_CHANNEL_FMT_RIGHT_LEFT,
         .communication_format = (i2s_comm_format_t)(I2S_COMM_FORMAT_I2S | I2S_COMM_FORMAT_I2S_MSB),
         .intr_alloc_flags = ESP_INTR_FLAG_LEVEL1,
-        .dma_buf_count = 8,
+        .dma_buf_count = 2,
         .dma_buf_len = 1024,
         .use_apll = false,
     };
@@ -53,7 +53,7 @@ void watchInit()
     watch = TTGOClass::getWatch();
     watch->begin();
 
-    Serial.println(__DATE__);
+    //Serial.println(__DATE__);
     Serial.println(__DATE__);
     Serial.println(__TIME__);
     RTC_Date compiled = RTC_Date(__DATE__, __TIME__); // seems __DATE__, __TIME__ set to compilation time for this file not the project
@@ -80,7 +80,7 @@ void watchAfterWakeUp()
     watch->setBrightness(255);
     watch->touchWakup();
 
-    watchInitI2S();
+    watch->power->setPowerOutPut(AXP202_LDO4, true); // audio power
 }
 
 void watchBeforeGoToSleep()

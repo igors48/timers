@@ -34,7 +34,21 @@ static void beep(SoundPlayerParameters *p)
     }
     int bytesWritten;
     int error = (p->i2sApi->write)(&buffer, bufferSize, &bytesWritten);
-    (p->systemApi->log)(SOUND_PLAYER, "after write %d status %d", bytesWritten, error);
+    (p->systemApi->log)(SOUND_PLAYER, "after write sound %d status %d", bytesWritten, error);
+}
+
+static void silence(SoundPlayerParameters *p)
+{
+    signed short outputValue = 0;
+    for (unsigned short i = 0; i < samplesCount; i++)
+    {
+        unsigned int output = (outputValue << 16) | (outputValue & 0xffff);
+        buffer[i] = output;
+    }
+    int bytesWritten;
+    int error = (p->i2sApi->write)(&buffer, bufferSize, &bytesWritten);
+    error = (p->i2sApi->write)(&buffer, bufferSize, &bytesWritten);
+    (p->systemApi->log)(SOUND_PLAYER, "after write silence %d status %d", bytesWritten, error);
 }
 
 void soundPlayer(SoundPlayerParameters *p)
@@ -44,5 +58,6 @@ void soundPlayer(SoundPlayerParameters *p)
     {
         (p->systemApi->log)(SOUND_PLAYER, "before beep");
         beep(p);
+        silence(p);
     }
 }

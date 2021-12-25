@@ -136,7 +136,7 @@ void setup()
     delay(4000);
 
     watchMutex = xSemaphoreCreateMutex();
-    soundQueue = xQueueCreate(1, sizeof(char));
+    soundQueue = xQueueCreate(100, sizeof(char));
 
     if (xSemaphoreTake(watchMutex, 1000 / portTICK_PERIOD_MS))
     {
