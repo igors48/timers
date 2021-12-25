@@ -53,6 +53,11 @@ bool systemQueueReceive(void *queue, void *buffer, unsigned int blockTimeMillis)
     return xQueueReceive(*(QueueHandle_t *)queue, buffer, (TickType_t)blockTimeMillis / portTICK_PERIOD_MS) == pdTRUE;   
 }
 
+bool systemQueueSend(void *queue, void *item, unsigned int blockTimeMillis)
+{
+    return xQueueSend(*(QueueHandle_t *)queue, item, (TickType_t)blockTimeMillis / portTICK_PERIOD_MS) == pdTRUE;   
+}
+
 SystemApi defaultSystemApi()
 {
     return {
@@ -65,5 +70,6 @@ SystemApi defaultSystemApi()
         .suspend = systemSuspend,
         .resume = systemResume,
         .queueReceive = systemQueueReceive,
+        .queueSend = systemQueueSend,
     };
 }

@@ -8,6 +8,7 @@ typedef void (*DelayUntil)(unsigned int *prevoiusWakeTimeMillis, unsigned int ti
 typedef void (*Resume)(void *handle);
 typedef void (*Suspend)(void *handle);
 typedef bool (*QueueReceive)(void *queue, void *buffer, unsigned int blockTimeMillis);  
+typedef bool (*QueueSend)(void *queue, void *item, unsigned int blockTimeMillis);
 typedef void (*Log)(const char *source, const char *message, ...);
 
 typedef struct
@@ -21,6 +22,7 @@ typedef struct
     Suspend suspend;
     Resume resume;
     QueueReceive queueReceive;
+    QueueSend queueSend;
 } SystemApi;
 
 SystemApi defaultSystemApi();

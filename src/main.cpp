@@ -1,4 +1,5 @@
 #include "system/system.hpp"
+#include "system/sound.hpp"
 
 #include "watch/ttgo.hpp"
 #include "watch/watch.hpp"
@@ -24,9 +25,11 @@ TTGOClass *watch;
 
 SemaphoreHandle_t watchMutex;
 
+SystemApi systemApi;
+SoundApi soundApi;
+
 WatchApi watchApi;
 PowerApi powerApi;
-SystemApi systemApi;
 RtcApi rtcApi;
 TftApi tftApi;
 BmaApi bmaApi;
@@ -151,6 +154,8 @@ void setup()
         motorApi = watchMotorApi();
         i2sApi = watchI2sApi();
 
+        soundApi = watchSoundApi(&soundQueue, &systemApi);
+        
         lastUserEventTimestamp = systemApi.time();
 
         buttonListenerParameters = {
