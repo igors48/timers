@@ -6,8 +6,12 @@
 #include "component/buttonComponent.hpp"
 #include "component/textComponent.hpp"
 
+static char COLOR[] = "COLOR";
+static char STEPS[] = "STEPS";
+
 static const unsigned char COMPONENTS_COUNT = 8;
 static void* components[COMPONENTS_COUNT];
+
 static GroupState state;
 
 static ButtonComponentState hourMinuteColorChangeButtonState;
@@ -110,18 +114,21 @@ Component createClockTile(SetActiveTile setActiveTile)
     second = createTextState(7, 1, COLOR_INFORMATION, provideSecondState);
 
     hourMinuteColorChangeButtonState = {
+        .title = COLOR,
         .pressed = false,
         ._pressed = true,
         .handler = changeHourMinuteColor
     };
 
     secondColorChangeButtonState = {
+        .title = COLOR,
         .pressed = false,
         ._pressed = true,
         .handler = changeSecondColor
     };
 
     backButtonState = {
+        .title = STEPS,
         .pressed = false,
         ._pressed = true,
         .handler = onClick

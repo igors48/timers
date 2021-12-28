@@ -14,7 +14,7 @@ static void buttonComponentRender(Component *component, bool forced, WatchState 
     tftApi->setTextSize(2);
     tftApi->setTextFont(1);
     tftApi->setTextColor(COLOR_INTERACTION, COLOR_BLACK);
-    tftApi->print("Color");
+    tftApi->print(state->title);
 }
 
 static bool buttonComponentNewState(Component *component, WatchState *watchState)

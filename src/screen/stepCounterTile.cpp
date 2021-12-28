@@ -6,8 +6,11 @@
 #include "component/group.hpp"
 #include "component/textComponent.hpp"
 
+static char BEEP[] = "BEEP";
+
 static const unsigned char COMPONENTS_COUNT = 4;
 static void* components[COMPONENTS_COUNT];
+
 static GroupState state;
 
 static TextState hourMinute;
@@ -64,6 +67,7 @@ Component createStepCounterTile(SetActiveTile setActiveTile, SoundApi *soundApi)
     stepCounter = createTextState(1, 3, COLOR_ATTENTION, provideStepCounterState);
 
     backButtonState = {
+        .title = BEEP,
         .pressed = false,
         ._pressed = true,
         .handler = onClick

@@ -6,6 +6,7 @@ typedef void (*Handler)();
 
 typedef struct
 {
+    char *title;
     bool pressed;
     bool _pressed;
     Handler handler;
