@@ -37,7 +37,7 @@ static void beep(SoundPlayerParameters *p)
     (p->systemApi->log)(SOUND_PLAYER, "after write sound %d status %d", bytesWritten, error);
 }
 
-static void silence(SoundPlayerParameters *p)
+static void silence(SoundPlayerParameters *p) // todo improve i2s buffer cleanup
 {
     signed short outputValue = 0;
     for (unsigned short i = 0; i < samplesCount; i++)
