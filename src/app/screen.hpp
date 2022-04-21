@@ -1,7 +1,7 @@
 #pragma once
 
-#include "system/sound.hpp"
-#include "component/component.hpp"
+#include "core/system/sound.hpp"
+#include "core/component/component.hpp"
 
 typedef void (*SetActiveTile)(unsigned short activeTile);
 

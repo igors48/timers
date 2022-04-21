@@ -1,4 +1,4 @@
-#include "component/screenComponent.hpp"
+#include "core/component/screenComponent.hpp"
 
 #include "screen.hpp"
 #include "clockTile.hpp"

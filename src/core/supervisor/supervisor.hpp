@@ -1,9 +1,9 @@
 #pragma once
 
-#include "../watch/watch.hpp"
-#include "../system/system.hpp"
-#include "../watch/rtc.hpp"
-#include "../tools/func.hpp"
+#include "core/watch/watch.hpp"
+#include "core/system/system.hpp"
+#include "core/watch/rtc.hpp"
+#include "core/tools/func.hpp"
 
 typedef void (*SupervisorSleep)(void *v, unsigned short sleepTimeSec);
 

@@ -5,7 +5,7 @@
 #include "../powerMock.hpp"
 #include "../bmaMock.hpp"
 
-#include "task/watchStateProducer.cpp"
+#include "core/task/watchStateProducer.cpp"
 
 int watchMutex;
 Date date;

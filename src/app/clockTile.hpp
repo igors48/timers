@@ -1,6 +1,6 @@
 #pragma once
 
-#include "component/component.hpp"
+#include "core/component/component.hpp"
 #include "screen.hpp"
 
 Component createClockTile(SetActiveTile setActiveTile);

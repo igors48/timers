@@ -2,7 +2,7 @@
 
 #include "../rtcMock.hpp"
 
-#include "tools/tools.cpp"
+#include "core/tools/tools.cpp"
 
 void secondsToNextHourStartTests()
 {

@@ -3,7 +3,7 @@
 #include "../watchMock.hpp"
 #include "../systemMock.hpp"
 
-#include "task/touchScreenListener.cpp"
+#include "core/task/touchScreenListener.cpp"
 
 int watchMutex;
 long lastUserEventTimestamp;

@@ -1,5 +1,5 @@
 #pragma once
 
-#include "watch/power.hpp"
+#include "core/watch/power.hpp"
 
 PowerApi powerApiMock();

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "component/component.hpp"
+#include "core/component/component.hpp"
+#include "core/system/sound.hpp"
 #include "screen.hpp"
-#include "system/sound.hpp"
 
 Component createStepCounterTile(SetActiveTile setActiveTile, SoundApi *soundApi);

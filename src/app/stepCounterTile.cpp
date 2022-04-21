@@ -2,9 +2,9 @@
 
 #include "stepCounterTile.hpp"
 
-#include "component/buttonComponent.hpp"
-#include "component/group.hpp"
-#include "component/textComponent.hpp"
+#include "core/component/buttonComponent.hpp"
+#include "core/component/group.hpp"
+#include "core/component/textComponent.hpp"
 
 static char BEEP[] = "BEEP";
 

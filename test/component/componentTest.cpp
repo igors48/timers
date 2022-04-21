@@ -1,6 +1,6 @@
 #include <unity.h>
 
-#include "component/component.cpp"
+#include "core/component/component.cpp"
 
 void whenMount() 
 {

@@ -4,8 +4,8 @@
 #include "../watchMock.hpp"
 #include "../rtcMock.hpp"
 
-#include "supervisor/supervisor.cpp"
-#include "tools/tools.cpp"
+#include "core/supervisor/supervisor.cpp"
+#include "core/tools/tools.cpp"
 
 long timeResult;
 Date dateResult;

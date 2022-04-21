@@ -5,8 +5,8 @@
 #include "../rtcMock.hpp"
 #include "../motorMock.hpp"
 
-#include "task/serviceProcedure.cpp"
-#include "tools/tools.cpp"
+#include "core/task/serviceProcedure.cpp"
+#include "core/tools/tools.cpp"
 
 RtcApi rtcApi;
 BmaApi bmaApi;

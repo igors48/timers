@@ -1,7 +1,7 @@
 #include <unity.h>
 
-#include "component/component.cpp"
-#include "component/group.cpp"
+#include "core/component/component.cpp"
+#include "core/component/group.cpp"
 
 typedef struct
 {

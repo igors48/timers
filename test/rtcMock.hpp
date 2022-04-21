@@ -1,5 +1,5 @@
 #pragma once
 
-#include "watch/rtc.hpp"
+#include "core/watch/rtc.hpp"
 
 RtcApi rtcApiMock();

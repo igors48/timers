@@ -2,9 +2,9 @@
 
 #include "clockTile.hpp"
 
-#include "component/group.hpp"
-#include "component/buttonComponent.hpp"
-#include "component/textComponent.hpp"
+#include "core/component/group.hpp"
+#include "core/component/buttonComponent.hpp"
+#include "core/component/textComponent.hpp"
 
 static char COLOR[] = "COLOR";
 static char STEPS[] = "STEPS";

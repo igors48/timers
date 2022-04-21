@@ -1,7 +1,7 @@
 #include <unity.h>
 
-#include "component/component.cpp"
-#include "component/screenComponent.cpp"
+#include "core/component/component.cpp"
+#include "core/component/screenComponent.cpp"
 
 typedef struct
 {

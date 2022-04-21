@@ -1,6 +1,6 @@
 #pragma once
 
-#include "tools/func.hpp"
+#include "core/tools/func.hpp"
 
 // no watch or freertos specific here. we should be able to use it in the native env
 

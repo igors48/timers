@@ -1,6 +1,6 @@
 #pragma once
 
-#include "tools/func.hpp"
+#include "core/tools/func.hpp"
 
 typedef bool (*GetTouch)(signed short &x, signed short &y);
 typedef void (*GoToSleep)(unsigned long sleepTimeMicros);

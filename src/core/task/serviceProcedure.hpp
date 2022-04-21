@@ -1,9 +1,9 @@
 #pragma once
 
-#include "system/system.hpp"
-#include "watch/rtc.hpp"
-#include "watch/bma.hpp"
-#include "watch/motor.hpp"
+#include "core/system/system.hpp"
+#include "core/watch/rtc.hpp"
+#include "core/watch/bma.hpp"
+#include "core/watch/motor.hpp"
 
 typedef struct 
 {

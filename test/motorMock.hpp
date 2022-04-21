@@ -1,5 +1,5 @@
 #pragma once
 
-#include "watch/motor.hpp"
+#include "core/watch/motor.hpp"
 
 MotorApi motorApiMock();

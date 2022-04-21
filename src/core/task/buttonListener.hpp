@@ -1,7 +1,7 @@
 #pragma once
 
-#include "system/system.hpp"
-#include "watch/power.hpp"
+#include "core/system/system.hpp"
+#include "core/watch/power.hpp"
 
 typedef struct
 {

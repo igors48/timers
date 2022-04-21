@@ -1,8 +1,8 @@
 #include <unity.h>
 
-#include "task/watchStateProducer.cpp"
-#include "component/textComponent.cpp"
-#include "component/component.cpp"
+#include "core/task/watchStateProducer.cpp"
+#include "core/component/textComponent.cpp"
+#include "core/component/component.cpp"
 
 Component component;
 TextState textState;
