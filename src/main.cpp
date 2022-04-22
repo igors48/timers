@@ -17,7 +17,7 @@
 #include "core/task/serviceProcedure.hpp"
 #include "core/task/soundPlayer.hpp"
 
-#include "app/screen.hpp"
+#include "apps/screen.hpp"
 
 TTGOClass *watch;
 
