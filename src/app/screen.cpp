@@ -1,8 +1,6 @@
 #include "core/component/screenComponent.hpp"
 
 #include "screen.hpp"
-#include "clockTile.hpp"
-#include "stepCounterTile.hpp"
 
 static Component clockTile;
 static Component stepCounterTile;
@@ -19,9 +17,6 @@ static void setActiveTile(unsigned short activeTile)
 
 Component createScreen(SoundApi *soundApi)
 {
-    clockTile = createClockTile(setActiveTile);
-    stepCounterTile = createStepCounterTile(setActiveTile, soundApi);
-
     tiles[0] = &clockTile;
     tiles[1] = &stepCounterTile;
 

@@ -24,7 +24,7 @@ Component screenComponent;
 TftApi tftApi;
 bool fillRectCalled;
 
-void tileRenderStub(Component *component, bool forced, WatchState *watchState, TftApi *tftApi)
+void tileRenderStub(Component *component, bool forced, TftApi *tftApi)
 {
     TileState *state = (TileState *)component->state;
     state->rendered = true;
@@ -101,7 +101,7 @@ void whenRenderAndActiveTileTheSame()
 {
     screenState._activeTile = screenState.activeTile;
 
-    screenComponentRender(&screenComponent, false, NULL, &tftApi);
+    screenComponentRender(&screenComponent, false, &tftApi);
 
     TEST_ASSERT_FALSE(fillRectCalled); // THEN screen not cleared
     TEST_ASSERT_TRUE(firstTileState.rendered); // THEN active tile rendered
@@ -114,7 +114,7 @@ void whenRenderAndActiveTileChanged()
 {
     screenState.activeTile = 1;
 
-    screenComponentRender(&screenComponent, false, NULL, &tftApi);
+    screenComponentRender(&screenComponent, false, &tftApi);
 
     TEST_ASSERT_TRUE(fillRectCalled); // THEN screen cleared
     TEST_ASSERT_FALSE(firstTileState.rendered); // THEN inactive tile not rendered
@@ -127,7 +127,7 @@ void whenNewStateAndActiveTileTheSame()
 {
     screenState._activeTile = 0;
 
-    bool newState = screenComponentNewState(&screenComponent, NULL);
+    bool newState = screenComponentNewState(&screenComponent);
 
     TEST_ASSERT_EQUAL_UINT8(0, newState); // THEN this is old state
 }
@@ -136,7 +136,7 @@ void whenNewStateAndActiveTileChanged()
 {
     screenState._activeTile = 42;
 
-    bool newState = screenComponentNewState(&screenComponent, NULL);
+    bool newState = screenComponentNewState(&screenComponent);
 
     TEST_ASSERT_EQUAL_UINT8(1, newState); // THEN this is new state
 }

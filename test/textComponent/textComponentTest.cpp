@@ -31,8 +31,6 @@ void setUp(void)
     component = {};
     component.state = &textState;
     
-    watchState = {};
-    
     provideCalled = false;
 }
 
