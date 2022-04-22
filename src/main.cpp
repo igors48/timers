@@ -13,8 +13,6 @@
 #include "core/supervisor/supervisor.hpp"
 
 #include "core/task/buttonListener.hpp"
-#include "core/task/watchStateProducer.hpp"
-#include "core/task/watchStateRender.hpp"
 #include "core/task/touchScreenListener.hpp"
 #include "core/task/serviceProcedure.hpp"
 #include "core/task/soundPlayer.hpp"
@@ -42,7 +40,7 @@ WatchState watchState;
 ButtonListenerParameters buttonListenerParameters;
 TaskHandle_t buttonListenerTaskHandle;
 
-const unsigned char TASK_COUNT = 3;
+const unsigned char TASK_COUNT = 1;
 TaskHandle_t tasks[TASK_COUNT];
 
 Component screen;
@@ -51,12 +49,6 @@ SupervisorParameters supervisorParameters;
 
 TouchScreenListenerParameters touchScreenListenerParameters;
 TaskHandle_t touchScreenListenerTaskHandle;
-
-WatchStateProducerParameters watchStateProducerParameters;
-TaskHandle_t watchStateProducerTaskHandle;
-
-WatchStateRenderParameters watchStateRenderParameters;
-TaskHandle_t watchStateRenderTaskHandle;
 
 ServiceProcedureParameters serviceProcedureParameters;
 
@@ -69,24 +61,6 @@ void buttonListenerTask(void *p)
     {
         vTaskSuspend(NULL);
         buttonListener((ButtonListenerParameters *)p);
-    }
-}
-
-void watchStateProducerTask(void *p)
-{
-    while (true)
-    {
-        watchStateProducer(p);
-        vTaskDelay(500 / portTICK_PERIOD_MS);
-    }
-}
-
-void watchStateRenderTask(void *p)
-{
-    while (true)
-    {
-        watchStateRender(p);
-        vTaskDelay(100 / portTICK_PERIOD_MS);
     }
 }
 
@@ -168,26 +142,7 @@ void setup()
         pinMode(AXP202_INT, INPUT_PULLUP);
         attachInterrupt(AXP202_INT, buttonInterruptHandler, FALLING);
 
-        watchStateProducerParameters = {
-            .watchMutex = &watchMutex,
-            .state = &watchState,
-            .rtcApi = &rtcApi,
-            .systemApi = &systemApi,
-            .powerApi = &powerApi,
-            .bmaApi = &bmaApi,
-        };
-        xTaskCreate(watchStateProducerTask, "watchStateProducerTask", 2048, (void *)&watchStateProducerParameters, 1, &watchStateProducerTaskHandle);
-
         screen = createScreen(&soundApi);
-
-        watchStateRenderParameters = {
-            .watchMutex = &watchMutex,
-            .state = &watchState,
-            .systemApi = &systemApi,
-            .tftApi = &tftApi,
-            .screen = &screen,
-        };
-        xTaskCreate(watchStateRenderTask, "watchStateRenderTask", 2048, (void *)&watchStateRenderParameters, 1, &watchStateRenderTaskHandle);
 
         touchScreenListenerParameters = {
             .target = NULL,
@@ -221,9 +176,7 @@ void setup()
         };
         xTaskCreate(soundPlayerTask, "soundPlayerTask", 2048, (void *)&soundPlayerParameters, 1, NULL);
 
-        tasks[0] = watchStateProducerTaskHandle;
-        tasks[1] = watchStateRenderTaskHandle;
-        tasks[2] = touchScreenListenerTaskHandle;
+        tasks[0] = touchScreenListenerTaskHandle;
 
         supervisorParameters = {
             .watchMutex = &watchMutex,
