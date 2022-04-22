@@ -21,20 +21,20 @@ Component child02;
 ChildState child02State;
 GroupState groupState;
 
-void childRenderStub(Component *component, bool forced, WatchState *watchState, TftApi *tftApi)
+void childRenderStub(Component *component, bool forced, TftApi *tftApi)
 {
     ChildState *state = (ChildState *)component->state;
     state->rendered = true;
 }
 
-bool childNewStateTrueStub(Component *component, WatchState *watchState)
+bool childNewStateTrueStub(Component *component)
 {
     ChildState *state = (ChildState *)component->state;
     state->updated = true;
     return true;
 }
 
-bool childNewStateFalseStub(Component *component, WatchState *watchState)
+bool childNewStateFalseStub(Component *component)
 {
     ChildState *state = (ChildState *)component->state;
     state->updated = true;
@@ -130,7 +130,7 @@ void whenNotContains()
 
 void whenRender()
 {
-    groupRender(&group, false, NULL, NULL);
+    groupRender(&group, false, NULL);
 
     TEST_ASSERT_EQUAL_UINT8(1, child00State.rendered); // THEN all children rendered
     TEST_ASSERT_EQUAL_UINT8(1, child01State.rendered); // THEN all children rendered
@@ -143,7 +143,7 @@ void whenRenderNotChangedChildren()
     child01.newState = childNewStateFalseStub;
     child02.newState = childNewStateFalseStub;
 
-    groupRender(&group, false, NULL, NULL);
+    groupRender(&group, false, NULL);
 
     TEST_ASSERT_EQUAL_UINT8(0, child00State.rendered); // THEN children not rendered
     TEST_ASSERT_EQUAL_UINT8(0, child01State.rendered); // THEN children not rendered
@@ -156,7 +156,7 @@ void whenRenderNotChangedChildrenInForcedMode()
     child01.newState = childNewStateFalseStub;
     child02.newState = childNewStateFalseStub;
 
-    groupRender(&group, true, NULL, NULL);
+    groupRender(&group, true, NULL);
 
     TEST_ASSERT_EQUAL_UINT8(1, child00State.rendered); // THEN all children rendered
     TEST_ASSERT_EQUAL_UINT8(1, child01State.rendered); // THEN all children rendered
@@ -165,7 +165,7 @@ void whenRenderNotChangedChildrenInForcedMode()
 
 void whenNewState()
 {
-    bool newState = groupNewState(&group, NULL);
+    bool newState = groupNewState(&group);
 
     TEST_ASSERT_EQUAL_UINT8(1, newState); // THEN true as a result
     TEST_ASSERT_EQUAL_UINT8(1, child00State.updated); // THEN all children rendered
@@ -179,7 +179,7 @@ void whenAllChildrenNewStateReturnedFalse()
     child01.newState = childNewStateFalseStub;
     child02.newState = childNewStateFalseStub;
 
-    bool newState = groupNewState(&group, NULL);
+    bool newState = groupNewState(&group);
 
     TEST_ASSERT_EQUAL_UINT8(0, newState); // THEN false as a result
     TEST_ASSERT_EQUAL_UINT8(1, child00State.updated); // THEN all children rendered
@@ -192,7 +192,7 @@ void whenNotAllChildrenNewStateReturnedFalse()
     child00.newState = childNewStateFalseStub;
     child02.newState = childNewStateFalseStub;
 
-    bool newState = groupNewState(&group, NULL);
+    bool newState = groupNewState(&group);
 
     TEST_ASSERT_EQUAL_UINT8(1, newState); // THEN true as a result
     TEST_ASSERT_EQUAL_UINT8(1, child00State.updated); // THEN all children rendered

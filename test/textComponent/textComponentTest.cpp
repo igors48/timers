@@ -1,16 +1,14 @@
 #include <unity.h>
 
-#include "core/task/watchStateProducer.cpp"
 #include "core/component/textComponent.cpp"
 #include "core/component/component.cpp"
 
 Component component;
 TextState textState;
-WatchState watchState;
 
 bool provideCalled;
 
-void provideStub(TextState *state, WatchState *watchState)
+void provideStub(TextState *state)
 {
     provideCalled = true;
 }
@@ -40,14 +38,14 @@ void setUp(void)
 
 void whenNewState()
 {
-    textComponentNewState(&component, &watchState);
+    textComponentNewState(&component);
 
     TEST_ASSERT_EQUAL_UINT8(1, provideCalled); // THEN provide function called
 }
 
 void whenStateNoChanged()
 {
-    bool changed = textComponentNewState(&component, &watchState);
+    bool changed = textComponentNewState(&component);
 
     TEST_ASSERT_EQUAL_UINT8(0, changed); // THEN state no changed
 }
@@ -55,7 +53,7 @@ void whenStateNoChanged()
 void whenContentChanged()
 {
     strcpy(textState.content, "b");
-    bool changed = textComponentNewState(&component, &watchState);
+    bool changed = textComponentNewState(&component);
 
     TEST_ASSERT_EQUAL_UINT8(1, changed); // THEN state changed
 }
@@ -63,7 +61,7 @@ void whenContentChanged()
 void whenSizeChanged()
 {
     textState.size = 48;
-    bool changed = textComponentNewState(&component, &watchState);
+    bool changed = textComponentNewState(&component);
 
     TEST_ASSERT_EQUAL_UINT8(1, changed); // THEN state changed
 }
@@ -71,7 +69,7 @@ void whenSizeChanged()
 void whenFontColorChanged()
 {
     textState.fontColor = 48;
-    bool changed = textComponentNewState(&component, &watchState);
+    bool changed = textComponentNewState(&component);
 
     TEST_ASSERT_EQUAL_UINT8(1, changed); // THEN state changed
 }
@@ -79,7 +77,7 @@ void whenFontColorChanged()
 void whenBackColorChanged()
 {
     textState.backColor = 48;
-    bool changed = textComponentNewState(&component, &watchState);
+    bool changed = textComponentNewState(&component);
 
     TEST_ASSERT_EQUAL_UINT8(1, changed); // THEN state changed
 }
@@ -87,7 +85,7 @@ void whenBackColorChanged()
 void whenFontChanged()
 {
     textState.font = 48;
-    bool changed = textComponentNewState(&component, &watchState);
+    bool changed = textComponentNewState(&component);
 
     TEST_ASSERT_EQUAL_UINT8(1, changed); // THEN state changed
 }
