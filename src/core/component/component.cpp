@@ -12,7 +12,7 @@ void componentGestureNoopHandler(Component *component, Gesture gesture)
     // empty
 }
 
-bool componentNewState(Component *component, WatchState *watchState)
+bool componentNewState(Component *component)
 {
     return true;
 }

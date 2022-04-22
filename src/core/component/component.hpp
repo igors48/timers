@@ -1,6 +1,5 @@
 #pragma once
 
-#include "../task/watchState.hpp"
 #include "../watch/tft.hpp"
 
 typedef struct Component_ Component;
@@ -13,8 +12,8 @@ typedef enum {
     MOVE_RIGHT,
 } Gesture;
 
-typedef void (*Render)(Component *component, bool forced, WatchState *watchState, TftApi *tftApi);
-typedef bool (*NewState)(Component *component, WatchState *watchState);
+typedef void (*Render)(Component *component, bool forced, TftApi *tftApi);
+typedef bool (*NewState)(Component *component);
 typedef void (*TouchEventHandler)(Component *component, signed short x, signed short y);
 typedef void (*GestureEventHandler)(Component *component, Gesture gesture);
 typedef Component* (*Contains)(Component *component, signed short x, signed short y);
@@ -46,7 +45,7 @@ void componentNoopHandler(Component *component, signed short x, signed short y);
 
 void componentGestureNoopHandler(Component *component, Gesture gesture);
 
-bool componentNewState(Component *component, WatchState *watchState);
+bool componentNewState(Component *component);
 
 Component* componentContains(Component *component, signed short x, signed short y);
 

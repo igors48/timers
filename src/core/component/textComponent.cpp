@@ -2,7 +2,7 @@
 
 #include "textComponent.hpp"
 
-static void textComponentRender(Component *component, bool forced, WatchState *watchState, TftApi *tftApi)
+static void textComponentRender(Component *component, bool forced, TftApi *tftApi)
 {
     TextState *state = (TextState *)component->state;
     (tftApi->setCursor)(component->x, component->y);
@@ -12,10 +12,10 @@ static void textComponentRender(Component *component, bool forced, WatchState *w
     (tftApi->print)(state->content);
 }
 
-static bool textComponentNewState(Component *component, WatchState *watchState)
+static bool textComponentNewState(Component *component)
 {
     TextState *state = (TextState *)component->state;
-    (state->provide)(state, watchState);
+    (state->provide)(state);
     if (strcmp(state->content, state->_content) != 0) {
         return true;
     }

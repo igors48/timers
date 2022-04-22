@@ -35,7 +35,6 @@ MotorApi motorApi;
 I2sApi i2sApi;
 
 time_t lastUserEventTimestamp; // todo consider rename. this value is updated by timer wakeup also
-WatchState watchState;
 
 ButtonListenerParameters buttonListenerParameters;
 TaskHandle_t buttonListenerTaskHandle;
