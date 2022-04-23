@@ -1,9 +1,15 @@
 #pragma once
 
-#include "../tools/func.hpp"
+#include "core/system/system.hpp"
 
-typedef struct
+typedef struct App_ App;
+
+typedef void (*AppEventHandler)(App *app);
+
+typedef struct App_
 {
-    VoidFunc activate;
-    VoidFunc deactivate;
+    AppEventHandler activate;
+    AppEventHandler deactivate;
+    SystemApi *systemApi; 
+    void *state;
 } App;
