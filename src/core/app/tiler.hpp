@@ -3,16 +3,12 @@
 #include "core/app/app.hpp"
 
 typedef void (*SetApp)(App *app);
-typedef void (*ActivatePrevTile)();
-typedef void (*ActivateNextTile)();
-typedef void (*RenderTile)();
+typedef void (*RenderApp)(bool forced);
 
 typedef struct
 {
     SetApp setApp;
-    ActivatePrevTile activatePrevTile;
-    ActivateNextTile activateNextTile;
-    RenderTile renderTile;    
+    RenderApp renderApp;    
 } Tiler;
 
 Tiler createTiler(TftApi *tftApi);

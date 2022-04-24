@@ -1,31 +1,25 @@
 #include "manager.hpp"
 
 static Tiler *tiler;
-static void **apps;
-static unsigned char appsCount;
+static void **managedApps;
+static unsigned char managedAppsCount;
 static unsigned char activeAppIndex;
 
 static void activateApp(unsigned char index)
 {
     activeAppIndex = index;
-    App *app = (App *)apps[activeAppIndex];
+    App *app = (App *)managedApps[activeAppIndex];
     (app->activate)(app);
     (tiler->setApp)(app);
-}
-
-static void activatePrevApp()
-{
-    // empty
-}
-
-static void activateNextApp()
-{
-    // empty
+    (tiler->renderApp)(true);
 }
 
 Manager createManager(unsigned char appsCount, void **apps, Tiler *tiler)
 {
-    return {
+    managedApps = apps;
+    managedAppsCount = appsCount;
 
+    return {
+        .activateApp = activateApp,
     };
 }

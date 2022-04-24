@@ -6,15 +6,13 @@
 typedef struct App_ App;
 
 typedef void (*AppEventHandler)(App *app);
-typedef Component* (*AppGetTile)();
+typedef Component* (*AppGetActiveTile)();
 
 typedef struct App_
 {
     AppEventHandler activate;
     AppEventHandler deactivate;
-    AppGetTile getActiveTile;
-    AppGetTile getPrevTile;
-    AppGetTile getNextTile;
+    AppGetActiveTile getActiveTile;
     SystemApi *systemApi; 
     void *state;
 } App;

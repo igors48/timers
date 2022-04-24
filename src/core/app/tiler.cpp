@@ -1,36 +1,17 @@
 #include "tiler.hpp"
 
 static App *activeApp;
-static Component *activeTile;
 static TftApi *tilerTftApi;
 
-static void renderTile()
+static void renderApp(bool forced)
 {
-    (activeTile->render)(activeTile, false, tilerTftApi);
-}
-
-static void forcedRenderTile()
-{
-    (activeTile->render)(activeTile, true, tilerTftApi);
+    Component *activeTile = (activeApp->getActiveTile)();
+    (activeTile->render)(activeTile, forced, tilerTftApi);
 }
 
 static void setApp(App *app)
 {
     activeApp = app;
-    activeTile = (activeApp->getActiveTile)();
-    forcedRenderTile();
-}
-
-static void activatePrevTile()
-{
-    activeTile = (activeApp->getPrevTile)();
-    forcedRenderTile();
-}
-
-static void activateNextTile()
-{
-    activeTile = (activeApp->getNextTile)();
-    forcedRenderTile();
 }
 
 Tiler createTiler(TftApi *tftApi)
@@ -39,8 +20,6 @@ Tiler createTiler(TftApi *tftApi)
 
     return {
         .setApp = setApp,
-        .activatePrevTile = activatePrevTile,
-        .activateNextTile = activateNextTile,
-        .renderTile = renderTile,
+        .renderApp = renderApp,
     };
 }
