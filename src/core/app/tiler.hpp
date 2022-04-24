@@ -2,10 +2,13 @@
 
 #include "core/app/app.hpp"
 
+typedef Tiler_ Tiler;
+
 typedef void (*SetApp)(App *app);
 typedef void (*RenderApp)(bool forced);
+typedef Component* (*Contains)(Tiler *tiler, signed short x, signed short y);
 
-typedef struct
+typedef struct Tiler_
 {
     SetApp setApp;
     RenderApp renderApp;  
@@ -14,6 +17,6 @@ typedef struct
     TouchEventHandler onMove;  
     TouchEventHandler onRelease;  
     GestureEventHandler onGesture;  
-} Tiler;
+} ;
 
 Tiler createTiler(TftApi *tftApi);

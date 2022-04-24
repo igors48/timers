@@ -23,7 +23,7 @@ static void touched(TouchScreenListenerParameters *p, signed short x, signed sho
         p->firstX = x;
         p->firstY = y;
         p->target = (tiler->contains)(tiler, x, y);
-        if (p->target != NULL)
+        if (p->target != NULL) // todo move all null target handling to the tiler 
         {
             (p->tiler->onTouch)(p->target, x, y);
         }
