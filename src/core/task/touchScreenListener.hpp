@@ -3,6 +3,7 @@
 #include "../watch/watch.hpp"
 #include "../system/system.hpp"
 #include "../component/component.hpp"
+#include "core/app/tiler.hpp"
 
 typedef struct {
     Component *target;
@@ -12,7 +13,7 @@ typedef struct {
     signed short lastY;
     void *watchMutex;
     long *lastUserEventTimestamp;
-    Component *screen;
+    Tiler *tiler;
     WatchApi *watchApi;
     SystemApi *systemApi;
 } TouchScreenListenerParameters;

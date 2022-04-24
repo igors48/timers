@@ -17,22 +17,22 @@ static void touched(TouchScreenListenerParameters *p, signed short x, signed sho
     p->lastX = x;
     p->lastY = y;
     bool firstTouch = (p->firstX == -1) && (p->firstY == -1);
-    Component *screen = p->screen;
+    Tiler *tiler = p->tiler;
     if (firstTouch)
     {
         p->firstX = x;
         p->firstY = y;
-        p->target = (screen->contains)(screen, x, y);
+        p->target = (tiler->contains)(tiler, x, y);
         if (p->target != NULL)
         {
-            (p->target->onTouch)(p->target, x, y);
+            (p->tiler->onTouch)(p->target, x, y);
         }
     }
     else
     {
         if (p->target != NULL) 
         {
-            (p->target->onMove)(p->target, x, y);
+            (p->tiler->onMove)(p->target, x, y);
         }
     }
     updateLastUserEventTimestamp(p);
@@ -90,13 +90,13 @@ static void notTouched(TouchScreenListenerParameters *p)
         Component *target = p->target;
         if (target != NULL)
         {
-            (target->onRelease)(target, p->lastX, p->lastY);
+            (p->tiler->onRelease)(target, p->lastX, p->lastY);
             p->target = NULL;
         }
         Gesture gesture = detectGesture(p->firstX, p->firstY, p->lastX, p->lastY);
         if (gesture != NONE)
         {
-            (p->screen->onGesture)(p->screen, gesture);
+            (p->tiler->onGesture)(p->target, gesture);
         }
         p->firstX = -1;
         p->firstY = -1;
