@@ -2,4 +2,4 @@
 
 #include "core/component/component.hpp"
 
-Component* createClockAppTile();
+Component* createClockAppTile(Date *dateRef);

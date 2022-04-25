@@ -1,7 +1,10 @@
+#include <stdio.h>
+
 #include "clockAppTile.hpp"
 
 #include "core/component/textComponent.hpp"
 #include "core/component/group.hpp"
+#include "core/watch/rtc.hpp"
 
 static const unsigned char COMPONENTS_COUNT = 2;
 static void* components[COMPONENTS_COUNT];
@@ -15,8 +18,22 @@ static Component secondComponent;
 static GroupState state;
 static Component group;
 
-Component* createClockAppTile()
+static Date *date;
+
+static void provideHourMinuteState(TextState *state)
 {
+    snprintf(state->content, sizeof(state->content), "%02d:%02d", date->hour, date->minute);
+}
+
+static void provideSecondState(TextState *state)
+{
+    snprintf(state->content, sizeof(state->content), ":%02d", date->second);
+}
+
+Component* createClockAppTile(Date *dateRef)
+{
+    date = dateRef;
+
     hourMinute = createTextState(7, 1, COLOR_INFORMATION, provideHourMinuteState);
     second = createTextState(7, 1, COLOR_INFORMATION, provideSecondState);
 

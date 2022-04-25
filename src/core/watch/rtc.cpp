@@ -26,5 +26,6 @@ Date rtcGetDate()
 RtcApi watchRtcApi()
 {
     return {
-        .getDate = rtcGetDate};
+        .getDate = rtcGetDate
+    };
 }
