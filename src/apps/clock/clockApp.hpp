@@ -6,4 +6,6 @@ typedef struct {
     void *backgroundTaskHandle;
 } ClockAppState;
 
-App createClockApp();
+void clockAppTick();
+
+App createClockApp(RtcApi *rtcApiRef, Tiler *tilerRef);

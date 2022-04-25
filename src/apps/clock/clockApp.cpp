@@ -1,5 +1,15 @@
 #include "clockApp.hpp"
 
+#include "core/watch/rtc.hpp"
+#include "core/app/tiler.hpp"
+
+static RtcApi *rtcApi;
+static Tiler *tiler;
+
+static unsigned char hour;
+static unsigned char minute;
+static unsigned char second;
+
 static void clockAppActivate(App *app)
 {
     ClockAppState *appState = (ClockAppState *)app->state;
@@ -12,8 +22,25 @@ static void clockAppDeactivate(App *app)
     (app->systemApi->resume)(appState->backgroundTaskHandle);    
 }
 
-App createClockApp()
+void clockAppTick()
 {
+    Date date = rtcApi->getDate();
+    hour = date.hour;
+    minute = date.minute;
+    second = date.second;
+
+    tiler->renderApp(false);
+}
+
+App createClockApp(RtcApi *rtcApiRef, Tiler *tilerRef)
+{
+    rtcApi = rtcApiRef;
+    tiler = tilerRef;
+
+    hour = 0;
+    minute = 0;
+    second = 0;
+
     return {
         .activate = clockAppActivate,
         .deactivate = clockAppDeactivate,
