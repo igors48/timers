@@ -18,6 +18,7 @@
 #include "core/task/soundPlayer.hpp"
 
 #include "core/app/ticker.hpp"
+#include "core/app/manager.hpp"
 
 #include "apps/clock/clockApp.hpp"
 
@@ -58,6 +59,12 @@ SoundPlayerParameters soundPlayerParameters;
 
 TickerParameters clockAppTickerParameters;
 TaskHandle_t clockAppTickerTaskHandle;
+App clockApp;
+
+const unsigned char APPS_COUNT = 1;
+App apps[APPS_COUNT];
+
+Manager manager;
 
 void buttonListenerTask(void *p)
 {
@@ -203,6 +210,13 @@ void setup()
             .systemApi = &systemApi,
         };
         xTaskCreate(tickerTask, "clockAppTickerTask", 2048, (void *)&clockAppTickerParameters, 1, &clockAppTickerTaskHandle);
+
+        clockApp = createClockApp(clockAppTickerTaskHandle, &systemApi, &rtcApi, &tiler);
+
+        apps[0] = clockApp;
+
+        manager = createManager(APPS_COUNT, apps, &tiler);
+        manager.activateApp(0);
 
         xSemaphoreGive(watchMutex);
 
