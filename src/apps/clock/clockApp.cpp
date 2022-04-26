@@ -12,6 +12,8 @@ static Date date;
 
 static Component *tile;
 
+static ClockAppState state;
+
 static void clockAppActivate(App *app)
 {
     ClockAppState *appState = (ClockAppState *)app->state;
@@ -24,13 +26,18 @@ static void clockAppDeactivate(App *app)
     (app->systemApi->suspend)(appState->backgroundTaskHandle);    
 }
 
+static Component* clockAppGetActiveTile()
+{
+    return tile;
+}
+
 void clockAppTick()
 {
     date = rtcApi->getDate();
     tiler->renderApp(false);
 }
 
-App createClockApp(RtcApi *rtcApiRef, Tiler *tilerRef)
+App createClockApp(void *backgroundTaskHandleRef, SystemApi *systemApiRef, RtcApi *rtcApiRef, Tiler *tilerRef)
 {
     rtcApi = rtcApiRef;
     tiler = tilerRef;
@@ -46,8 +53,15 @@ App createClockApp(RtcApi *rtcApiRef, Tiler *tilerRef)
 
     tile = createClockAppTile(&date);
 
+    state = {
+        .backgroundTaskHandle = backgroundTaskHandleRef,
+    };
+
     return {
         .activate = clockAppActivate,
         .deactivate = clockAppDeactivate,
+        .getActiveTile = clockAppGetActiveTile,
+        .systemApi = systemApiRef,
+        .state = &state,
     };
 }

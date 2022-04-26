@@ -8,4 +8,4 @@ typedef struct {
 
 void clockAppTick();
 
-App createClockApp(RtcApi *rtcApiRef, Tiler *tilerRef);
+App createClockApp(void *backgroundTaskHandleRef, SystemApi *systemApiRef, RtcApi *rtcApiRef, Tiler *tilerRef);
