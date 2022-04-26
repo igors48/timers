@@ -17,7 +17,9 @@
 #include "core/task/serviceProcedure.hpp"
 #include "core/task/soundPlayer.hpp"
 
-#include "apps/screen.hpp"
+#include "core/app/ticker.hpp"
+
+#include "apps/clock/clockApp.hpp"
 
 TTGOClass *watch;
 
@@ -42,8 +44,6 @@ TaskHandle_t buttonListenerTaskHandle;
 const unsigned char TASK_COUNT = 1;
 TaskHandle_t tasks[TASK_COUNT];
 
-Component screen;
-
 SupervisorParameters supervisorParameters;
 
 TouchScreenListenerParameters touchScreenListenerParameters;
@@ -51,8 +51,13 @@ TaskHandle_t touchScreenListenerTaskHandle;
 
 ServiceProcedureParameters serviceProcedureParameters;
 
+Tiler tiler;
+
 QueueHandle_t soundQueue;
 SoundPlayerParameters soundPlayerParameters;
+
+TickerParameters clockAppTickerParameters;
+TaskHandle_t clockAppTickerTaskHandle;
 
 void buttonListenerTask(void *p)
 {
@@ -67,7 +72,7 @@ void touchScreenListenerTask(void *p)
 {
     while (true)
     {
-        touchScreenListener(p);        
+        touchScreenListener(p);
         vTaskDelay(50 / portTICK_PERIOD_MS);
     }
 }
@@ -128,7 +133,7 @@ void setup()
         i2sApi = watchI2sApi();
 
         soundApi = watchSoundApi(&soundQueue, &systemApi);
-        
+
         lastUserEventTimestamp = systemApi.time();
 
         buttonListenerParameters = {
@@ -141,7 +146,7 @@ void setup()
         pinMode(AXP202_INT, INPUT_PULLUP);
         attachInterrupt(AXP202_INT, buttonInterruptHandler, FALLING);
 
-        screen = createScreen(&soundApi);
+        tiler = createTiler(&tftApi);
 
         touchScreenListenerParameters = {
             .target = NULL,
@@ -151,7 +156,7 @@ void setup()
             .lastY = 0,
             .watchMutex = &watchMutex,
             .lastUserEventTimestamp = &lastUserEventTimestamp,
-            .screen = &screen,
+            .tiler = &tiler,
             .watchApi = &watchApi,
             .systemApi = &systemApi,
         };
@@ -171,7 +176,7 @@ void setup()
         soundPlayerParameters = {
             .queue = &soundQueue,
             .i2sApi = &i2sApi,
-            .systemApi = &systemApi,    
+            .systemApi = &systemApi,
         };
         xTaskCreate(soundPlayerTask, "soundPlayerTask", 2048, (void *)&soundPlayerParameters, 1, NULL);
 
@@ -187,9 +192,17 @@ void setup()
             .systemApi = &systemApi,
             .watchApi = &watchApi,
             .rtcApi = &rtcApi,
-            };
+        };
 
         xTaskCreate(supervisorTask, "supervisorTask", 2048, (void *)&supervisorParameters, 1, NULL);
+
+        clockAppTickerParameters = {
+            .watchMutex = &watchMutex,
+            .delayMs = 250,
+            .func = clockAppTick,
+            .systemApi = &systemApi,
+        };
+        xTaskCreate(tickerTask, "clockAppTickerTask", 2048, (void *)&clockAppTickerParameters, 1, &clockAppTickerTaskHandle);
 
         xSemaphoreGive(watchMutex);
 
