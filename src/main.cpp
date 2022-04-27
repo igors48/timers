@@ -62,7 +62,7 @@ TaskHandle_t clockAppTickerTaskHandle;
 App clockApp;
 
 const unsigned char APPS_COUNT = 1;
-App apps[APPS_COUNT];
+void *apps[APPS_COUNT];
 
 Manager manager;
 
@@ -210,10 +210,11 @@ void setup()
             .systemApi = &systemApi,
         };
         xTaskCreate(tickerTask, "clockAppTickerTask", 2048, (void *)&clockAppTickerParameters, 1, &clockAppTickerTaskHandle);
+        vTaskSuspend(clockAppTickerTaskHandle);
 
         clockApp = createClockApp(clockAppTickerTaskHandle, &systemApi, &rtcApi, &tiler);
 
-        apps[0] = clockApp;
+        apps[0] = &clockApp;
 
         manager = createManager(APPS_COUNT, apps, &tiler);
         manager.activateApp(0);

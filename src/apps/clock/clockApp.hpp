@@ -1,6 +1,8 @@
 #pragma once
 
 #include "core/app/app.hpp"
+#include "core/app/tiler.hpp"
+#include "core/watch/rtc.hpp"
 
 typedef struct {
     void *backgroundTaskHandle;
