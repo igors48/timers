@@ -4,6 +4,7 @@
 #include "core/app/tiler.hpp"
 
 #include "clockAppTile.hpp"
+#include "clockAppSetTimeTile.hpp"
 
 static RtcApi *rtcApi;
 static PowerApi *powerApi;
@@ -12,7 +13,9 @@ static Tiler *tiler;
 static Date date;
 static int batteryPercent;
 
-static Component *tile;
+static int tileNo;
+static Component *clockTile;
+static Component *setTimeTile;
 
 static ClockAppState state;
 
@@ -25,12 +28,19 @@ static void clockAppActivate(App *app)
 static void clockAppDeactivate(App *app)
 {
     ClockAppState *appState = (ClockAppState *)app->state;
-    (app->systemApi->suspend)(appState->backgroundTaskHandle);    
+    (app->systemApi->suspend)(appState->backgroundTaskHandle);
 }
 
-static Component* clockAppGetActiveTile()
+static Component *clockAppGetActiveTile()
 {
-    return tile;
+    if (tileNo == 0)
+    {
+        return clockTile;
+    }
+    else
+    {
+        return setTimeTile;
+    }
 }
 
 void clockAppTick()
@@ -46,7 +56,10 @@ App createClockApp(void *backgroundTaskHandleRef, SystemApi *systemApiRef, RtcAp
     powerApi = powerApiRef;
     tiler = tilerRef;
 
-    date = { // todo create const
+    tileNo = 0;
+
+    date = {
+        // todo create const
         .year = 0,
         .month = 0,
         .day = 0,
@@ -57,7 +70,8 @@ App createClockApp(void *backgroundTaskHandleRef, SystemApi *systemApiRef, RtcAp
 
     batteryPercent = 0;
 
-    tile = createClockAppTile(&date, &batteryPercent);
+    clockTile = createClockAppTile(&date, &batteryPercent);
+    setTimeTile = createClockAppSetTimeTile(&date);
 
     state = {
         .backgroundTaskHandle = backgroundTaskHandleRef,
