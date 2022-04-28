@@ -6,6 +6,8 @@
 #include "core/component/group.hpp"
 #include "core/watch/rtc.hpp"
 
+#include <Arduino.h>
+
 static const unsigned char COMPONENTS_COUNT = 4;
 static void* components[COMPONENTS_COUNT];
 
@@ -47,6 +49,11 @@ static void provideDateState(TextState *state)
     snprintf(state->content, sizeof(state->content), "%02d/%02d/%04d", date->day, date->month, date->year);
 }
 
+static void onGesture(Component *component, Gesture gesture)
+{
+    Serial.println("gesture");
+}
+
 Component* createClockAppTile(Date *dateRef, int *batteryPercentRef)
 {
     date = dateRef;
@@ -69,6 +76,7 @@ Component* createClockAppTile(Date *dateRef, int *batteryPercentRef)
  
     state = createGroupState(COMPONENTS_COUNT, components);
     group = createGroupComponent(0, 0, &state);
+    group.onGesture = onGesture; 
 
     return &group;
 }
