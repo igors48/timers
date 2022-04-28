@@ -9,4 +9,4 @@ typedef struct
     ActivateApp activateApp;
 } Manager;
 
-Manager createManager(unsigned char appsCount, void **apps, Tiler *tiler);
+Manager createManager(unsigned char appsCount, void **apps, Tiler *tilerRef);

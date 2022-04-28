@@ -14,10 +14,11 @@ static void activateApp(unsigned char index)
     (tiler->renderApp)(true);
 }
 
-Manager createManager(unsigned char appsCount, void **apps, Tiler *tiler)
+Manager createManager(unsigned char appsCount, void **apps, Tiler *tilerRef)
 {
     managedApps = apps;
     managedAppsCount = appsCount;
+    tiler = tilerRef;
 
     return {
         .activateApp = activateApp,
