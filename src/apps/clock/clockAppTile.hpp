@@ -3,4 +3,4 @@
 #include "core/component/component.hpp"
 #include "core/watch/rtc.hpp"
 
-Component* createClockAppTile(Date *dateRef);
+Component* createClockAppTile(Date *dateRef, int *batteryPercentRef);

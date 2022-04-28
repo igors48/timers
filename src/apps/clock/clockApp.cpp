@@ -6,9 +6,11 @@
 #include "clockAppTile.hpp"
 
 static RtcApi *rtcApi;
+static PowerApi *powerApi;
 static Tiler *tiler;
 
 static Date date;
+static int batteryPercent;
 
 static Component *tile;
 
@@ -33,13 +35,15 @@ static Component* clockAppGetActiveTile()
 
 void clockAppTick()
 {
-    date = rtcApi->getDate();
+    date = (rtcApi->getDate)();
+    batteryPercent = (powerApi->getBattPercentage)();
     tiler->renderApp(false);
 }
 
-App createClockApp(void *backgroundTaskHandleRef, SystemApi *systemApiRef, RtcApi *rtcApiRef, Tiler *tilerRef)
+App createClockApp(void *backgroundTaskHandleRef, SystemApi *systemApiRef, RtcApi *rtcApiRef, PowerApi *powerApiRef, Tiler *tilerRef)
 {
     rtcApi = rtcApiRef;
+    powerApi = powerApiRef;
     tiler = tilerRef;
 
     date = { // todo create const
@@ -51,7 +55,9 @@ App createClockApp(void *backgroundTaskHandleRef, SystemApi *systemApiRef, RtcAp
         .second = 0,
     };
 
-    tile = createClockAppTile(&date);
+    batteryPercent = 0;
+
+    tile = createClockAppTile(&date, &batteryPercent);
 
     state = {
         .backgroundTaskHandle = backgroundTaskHandleRef,

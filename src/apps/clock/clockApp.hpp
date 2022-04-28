@@ -3,6 +3,7 @@
 #include "core/app/app.hpp"
 #include "core/app/tiler.hpp"
 #include "core/watch/rtc.hpp"
+#include "core/watch/power.hpp"
 
 typedef struct {
     void *backgroundTaskHandle;
@@ -10,4 +11,4 @@ typedef struct {
 
 void clockAppTick();
 
-App createClockApp(void *backgroundTaskHandleRef, SystemApi *systemApiRef, RtcApi *rtcApiRef, Tiler *tilerRef);
+App createClockApp(void *backgroundTaskHandleRef, SystemApi *systemApiRef, RtcApi *rtcApiRef, PowerApi *powerApiRef, Tiler *tilerRef);
