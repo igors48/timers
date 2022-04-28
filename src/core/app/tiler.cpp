@@ -6,6 +6,10 @@ static TftApi *tilerTftApi;
 static void renderApp(bool forced)
 {
     Component *activeTile = (activeApp->getActiveTile)();
+    if (forced) 
+    {
+        (tilerTftApi->fillRect)(0, 0, 240, 240, COLOR_BLACK);
+    } 
     (activeTile->render)(activeTile, forced, tilerTftApi);
 }
 
