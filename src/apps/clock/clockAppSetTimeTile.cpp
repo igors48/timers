@@ -20,6 +20,8 @@ static Component group;
 
 static Date *date;
 
+static OnGesture onGestureHandler;
+
 static void provideHourMinuteState(TextState *state)
 {
     snprintf(state->content, sizeof(state->content), "%02d:%02d", date->hour, date->minute);
@@ -30,9 +32,15 @@ static void provideSecondState(TextState *state)
     snprintf(state->content, sizeof(state->content), ":%02d", date->second);
 }
 
-Component* createClockAppSetTimeTile(Date *dateRef)
+static void onGesture(Component *component, Gesture gesture)
+{
+    onGestureHandler(gesture);
+}
+
+Component* createClockAppSetTimeTile(Date *dateRef, OnGesture onGestureRef)
 {
     date = dateRef;
+    onGestureHandler = onGestureRef;
 
     hourMinute = createTextState(7, 1, COLOR_INFORMATION, provideHourMinuteState);
     second = createTextState(7, 1, COLOR_INFORMATION, provideSecondState);
@@ -45,6 +53,7 @@ Component* createClockAppSetTimeTile(Date *dateRef)
  
     state = createGroupState(COMPONENTS_COUNT, components);
     group = createGroupComponent(0, 0, &state);
+    group.onGesture = onGesture; 
 
     return &group;
 }

@@ -3,4 +3,6 @@
 #include "core/component/component.hpp"
 #include "core/watch/rtc.hpp"
 
-Component* createClockAppTile(Date *dateRef, int *batteryPercentRef);
+#include "apps/clock/clockApp.hpp"
+
+Component* createClockAppTile(Date *dateRef, int *batteryPercentRef, OnGesture onGestureRef);

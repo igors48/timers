@@ -6,8 +6,6 @@
 #include "core/component/group.hpp"
 #include "core/watch/rtc.hpp"
 
-#include <Arduino.h>
-
 static const unsigned char COMPONENTS_COUNT = 4;
 static void* components[COMPONENTS_COUNT];
 
@@ -28,6 +26,8 @@ static int *batteryPercent;
 
 static TextState dateState;
 static Component dateComponent;
+
+static OnGesture onGestureHandler;
 
 static void provideHourMinuteState(TextState *state)
 {
@@ -51,13 +51,14 @@ static void provideDateState(TextState *state)
 
 static void onGesture(Component *component, Gesture gesture)
 {
-    Serial.println("gesture");
+    onGestureHandler(gesture);
 }
 
-Component* createClockAppTile(Date *dateRef, int *batteryPercentRef)
+Component* createClockAppTile(Date *dateRef, int *batteryPercentRef, OnGesture onGestureRef)
 {
     date = dateRef;
     batteryPercent = batteryPercentRef;
+    onGestureHandler = onGestureRef;
 
     hourMinute = createTextState(7, 1, COLOR_INFORMATION, provideHourMinuteState);
     second = createTextState(7, 1, COLOR_INFORMATION, provideSecondState);

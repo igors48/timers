@@ -3,4 +3,6 @@
 #include "core/component/component.hpp"
 #include "core/watch/rtc.hpp"
 
-Component* createClockAppSetTimeTile(Date *dateRef);
+#include "apps/clock/clockApp.hpp"
+
+Component* createClockAppSetTimeTile(Date *dateRef, OnGesture onGestureRef);

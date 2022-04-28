@@ -5,6 +5,8 @@
 #include "core/watch/rtc.hpp"
 #include "core/watch/power.hpp"
 
+typedef void (*OnGesture)(Gesture gesture);
+
 typedef struct {
     void *backgroundTaskHandle;
 } ClockAppState;

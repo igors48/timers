@@ -43,6 +43,19 @@ static Component *clockAppGetActiveTile()
     }
 }
 
+static void onGesture(Gesture gesture)
+{
+    if (tileNo == 0) 
+    {
+        tileNo = 1;
+    }
+    else
+    {
+        tileNo = 0;
+    }
+    tiler->renderApp(true);
+}
+
 void clockAppTick()
 {
     date = (rtcApi->getDate)();
@@ -70,8 +83,8 @@ App createClockApp(void *backgroundTaskHandleRef, SystemApi *systemApiRef, RtcAp
 
     batteryPercent = 0;
 
-    clockTile = createClockAppTile(&date, &batteryPercent);
-    setTimeTile = createClockAppSetTimeTile(&date);
+    clockTile = createClockAppTile(&date, &batteryPercent, onGesture);
+    setTimeTile = createClockAppSetTimeTile(&date, onGesture);
 
     state = {
         .backgroundTaskHandle = backgroundTaskHandleRef,
