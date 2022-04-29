@@ -5,7 +5,13 @@
 #include "core/watch/rtc.hpp"
 #include "core/watch/power.hpp"
 
-typedef void (*OnGesture)(Gesture gesture);
+typedef struct {
+    Date (*getDate)();
+    void (*adjDate)(Date date);
+    int (*getBattery)();
+    void (*onGesture)(Gesture gesture);
+    void (*render)(bool forced);
+} ClockAppApi;
 
 typedef struct {
     void *backgroundTaskHandle;

@@ -4,7 +4,6 @@
 
 #include "core/component/textComponent.hpp"
 #include "core/component/group.hpp"
-#include "core/watch/rtc.hpp"
 
 static const unsigned char COMPONENTS_COUNT = 4;
 static void* components[COMPONENTS_COUNT];
@@ -18,47 +17,46 @@ static Component secondComponent;
 static TextState battery;
 static Component batteryDisplayComponent;
 
-static GroupState state;
-static Component group;
-
-static Date *date;
-static int *batteryPercent;
-
 static TextState dateState;
 static Component dateComponent;
 
-static OnGesture onGestureHandler;
+static GroupState state;
+static Component group;
+
+static ClockAppApi *api;
 
 static void provideHourMinuteState(TextState *state)
 {
-    snprintf(state->content, sizeof(state->content), "%02d:%02d", date->hour, date->minute);
+    Date date = api->getDate();
+    snprintf(state->content, sizeof(state->content), "%02d:%02d", date.hour, date.minute);
 }
 
 static void provideSecondState(TextState *state)
 {
-    snprintf(state->content, sizeof(state->content), ":%02d", date->second);
+    Date date = api->getDate();
+    snprintf(state->content, sizeof(state->content), ":%02d", date.second);
 }
 
 static void provideBatteryState(TextState *state)
 {
-    snprintf(state->content, sizeof(state->content), "B:%03d%%", *batteryPercent);
+    int percent = api->getBattery();
+    snprintf(state->content, sizeof(state->content), "B:%03d%%", percent);
 }
 
 static void provideDateState(TextState *state)
 {
-    snprintf(state->content, sizeof(state->content), "%02d/%02d/%04d", date->day, date->month, date->year);
+    Date date = api->getDate();
+    snprintf(state->content, sizeof(state->content), "%02d/%02d/%04d", date.day, date.month, date.year);
 }
 
 static void onGesture(Component *component, Gesture gesture)
 {
-    onGestureHandler(gesture);
+    api->onGesture(gesture);
 }
 
-Component* createClockAppTile(Date *dateRef, int *batteryPercentRef, OnGesture onGestureRef)
+Component* createClockAppTile(ClockAppApi *clockAppApi)
 {
-    date = dateRef;
-    batteryPercent = batteryPercentRef;
-    onGestureHandler = onGestureRef;
+    api = clockAppApi;
 
     hourMinute = createTextState(7, 1, COLOR_INFORMATION, provideHourMinuteState);
     second = createTextState(7, 1, COLOR_INFORMATION, provideSecondState);

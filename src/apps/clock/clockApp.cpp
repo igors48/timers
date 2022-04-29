@@ -19,6 +19,8 @@ static Component *setTimeTile;
 
 static ClockAppState state;
 
+static ClockAppApi api;
+
 static void clockAppActivate(App *app)
 {
     ClockAppState *appState = (ClockAppState *)app->state;
@@ -50,7 +52,7 @@ static void renderApp(bool forced)
 
 static void onGesture(Gesture gesture)
 {
-    if (tileNo == 0) 
+    if (tileNo == 0)
     {
         tileNo = 1;
     }
@@ -61,6 +63,19 @@ static void onGesture(Gesture gesture)
     renderApp(true);
 }
 
+static Date getDate()
+{
+    return date;
+}
+
+static void adjDate(Date date)
+{
+}
+
+static int getBattery()
+{
+    return batteryPercent;
+}
 
 void clockAppTick()
 {
@@ -89,8 +104,16 @@ App createClockApp(void *backgroundTaskHandleRef, SystemApi *systemApiRef, RtcAp
 
     batteryPercent = 0;
 
-    clockTile = createClockAppTile(&date, &batteryPercent, onGesture);
-    setTimeTile = createClockAppSetTimeTile(&date, onGesture, renderApp);
+    api = {
+        .getDate = getDate,
+        .adjDate = adjDate,
+        .getBattery = getBattery,
+        .onGesture = onGesture,
+        .render = renderApp,
+    };
+
+    clockTile = createClockAppTile(&api);
+    setTimeTile = createClockAppSetTimeTile(&api);
 
     state = {
         .backgroundTaskHandle = backgroundTaskHandleRef,

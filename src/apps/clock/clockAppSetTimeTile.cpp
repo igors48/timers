@@ -1,13 +1,10 @@
 #include <stdio.h>
 
-#include <Arduino.h>
-
 #include "clockAppSetTimeTile.hpp"
 
 #include "core/component/textComponent.hpp"
 #include "core/component/buttonComponent.hpp"
 #include "core/component/group.hpp"
-#include "core/watch/rtc.hpp"
 
 static char PLUS[] = "+";
 static char SET[] = "SET";
@@ -30,33 +27,32 @@ static Component setButton;
 static GroupState state;
 static Component group;
 
-static Date *date;
-
 static signed char hourDelta;
 
-static OnGesture onGestureHandler;
-static RenderApp renderApp;
+static ClockAppApi *api;
 
 static void provideHourMinuteState(TextState *state)
 {
-    unsigned char hour = date->hour + hourDelta;
-    snprintf(state->content, sizeof(state->content), "%02d:%02d", hour, date->minute);
+    Date date = api->getDate();
+    unsigned char hour = date.hour + hourDelta;
+    snprintf(state->content, sizeof(state->content), "%02d:%02d", hour, date.minute);
 }
 
 static void provideSecondState(TextState *state)
 {
-    snprintf(state->content, sizeof(state->content), ":%02d", date->second);
+    Date date = api->getDate();
+    snprintf(state->content, sizeof(state->content), ":%02d", date.second);
 }
 
 static void onGesture(Component *component, Gesture gesture)
 {
-    onGestureHandler(gesture);
+    api->onGesture(gesture);
 }
 
 static void hourPlus()
 {
     hourDelta++;
-    renderApp(false);
+    api->render(false);
 }
 
 static void setTime()
@@ -64,11 +60,9 @@ static void setTime()
 
 }
 
-Component* createClockAppSetTimeTile(Date *dateRef, OnGesture onGestureRef, RenderApp renderAppRef)
+Component* createClockAppSetTimeTile(ClockAppApi *clockAppApi)
 {
-    date = dateRef;
-    onGestureHandler = onGestureRef;
-    renderApp = renderAppRef;
+    api = clockAppApi;
 
     hourDelta = 0;
 
@@ -80,7 +74,7 @@ Component* createClockAppSetTimeTile(Date *dateRef, OnGesture onGestureRef, Rend
     hourMinuteComponent = createTextComponent(10, 90, 140, 48, &hourMinute);
     secondComponent = createTextComponent(150, 90, 75, 48, &second);
     hourPlusButton = createButtonComponent(10, 20, 66, 25, &hourPlusButtonState);
-    setButton = createButtonComponent(80, 20, 66, 25, &hourPlusButtonState);
+    setButton = createButtonComponent(80, 20, 66, 25, &setButtonState);
 
     components[0] = &hourMinuteComponent;
     components[1] = &secondComponent;
