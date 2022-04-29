@@ -68,8 +68,17 @@ static Date getDate()
     return date;
 }
 
-static void adjDate(Date date)
+static void adjDate(signed char hourDelta)
 {
+    Date adjustedDate = {
+        .year = date.year,
+        .month = date.month,
+        .day = date.day,
+        .hour = (unsigned char)(date.hour + hourDelta),
+        .minute = date.minute,
+        .second = date.second,
+    }; 
+    rtcApi->setDate(adjustedDate);
 }
 
 static int getBattery()

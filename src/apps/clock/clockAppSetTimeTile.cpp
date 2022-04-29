@@ -7,9 +7,10 @@
 #include "core/component/group.hpp"
 
 static char PLUS[] = "+";
+static char MINUS[] = "-";
 static char SET[] = "SET";
 
-static const unsigned char COMPONENTS_COUNT = 4;
+static const unsigned char COMPONENTS_COUNT = 5;
 static void* components[COMPONENTS_COUNT];
 
 static TextState hourMinute;
@@ -20,6 +21,9 @@ static Component secondComponent;
 
 static ButtonComponentState hourPlusButtonState;
 static Component hourPlusButton;
+
+static ButtonComponentState hourMinusButtonState;
+static Component hourMinusButton;
 
 static ButtonComponentState setButtonState;
 static Component setButton;
@@ -55,9 +59,17 @@ static void hourPlus()
     api->render(false);
 }
 
+static void hourMinus()
+{
+    hourDelta--;
+    api->render(false);
+}
+
 static void setTime()
 {
-
+    api->adjDate(hourDelta);
+    hourDelta = 0;
+    api->render(false);
 }
 
 Component* createClockAppSetTimeTile(ClockAppApi *clockAppApi)
@@ -69,17 +81,20 @@ Component* createClockAppSetTimeTile(ClockAppApi *clockAppApi)
     hourMinute = createTextState(7, 1, COLOR_INTERACTION, provideHourMinuteState);
     second = createTextState(7, 1, COLOR_INTERACTION, provideSecondState);
     hourPlusButtonState = createButtonState(PLUS, hourPlus);
+    hourMinusButtonState = createButtonState(MINUS, hourMinus);
     setButtonState = createButtonState(SET, setTime);
 
     hourMinuteComponent = createTextComponent(10, 90, 140, 48, &hourMinute);
     secondComponent = createTextComponent(150, 90, 75, 48, &second);
     hourPlusButton = createButtonComponent(10, 20, 66, 25, &hourPlusButtonState);
+    hourMinusButton = createButtonComponent(10, 180, 66, 25, &hourMinusButtonState);
     setButton = createButtonComponent(80, 20, 66, 25, &setButtonState);
 
     components[0] = &hourMinuteComponent;
     components[1] = &secondComponent;
     components[2] = &hourPlusButton;
-    components[3] = &setButton;
+    components[3] = &hourMinusButton;
+    components[4] = &setButton;
  
     state = createGroupState(COMPONENTS_COUNT, components);
     group = createGroupComponent(0, 0, &state);

@@ -7,7 +7,7 @@
 
 typedef struct {
     Date (*getDate)();
-    void (*adjDate)(Date date);
+    void (*adjDate)(signed char hourDelta);
     int (*getBattery)();
     void (*onGesture)(Gesture gesture);
     void (*render)(bool forced);
