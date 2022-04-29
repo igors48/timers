@@ -45,6 +45,16 @@ static void buttonComponentOnRelease(Component *component, signed short x, signe
     state->pressed = false;
 }
 
+ButtonComponentState createButtonState(char *title, Handler handler)
+{
+    return {
+        .title = title,
+        .pressed = false,
+        ._pressed = true,
+        .handler = handler,
+    };
+}
+
 Component createButtonComponent(signed short x, signed short y, signed short w, signed short h, ButtonComponentState *state)
 {
     return {

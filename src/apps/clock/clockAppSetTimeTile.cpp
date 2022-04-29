@@ -28,11 +28,15 @@ static Component group;
 
 static Date *date;
 
+static signed char hourDelta;
+
 static OnGesture onGestureHandler;
+static RenderApp renderApp;
 
 static void provideHourMinuteState(TextState *state)
 {
-    snprintf(state->content, sizeof(state->content), "%02d:%02d", date->hour, date->minute);
+    unsigned char hour = date->hour + hourDelta;
+    snprintf(state->content, sizeof(state->content), "%02d:%02d", hour, date->minute);
 }
 
 static void provideSecondState(TextState *state)
@@ -47,23 +51,21 @@ static void onGesture(Component *component, Gesture gesture)
 
 static void hourPlus()
 {
-    Serial.println("plus");
+    hourDelta++;
+    renderApp(false);
 }
 
-Component* createClockAppSetTimeTile(Date *dateRef, OnGesture onGestureRef)
+Component* createClockAppSetTimeTile(Date *dateRef, OnGesture onGestureRef, RenderApp renderAppRef)
 {
     date = dateRef;
     onGestureHandler = onGestureRef;
+    renderApp = renderAppRef;
+
+    hourDelta = 0;
 
     hourMinute = createTextState(7, 1, COLOR_INTERACTION, provideHourMinuteState);
     second = createTextState(7, 1, COLOR_INTERACTION, provideSecondState);
-
-    hourPlusButtonState = {
-        .title = PLUS,
-        .pressed = false,
-        ._pressed = true,
-        .handler = hourPlus
-    };
+    hourPlusButtonState = createButtonState(PLUS, hourPlus);
 
     hourMinuteComponent = createTextComponent(10, 90, 140, 48, &hourMinute);
     secondComponent = createTextComponent(150, 90, 75, 48, &second);

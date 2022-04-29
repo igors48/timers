@@ -5,4 +5,4 @@
 
 #include "apps/clock/clockApp.hpp"
 
-Component* createClockAppSetTimeTile(Date *dateRef, OnGesture onGestureRef);
+Component* createClockAppSetTimeTile(Date *dateRef, OnGesture onGestureRef, RenderApp renderAppRef);

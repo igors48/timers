@@ -12,4 +12,6 @@ typedef struct
     Handler handler;
 } ButtonComponentState;
 
+ButtonComponentState createButtonState(char *title, Handler handler);
+
 Component createButtonComponent(signed short x, signed short y, signed short w, signed short h, ButtonComponentState *state);
