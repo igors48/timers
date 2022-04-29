@@ -10,11 +10,13 @@ typedef struct
     unsigned char second;
 } Date;
 
-typedef Date (*DateFunc)();
+typedef Date (*DateFunc)(); // todo rename to GetDate
+typedef void (*SetDate)(Date date);
 
 typedef struct 
 {
     DateFunc getDate;
+    SetDate setDate;
 } RtcApi;
 
 RtcApi watchRtcApi();

@@ -5,4 +5,4 @@
 
 #include "apps/clock/clockApp.hpp"
 
-Component* createClockAppSetTimeTile(Date *dateRef, OnGesture onGestureRef, RenderApp renderAppRef);
+Component* createClockAppSetTimeTile(Date *dateRef, OnGesture onGestureRef, RenderApp renderAppRef); // todo RenderApp imported from tiler - no good

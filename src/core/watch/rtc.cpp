@@ -1,7 +1,7 @@
 #include "rtc.hpp"
 #include "ttgo.hpp"
 
-Date rtcGetDate()
+static Date rtcGetDate()
 {
     RTC_Date rtcDate = watch->rtc->getDateTime();
 
@@ -23,9 +23,23 @@ Date rtcGetDate()
     };
 }
 
+static void rtcSetDate(Date date)
+{
+    RTC_Date rtcDate = RTC_Date(
+        date.year,
+        date.month,
+        date.day,
+        date.hour,
+        date.minute,
+        date.second        
+    );
+    watch->rtc->setDateTime(rtcDate);
+}
+
 RtcApi watchRtcApi()
 {
     return {
-        .getDate = rtcGetDate
+        .getDate = rtcGetDate,
+        .setDate = rtcSetDate,
     };
 }
