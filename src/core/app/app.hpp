@@ -12,7 +12,7 @@ typedef struct App_
 {
     AppEventHandler activate;
     AppEventHandler deactivate;
-    AppGetActiveTile getActiveTile;
-    SystemApi *systemApi; 
-    void *state;
+    AppGetActiveTile getActiveTile; // todo is it used?
+    SystemApi *systemApi; // todo is it used? 
+    void *state; // todo is it used?
 } App;

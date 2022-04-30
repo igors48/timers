@@ -8,7 +8,9 @@
 
 typedef struct {
     unsigned int (*getStepCounter)();
-    bool (*resetStepCounter)();
+    void (*resetStepCounter)();
+    void (*onGesture)(Gesture gesture);
+    void (*render)(bool forced);
 } StepAppApi;
 
 void stepAppTick();
