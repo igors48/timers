@@ -66,11 +66,6 @@ static void switchTile()
     renderApp(true);
 }
 
-static void switchApp()
-{
-    (manager->activateApp)(1);
-}
-
 static void onGesture(Gesture gesture)
 {
     bool horizontal = (gesture == MOVE_LEFT) || (gesture == MOVE_RIGHT);
@@ -80,7 +75,7 @@ static void onGesture(Gesture gesture)
     }
     else
     {
-        switchApp();
+        (manager->switchApp)(gesture == MOVE_UP);
     }
 }
 
@@ -98,7 +93,7 @@ static void adjDate(signed char hourDelta)
         .hour = (unsigned char)(date.hour + hourDelta),
         .minute = date.minute,
         .second = date.second,
-    }; 
+    };
     rtcApi->setDate(adjustedDate);
 }
 

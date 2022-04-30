@@ -49,17 +49,12 @@ static void render(bool forced)
     tiler->renderApp(forced);
 }
 
-static void switchApp()
-{
-    (manager->activateApp)(0);
-}
-
 static void onGesture(Gesture gesture)
 {
     bool horizontal = (gesture == MOVE_LEFT) || (gesture == MOVE_RIGHT);
     if (!horizontal)
     {
-        switchApp();
+        (manager->switchApp)(gesture == MOVE_UP);
     }
 }
 
