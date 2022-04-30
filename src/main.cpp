@@ -21,6 +21,7 @@
 #include "core/app/manager.hpp"
 
 #include "apps/clock/clockApp.hpp"
+#include "apps/step/stepApp.hpp"
 
 TTGOClass *watch;
 
@@ -61,7 +62,11 @@ TickerParameters clockAppTickerParameters;
 TaskHandle_t clockAppTickerTaskHandle;
 App clockApp;
 
-const unsigned char APPS_COUNT = 1;
+TickerParameters stepAppTickerParameters;
+TaskHandle_t stepAppTickerTaskHandle;
+App stepApp;
+
+const unsigned char APPS_COUNT = 2;
 void *apps[APPS_COUNT];
 
 Manager manager;
@@ -113,6 +118,34 @@ void soundPlayerTask(void *p)
 void buttonInterruptHandler(void)
 {
     vTaskResume(buttonListenerTaskHandle);
+}
+
+void createClockApplication()
+{
+    clockAppTickerParameters = {
+        .watchMutex = &watchMutex,
+        .delayMs = 250,
+        .func = clockAppTick,
+        .systemApi = &systemApi,
+    };
+    xTaskCreate(tickerTask, "clockAppTickerTask", 2048, (void *)&clockAppTickerParameters, 1, &clockAppTickerTaskHandle);
+    vTaskSuspend(clockAppTickerTaskHandle);
+
+    clockApp = createClockApp(clockAppTickerTaskHandle, &systemApi, &rtcApi, &powerApi, &tiler, &manager);
+}
+
+void createStepApplication()
+{
+    stepAppTickerParameters = {
+        .watchMutex = &watchMutex,
+        .delayMs = 500,
+        .func = stepAppTick,
+        .systemApi = &systemApi,
+    };
+    xTaskCreate(tickerTask, "stepAppTickerTask", 2048, (void *)&stepAppTickerParameters, 1, &stepAppTickerTaskHandle);
+    vTaskSuspend(stepAppTickerTaskHandle);
+
+    stepApp = createStepApp(stepAppTickerTaskHandle, &systemApi, &bmaApi, &tiler, &manager);
 }
 
 void setup()
@@ -203,18 +236,11 @@ void setup()
 
         xTaskCreate(supervisorTask, "supervisorTask", 2048, (void *)&supervisorParameters, 1, NULL);
 
-        clockAppTickerParameters = {
-            .watchMutex = &watchMutex,
-            .delayMs = 250,
-            .func = clockAppTick,
-            .systemApi = &systemApi,
-        };
-        xTaskCreate(tickerTask, "clockAppTickerTask", 2048, (void *)&clockAppTickerParameters, 1, &clockAppTickerTaskHandle);
-        vTaskSuspend(clockAppTickerTaskHandle);
-
-        clockApp = createClockApp(clockAppTickerTaskHandle, &systemApi, &rtcApi, &powerApi, &tiler);
-
+        createClockApplication();
+        createStepApplication();
+        
         apps[0] = &clockApp;
+        apps[1] = &stepApp;
 
         manager = createManager(APPS_COUNT, apps, &tiler);
         manager.activateApp(0);

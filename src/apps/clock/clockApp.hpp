@@ -2,6 +2,8 @@
 
 #include "core/app/app.hpp"
 #include "core/app/tiler.hpp"
+#include "core/app/manager.hpp"
+
 #include "core/watch/rtc.hpp"
 #include "core/watch/power.hpp"
 
@@ -19,4 +21,4 @@ typedef struct {
 
 void clockAppTick();
 
-App createClockApp(void *backgroundTaskHandleRef, SystemApi *systemApiRef, RtcApi *rtcApiRef, PowerApi *powerApiRef, Tiler *tilerRef);
+App createClockApp(void *backgroundTaskHandleRef, SystemApi *systemApiRef, RtcApi *rtcApiRef, PowerApi *powerApiRef, Tiler *tilerRef, Manager *managerRef);

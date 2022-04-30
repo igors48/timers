@@ -22,7 +22,7 @@ void serviceProcedure(ServiceProcedureParameters *p)
         } 
         if (needStepCounterReset)
         {
-            p->bmaApi->resetStepCounter();
+            //p->bmaApi->resetStepCounter(); temporarily disabled
             p->lastStepCounterResetDay = now.day;
             p->systemApi->log(SERVICE_PROCEDURE, "step counter reset done");    
         }

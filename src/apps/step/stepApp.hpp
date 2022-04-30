@@ -2,7 +2,10 @@
 
 #include "core/app/app.hpp"
 #include "core/app/tiler.hpp"
+#include "core/app/manager.hpp"
+
 #include "core/system/system.hpp"
+
 #include "core/watch/bma.hpp"
 #include "core/watch/bma.hpp"
 
@@ -15,6 +18,6 @@ typedef struct {
 
 void stepAppTick();
 
-App createStepApp(void *backgroundTaskHandleRef, SystemApi *systemApiRef, BmaApi *bmaApi, Tiler *tilerRef); 
+App createStepApp(void *backgroundTaskHandleRef, SystemApi *systemApiRef, BmaApi *bmaApi, Tiler *tilerRef, Manager *managerRef); 
 
 Component* createStepAppTile(StepAppApi *stepAppApi);

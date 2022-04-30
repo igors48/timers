@@ -9,6 +9,7 @@
 static RtcApi *rtcApi;
 static PowerApi *powerApi;
 static Tiler *tiler;
+static Manager *manager;
 
 static Date date;
 static int batteryPercent;
@@ -50,7 +51,7 @@ static void renderApp(bool forced)
     tiler->renderApp(forced);
 }
 
-static void onGesture(Gesture gesture)
+static void switchTile()
 {
     if (tileNo == 0)
     {
@@ -61,6 +62,24 @@ static void onGesture(Gesture gesture)
         tileNo = 0;
     }
     renderApp(true);
+}
+
+static void switchApp()
+{
+    (manager->activateApp)(1);
+}
+
+static void onGesture(Gesture gesture)
+{
+    bool horizontal = (gesture == MOVE_LEFT) || (gesture == MOVE_RIGHT);
+    if (horizontal)
+    {
+        switchTile();
+    }
+    else
+    {
+        switchApp();
+    }
 }
 
 static Date getDate()
@@ -93,11 +112,12 @@ void clockAppTick()
     renderApp(false);
 }
 
-App createClockApp(void *backgroundTaskHandleRef, SystemApi *systemApiRef, RtcApi *rtcApiRef, PowerApi *powerApiRef, Tiler *tilerRef)
+App createClockApp(void *backgroundTaskHandleRef, SystemApi *systemApiRef, RtcApi *rtcApiRef, PowerApi *powerApiRef, Tiler *tilerRef, Manager *managerRef)
 {
     rtcApi = rtcApiRef;
     powerApi = powerApiRef;
     tiler = tilerRef;
+    manager = managerRef;
 
     tileNo = 0;
 

@@ -41,6 +41,8 @@ static void onGesture(Component *component, Gesture gesture)
 
 Component *createStepAppTile(StepAppApi *stepAppApi)
 {
+    api = stepAppApi;
+    
     stepCounter = createTextState(1, 3, COLOR_ATTENTION, provideStepCounterState);
     resetButtonState = createButtonState(RESET, reset);
 

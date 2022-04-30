@@ -7,13 +7,20 @@ static unsigned int counter;
 static SystemApi *systemApi;
 static BmaApi *bmaApi;
 static Tiler *tiler;
+static Manager *manager;
 
 static Component *stepTile;
 
 static StepAppApi api;
 
+static void update()
+{
+    counter = (bmaApi->getCounter)();
+}
+
 static void activate(App *app)
 {
+    update();
     (systemApi->resume)(backgroundTask);
 }
 
@@ -42,21 +49,33 @@ static void render(bool forced)
     tiler->renderApp(forced);
 }
 
+static void switchApp()
+{
+    (manager->activateApp)(0);
+}
+
 static void onGesture(Gesture gesture)
 {
+    bool horizontal = (gesture == MOVE_LEFT) || (gesture == MOVE_RIGHT);
+    if (!horizontal)
+    {
+        switchApp();
+    }
 }
 
 void stepAppTick()
 {
-    counter = (bmaApi->getCounter)();
+    update();
+    render(false);
 }
 
-App createStepApp(void *backgroundTaskHandleRef, SystemApi *systemApiRef, BmaApi *bmaApiRef, Tiler *tilerRef)
+App createStepApp(void *backgroundTaskHandleRef, SystemApi *systemApiRef, BmaApi *bmaApiRef, Tiler *tilerRef, Manager *managerRef)
 {
     backgroundTask = backgroundTaskHandleRef;
     systemApi = systemApiRef;
     bmaApi = bmaApiRef;
     tiler = tilerRef;
+    manager = managerRef;
 
     counter = 0;
 
@@ -66,6 +85,8 @@ App createStepApp(void *backgroundTaskHandleRef, SystemApi *systemApiRef, BmaApi
         .onGesture = onGesture,
         .render = render,
     };
+
+    stepTile = createStepAppTile(&api);
 
     return {
         .activate = activate,
