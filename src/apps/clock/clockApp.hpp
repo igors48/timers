@@ -15,10 +15,6 @@ typedef struct {
     void (*render)(bool forced);
 } ClockAppApi;
 
-typedef struct {
-    void *backgroundTaskHandle;
-} ClockAppState;
-
 void clockAppTick();
 
 App createClockApp(void *backgroundTaskHandleRef, SystemApi *systemApiRef, RtcApi *rtcApiRef, PowerApi *powerApiRef, Tiler *tilerRef, Manager *managerRef);

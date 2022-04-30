@@ -18,7 +18,7 @@ static void setApp(App *app)
     activeApp = app;
 }
 
-static Component* contains(Tiler *tiler, signed short x, signed short y)
+static Component* contains(signed short x, signed short y)
 {
     Component *activeTile = (activeApp->getActiveTile)();
     return (activeTile->contains)(activeTile, x, y);

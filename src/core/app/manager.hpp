@@ -2,11 +2,9 @@
 
 #include "core/app/tiler.hpp"
 
-typedef void (*ActivateApp)(unsigned char index);
-
 typedef struct 
 {
-    ActivateApp activateApp;
+    void (*activateApp)(unsigned char index);
 } Manager;
 
 Manager createManager(unsigned char appsCount, void **apps, Tiler *tilerRef);

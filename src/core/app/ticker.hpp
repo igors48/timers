@@ -1,12 +1,11 @@
 #pragma once
 
-#include "core/tools/func.hpp"
 #include "core/system/system.hpp"
 
 typedef struct {
     void *watchMutex;
     unsigned int delayMs;
-    VoidFunc func;
+    void (*func)();
     SystemApi *systemApi;
 } TickerParameters;
 

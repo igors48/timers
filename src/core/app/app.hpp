@@ -5,14 +5,9 @@
 
 typedef struct App_ App;
 
-typedef void (*AppEventHandler)(App *app);
-typedef Component* (*AppGetActiveTile)();
-
 typedef struct App_
 {
-    AppEventHandler activate;
-    AppEventHandler deactivate;
-    AppGetActiveTile getActiveTile; // todo is it used?
-    SystemApi *systemApi; // todo is it used? 
-    void *state; // todo is it used?
+    void (*activate)(App *app);
+    void (*deactivate)(App *app);
+    Component* (*getActiveTile)();
 } App;

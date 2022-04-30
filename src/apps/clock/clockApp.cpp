@@ -9,6 +9,8 @@
 static RtcApi *rtcApi;
 static PowerApi *powerApi;
 static Tiler *tiler;
+static SystemApi *systemApi;
+static void *backgroundTask;
 static Manager *manager;
 
 static Date date;
@@ -18,20 +20,23 @@ static int tileNo;
 static Component *clockTile;
 static Component *setTimeTile;
 
-static ClockAppState state;
-
 static ClockAppApi api;
+
+static void update()
+{
+    date = (rtcApi->getDate)();
+    batteryPercent = (powerApi->getBattPercentage)();
+}
 
 static void clockAppActivate(App *app)
 {
-    ClockAppState *appState = (ClockAppState *)app->state;
-    (app->systemApi->resume)(appState->backgroundTaskHandle);
+    update();
+    (systemApi->resume)(backgroundTask);
 }
 
 static void clockAppDeactivate(App *app)
 {
-    ClockAppState *appState = (ClockAppState *)app->state;
-    (app->systemApi->suspend)(appState->backgroundTaskHandle);
+    (systemApi->suspend)(backgroundTask);
 }
 
 static Component *clockAppGetActiveTile()
@@ -107,8 +112,7 @@ static int getBattery()
 
 void clockAppTick()
 {
-    date = (rtcApi->getDate)();
-    batteryPercent = (powerApi->getBattPercentage)();
+    update();
     renderApp(false);
 }
 
@@ -118,6 +122,8 @@ App createClockApp(void *backgroundTaskHandleRef, SystemApi *systemApiRef, RtcAp
     powerApi = powerApiRef;
     tiler = tilerRef;
     manager = managerRef;
+    backgroundTask = backgroundTaskHandleRef;
+    systemApi = systemApiRef;
 
     tileNo = 0;
 
@@ -144,15 +150,9 @@ App createClockApp(void *backgroundTaskHandleRef, SystemApi *systemApiRef, RtcAp
     clockTile = createClockAppTile(&api);
     setTimeTile = createClockAppSetTimeTile(&api);
 
-    state = {
-        .backgroundTaskHandle = backgroundTaskHandleRef,
-    };
-
     return {
         .activate = clockAppActivate,
         .deactivate = clockAppDeactivate,
         .getActiveTile = clockAppGetActiveTile,
-        .systemApi = systemApiRef,
-        .state = &state,
     };
 }

@@ -2,21 +2,15 @@
 
 #include "core/app/app.hpp"
 
-typedef struct Tiler_ Tiler;
-
-typedef void (*SetApp)(App *app);
-typedef void (*RenderApp)(bool forced);
-typedef Component* (*ContainsTiler)(Tiler *tiler, signed short x, signed short y);
-
-struct Tiler_
+typedef struct 
 {
-    SetApp setApp;
-    RenderApp renderApp;  
-    ContainsTiler contains;
-    TouchEventHandler onTouch; 
-    TouchEventHandler onMove;  
-    TouchEventHandler onRelease;  
-    GestureEventHandler onGesture;  
-};
+    void (*setApp)(App *app);
+    void (*renderApp)(bool forced);  
+    Component* (*contains)(signed short x, signed short y);
+    void (*onTouch)(Component *component, signed short x, signed short y); 
+    void (*onMove)(Component *component, signed short x, signed short y); 
+    void (*onRelease)(Component *component, signed short x, signed short y); 
+    void (*onGesture)(Component *component, Gesture gesture); 
+} Tiler;
 
 Tiler createTiler(TftApi *tftApi);
