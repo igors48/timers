@@ -13,7 +13,6 @@ typedef struct {
     unsigned int (*getStepCounter)();
     void (*resetStepCounter)();
     void (*onGesture)(Gesture gesture);
-    void (*render)(bool forced);
 } StepAppApi;
 
 void stepAppTick();

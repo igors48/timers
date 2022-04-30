@@ -3,9 +3,6 @@
 #include "core/watch/rtc.hpp"
 #include "core/app/tiler.hpp"
 
-#include "clockAppTile.hpp"
-#include "clockAppSetTimeTile.hpp"
-
 static RtcApi *rtcApi;
 static PowerApi *powerApi;
 static Tiler *tiler;
@@ -144,7 +141,6 @@ App createClockApp(void *backgroundTaskHandleRef, SystemApi *systemApiRef, RtcAp
         .adjDate = adjDate,
         .getBattery = getBattery,
         .onGesture = onGesture,
-        .render = renderApp,
     };
 
     clockTile = createClockAppTile(&api);

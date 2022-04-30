@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-#include "clockAppSetTimeTile.hpp"
+#include "clockApp.hpp"
 
 #include "core/component/textComponent.hpp"
 #include "core/component/buttonComponent.hpp"
@@ -56,20 +56,17 @@ static void onGesture(Component *component, Gesture gesture)
 static void hourPlus()
 {
     hourDelta++;
-    api->render(false);
 }
 
 static void hourMinus()
 {
     hourDelta--;
-    api->render(false);
 }
 
 static void setTime()
 {
     api->adjDate(hourDelta);
     hourDelta = 0;
-    api->render(false);
 }
 
 Component* createClockAppSetTimeTile(ClockAppApi *clockAppApi)

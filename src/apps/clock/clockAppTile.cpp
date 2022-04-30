@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-#include "clockAppTile.hpp"
+#include "clockApp.hpp"
 
 #include "core/component/textComponent.hpp"
 #include "core/component/group.hpp"

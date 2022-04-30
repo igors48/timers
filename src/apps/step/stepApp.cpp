@@ -83,7 +83,6 @@ App createStepApp(void *backgroundTaskHandleRef, SystemApi *systemApiRef, BmaApi
         .getStepCounter = getStepCounter,
         .resetStepCounter = resetStepCounter,
         .onGesture = onGesture,
-        .render = render,
     };
 
     stepTile = createStepAppTile(&api);

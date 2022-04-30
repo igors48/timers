@@ -31,7 +31,6 @@ static void provideStepCounterState(TextState *state)
 static void reset()
 {
     (api->resetStepCounter)();
-    (api->render)(false);
 }
 
 static void onGesture(Component *component, Gesture gesture)
