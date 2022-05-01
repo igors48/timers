@@ -75,7 +75,7 @@ void componentOnReleaseStub(Component *component, signed short x, signed short y
     onReleaseHandlerY = y;
 }
 
-void screenOnGestureSub(Component *component, Gesture gesture)
+void screenOnGestureSub(Gesture gesture)
 {
     screenOnGestureCalled = true;
     screenGesture = gesture;

@@ -96,7 +96,7 @@ static void notTouched(TouchScreenListenerParameters *p)
         Gesture gesture = detectGesture(p->firstX, p->firstY, p->lastX, p->lastY);
         if (gesture != NONE)
         {
-            (p->tiler->onGesture)(target, gesture);
+            (p->tiler->onGesture)(gesture);
         }
         p->firstX = -1;
         p->firstY = -1;

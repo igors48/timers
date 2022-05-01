@@ -42,7 +42,7 @@ static void onRelease(Component *component, signed short x, signed short y)
     renderApp(false);
 }
 
-static void onGesture(Component *component, Gesture gesture)
+static void onGesture(Gesture gesture)
 {
     Component *activeTile = (activeApp->getActiveTile)(); 
     (activeTile->onGesture)(activeTile, gesture);  
