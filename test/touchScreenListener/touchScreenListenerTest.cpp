@@ -23,7 +23,7 @@ signed short onMoveHandlerY;
 bool onReleaseHandlerCalled;
 signed short onReleaseHandlerX;
 signed short onReleaseHandlerY;
-Component screen;
+Tiler tiler;
 bool screenOnGestureCalled;
 Gesture screenGesture;
 
@@ -39,12 +39,12 @@ bool getTouchStub(signed short &x, signed short &y)
     return getTouchResult;
 }
 
-Component *noTargetStub(Component *c, signed short x, signed short y)
+Component *noTargetStub(signed short x, signed short y)
 {
     return NULL;
 }
 
-Component *findTargetStub(Component *c, signed short x, signed short y)
+Component *findTargetStub(signed short x, signed short y)
 {
     return &component;
 }
@@ -110,9 +110,12 @@ void setUp(void)
     component.onMove = componentOnMoveStub;
     component.onRelease = componentOnReleaseStub;
 
-    screen = {};
-    screen.contains = noTargetStub;
-    screen.onGesture = screenOnGestureSub;
+    tiler = {};
+    tiler.contains = noTargetStub;
+    tiler.onGesture = screenOnGestureSub;
+    tiler.onTouch = componentOnTouchStub;
+    tiler.onMove = componentOnMoveStub; 
+    tiler.onRelease = componentOnReleaseStub; 
 
     screenOnGestureCalled = false;
     screenGesture = NONE;
@@ -125,7 +128,7 @@ void setUp(void)
         .lastY = 0,
         .watchMutex = &watchMutex,
         .lastUserEventTimestamp = &lastUserEventTimestamp,
-        .screen = &screen,
+        .tiler = &tiler,
         .watchApi = &watchApi,
         .systemApi = &systemApi,
     };
@@ -154,7 +157,7 @@ void whenFirstTouchInsideComponent()
     xResult = 48;
     yResult = 49;
     getTouchResult = true;
-    screen.contains = findTargetStub;
+    tiler.contains = findTargetStub;
 
     touchScreenListener(&p);
 
@@ -177,7 +180,7 @@ void whenNotFirstTouch()
     xResult = 48;
     yResult = 49;
     getTouchResult = true;
-    screen.contains = findTargetStub;
+    tiler.contains = findTargetStub;
 
     touchScreenListener(&p);
 
@@ -243,7 +246,7 @@ void whenReleasedWithTouchComponentBefore()
     xResult = 48;
     yResult = 49;
     getTouchResult = true;
-    screen.contains = findTargetStub;
+    tiler.contains = findTargetStub;
 
     touchScreenListener(&p);
 
@@ -308,7 +311,7 @@ void whenReleasedWithTouchComponentBeforeButWithGesture()
     xResult = 48;
     yResult = 9;
     getTouchResult = true;
-    screen.contains = findTargetStub;
+    tiler.contains = findTargetStub;
 
     touchScreenListener(&p);
 
