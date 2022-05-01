@@ -106,9 +106,6 @@ void setUp(void)
     onReleaseHandlerX = 0;
     onReleaseHandlerY = 0;
     component = {};
-    component.onTouch = componentOnTouchStub;
-    component.onMove = componentOnMoveStub;
-    component.onRelease = componentOnReleaseStub;
 
     tiler = {};
     tiler.contains = noTargetStub;
