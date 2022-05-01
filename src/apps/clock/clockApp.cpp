@@ -5,6 +5,7 @@
 
 static RtcApi *rtcApi;
 static PowerApi *powerApi;
+static BmaApi *bmaApi;
 static Tiler *tiler;
 static SystemApi *systemApi;
 static void *backgroundTask;
@@ -102,16 +103,22 @@ static int getBattery()
     return batteryPercent;
 }
 
+static unsigned int getStepCounter()
+{
+    return (bmaApi->getCounter)();
+}
+
 void clockAppTick()
 {
     update();
     renderApp(false);
 }
 
-App createClockApp(void *backgroundTaskHandleRef, SystemApi *systemApiRef, RtcApi *rtcApiRef, PowerApi *powerApiRef, Tiler *tilerRef, Manager *managerRef)
+App createClockApp(void *backgroundTaskHandleRef, SystemApi *systemApiRef, RtcApi *rtcApiRef, PowerApi *powerApiRef, BmaApi *bmaApiRef, Tiler *tilerRef, Manager *managerRef)
 {
     rtcApi = rtcApiRef;
     powerApi = powerApiRef;
+    bmaApi = bmaApiRef,
     tiler = tilerRef;
     manager = managerRef;
     backgroundTask = backgroundTaskHandleRef;
@@ -135,6 +142,7 @@ App createClockApp(void *backgroundTaskHandleRef, SystemApi *systemApiRef, RtcAp
         .getDate = getDate,
         .adjDate = adjDate,
         .getBattery = getBattery,
+        .getStepCounter = getStepCounter,
         .onGesture = onGesture,
     };
 

@@ -131,7 +131,7 @@ void createClockApplication()
     xTaskCreate(tickerTask, "clockAppTickerTask", 2048, (void *)&clockAppTickerParameters, 1, &clockAppTickerTaskHandle);
     vTaskSuspend(clockAppTickerTaskHandle);
 
-    clockApp = createClockApp(clockAppTickerTaskHandle, &systemApi, &rtcApi, &powerApi, &tiler, &manager);
+    clockApp = createClockApp(clockAppTickerTaskHandle, &systemApi, &rtcApi, &powerApi, &bmaApi, &tiler, &manager);
 }
 
 void createStepApplication()
