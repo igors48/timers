@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include <time.h>
 #include "system.hpp"
 
 void systemLog(const char *source, const char *message, ...)

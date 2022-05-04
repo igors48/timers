@@ -95,6 +95,8 @@ void supervisorTask(void *p)
     {
         supervisor((SupervisorParameters *)p);
         vTaskDelay(1000 / portTICK_PERIOD_MS); // todo supervisor task delay -> const
+        // TickType_t count = xTaskGetTickCount();
+        // Serial.printf("count: %d\r\n", count);
     }
 }
 
@@ -151,7 +153,7 @@ void createStepApplication()
 void setup()
 {
     Serial.begin(115200);
-    delay(4000);
+    delay(5000);
 
     watchMutex = xSemaphoreCreateMutex();
     soundQueue = xQueueCreate(100, sizeof(char));
