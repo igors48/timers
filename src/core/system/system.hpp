@@ -1,28 +1,21 @@
 #pragma once
 
-typedef bool (*Take)(void *semaphore, unsigned int blockTimeMillis);
-typedef bool (*Give)(void *semaphore);
-typedef long (*Time)();
-typedef void (*Delay)(unsigned int time);
-typedef void (*DelayUntil)(unsigned int *prevoiusWakeTimeMillis, unsigned int timeIncrementMillis);
 typedef void (*Resume)(void *handle);
 typedef void (*Suspend)(void *handle);
-typedef bool (*QueueReceive)(void *queue, void *buffer, unsigned int blockTimeMillis);  
-typedef bool (*QueueSend)(void *queue, void *item, unsigned int blockTimeMillis);
-typedef void (*Log)(const char *source, const char *message, ...);
 
 typedef struct
 {
-    Take take;
-    Give give;
-    Log log;
-    Time time;
-    Delay delay;
-    DelayUntil delayUntil;
+    bool (*take)(void *semaphore, unsigned int blockTimeMillis);
+    bool (*give)(void *semaphore);
+    void (*log)(const char *source, const char *message, ...);
+    long (*time)();
+    void (*delay)(unsigned int time);
+    void (*delayUntil)(unsigned int *prevoiusWakeTimeMillis, unsigned int timeIncrementMillis);
     Suspend suspend;
     Resume resume;
-    QueueReceive queueReceive;
-    QueueSend queueSend;
+    bool (*queueReceive)(void *queue, void *buffer, unsigned int blockTimeMillis);
+    bool (*queueSend)(void *queue, void *item, unsigned int blockTimeMillis);
+    unsigned int (*getTickCount)();
 } SystemApi;
 
 SystemApi defaultSystemApi();

@@ -59,6 +59,11 @@ bool systemQueueSend(void *queue, void *item, unsigned int blockTimeMillis)
     return xQueueSend(*(QueueHandle_t *)queue, item, (TickType_t)blockTimeMillis / portTICK_PERIOD_MS) == pdTRUE;   
 }
 
+unsigned int systemGetTickCount()
+{
+    return xTaskGetTickCount();
+}
+
 SystemApi defaultSystemApi()
 {
     return {
@@ -72,5 +77,6 @@ SystemApi defaultSystemApi()
         .resume = systemResume,
         .queueReceive = systemQueueReceive,
         .queueSend = systemQueueSend,
+        .getTickCount = systemGetTickCount,
     };
 }

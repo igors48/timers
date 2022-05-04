@@ -24,21 +24,21 @@ static Component* contains(signed short x, signed short y)
     return (activeTile->contains)(activeTile, x, y);
 }
 
-static void onTouch(Component *component, signed short x, signed short y)
+static void onTouch(Component *component, signed short x, signed short y, unsigned int tickCount)
 {
-    (component->onTouch)(component, x, y);    
+    (component->onTouch)(component, x, y, tickCount);    
     renderApp(false);
 }
 
-static void onMove(Component *component, signed short x, signed short y)
+static void onMove(Component *component, signed short x, signed short y, unsigned int tickCount)
 {
-    (component->onMove)(component, x, y);    
+    (component->onMove)(component, x, y, tickCount);    
     renderApp(false);
 }
 
-static void onRelease(Component *component, signed short x, signed short y)
+static void onRelease(Component *component, signed short x, signed short y, unsigned int tickCount)
 {
-    (component->onRelease)(component, x, y);    
+    (component->onRelease)(component, x, y, tickCount);    
     renderApp(false);
 }
 

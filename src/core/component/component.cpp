@@ -2,7 +2,7 @@
 
 #include "component.hpp"
 
-void componentNoopHandler(Component *component, signed short x, signed short y)
+void componentNoopHandler(Component *component, signed short x, signed short y, unsigned int tickCount)
 {
     // empty
 }

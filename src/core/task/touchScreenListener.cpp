@@ -25,14 +25,16 @@ static void touched(TouchScreenListenerParameters *p, signed short x, signed sho
         p->target = (tiler->contains)(x, y);
         if (p->target != NULL) // todo move all null target handling to the tiler 
         {
-            (p->tiler->onTouch)(p->target, x, y);
+            unsigned int tickCount = (p->systemApi->getTickCount)();
+            (p->tiler->onTouch)(p->target, x, y, tickCount);
         }
     }
     else
     {
         if (p->target != NULL) 
         {
-            (p->tiler->onMove)(p->target, x, y);
+            unsigned int tickCount = (p->systemApi->getTickCount)();
+            (p->tiler->onMove)(p->target, x, y, tickCount);
         }
     }
     updateLastUserEventTimestamp(p);
@@ -90,7 +92,8 @@ static void notTouched(TouchScreenListenerParameters *p)
         Component *target = p->target;
         if (target != NULL)
         {
-            (p->tiler->onRelease)(target, p->lastX, p->lastY);
+            unsigned int tickCount = (p->systemApi->getTickCount)();
+            (p->tiler->onRelease)(target, p->lastX, p->lastY, tickCount);
             p->target = NULL;
         }
         Gesture gesture = detectGesture(p->firstX, p->firstY, p->lastX, p->lastY);

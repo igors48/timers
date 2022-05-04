@@ -12,13 +12,6 @@ typedef enum {
     MOVE_RIGHT,
 } Gesture;
 
-typedef void (*Render)(Component *component, bool forced, TftApi *tftApi);
-typedef bool (*NewState)(Component *component);
-typedef void (*TouchEventHandler)(Component *component, signed short x, signed short y);
-typedef void (*GestureEventHandler)(Component *component, Gesture gesture);
-typedef Component* (*Contains)(Component *component, signed short x, signed short y);
-typedef void (*Mount)(Component *component, signed short x, signed short y);
-
 const unsigned int COLOR_BLACK = 0x0000;
 const unsigned int COLOR_INFORMATION = 0xFDA0;
 const unsigned int COLOR_INTERACTION = 0x03E0;
@@ -30,18 +23,18 @@ struct Component_
     signed short y;
     signed short w;
     signed short h;
-    Contains contains;
-    Mount mount;
-    TouchEventHandler onTouch; // todo consider interface EventListener 
-    TouchEventHandler onMove;  
-    TouchEventHandler onRelease;  
-    GestureEventHandler onGesture;
-    Render render;  // todo consider interface Renderable
-    NewState newState; // todo consider better name
+    Component* (*contains)(Component *component, signed short x, signed short y);
+    void (*mount)(Component *component, signed short x, signed short y);
+    void (*onTouch)(Component *component, signed short x, signed short y, unsigned int tickCount); // todo consider interface EventListener 
+    void (*onMove)(Component *component, signed short x, signed short y, unsigned int tickCount);  
+    void (*onRelease)(Component *component, signed short x, signed short y, unsigned int tickCount);  
+    void (*onGesture)(Component *component, Gesture gesture);
+    void (*render)(Component *component, bool forced, TftApi *tftApi);  // todo consider interface Renderable
+    bool (*newState)(Component *component); // todo consider better name
     void *state;    
 };
 
-void componentNoopHandler(Component *component, signed short x, signed short y);
+void componentNoopHandler(Component *component, signed short x, signed short y, unsigned int tickCount);
 
 void componentGestureNoopHandler(Component *component, Gesture gesture);
 

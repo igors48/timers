@@ -5,13 +5,10 @@
 typedef struct
 {
     unsigned char childrenCount;
-    void **children; 
-    Render forcedRender;   
+    void **children;  
 } GroupState;
 
 GroupState createGroupState(unsigned char childrenCount, void **children);
 
 Component createGroupComponent(signed short x, signed short y, GroupState *state);
 
-// todo consider Tile component
-Component createTile(GroupState *state, GestureEventHandler gestureEventHandler);

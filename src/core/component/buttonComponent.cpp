@@ -32,13 +32,13 @@ static bool buttonComponentNewState(Component *component)
     return changed;
 }
 
-static void buttonComponentOnTouch(Component *component, signed short x, signed short y)
+static void buttonComponentOnTouch(Component *component, signed short x, signed short y, unsigned int tickCount)
 {
     ButtonComponentState *state = (ButtonComponentState *)(component->state);
     state->pressed = true;
 }
 
-static void buttonComponentOnRelease(Component *component, signed short x, signed short y)
+static void buttonComponentOnRelease(Component *component, signed short x, signed short y, unsigned int tickCount)
 {
     ButtonComponentState *state = (ButtonComponentState *)(component->state);
     state->handler();
