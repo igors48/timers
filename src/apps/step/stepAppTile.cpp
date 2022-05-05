@@ -43,7 +43,7 @@ Component *createStepAppTile(StepAppApi *stepAppApi)
     api = stepAppApi;
     
     stepCounter = createTextState(1, 3, COLOR_ATTENTION, provideStepCounterState);
-    resetButtonState = createButtonState(RESET, reset);
+    resetButtonState = createButtonState(RESET, EG_ONCE, reset);
 
     stepCounterComponent = createTextComponent(55, 120, 50, 50, &stepCounter);
     resetButton = createButtonComponent(60, 195, 66, 25, &resetButtonState);

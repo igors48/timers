@@ -77,9 +77,9 @@ Component* createClockAppSetTimeTile(ClockAppApi *clockAppApi)
 
     hourMinute = createTextState(7, 1, COLOR_INTERACTION, provideHourMinuteState);
     second = createTextState(7, 1, COLOR_INTERACTION, provideSecondState);
-    hourPlusButtonState = createButtonState(PLUS, hourPlus);
-    hourMinusButtonState = createButtonState(MINUS, hourMinus);
-    setButtonState = createButtonState(SET, setTime);
+    hourPlusButtonState = createButtonState(PLUS, EG_REPEAT, hourPlus);
+    hourMinusButtonState = createButtonState(MINUS, EG_REPEAT, hourMinus);
+    setButtonState = createButtonState(SET, EG_ONCE, setTime);
 
     hourMinuteComponent = createTextComponent(10, 90, 140, 48, &hourMinute);
     secondComponent = createTextComponent(150, 90, 75, 48, &second);

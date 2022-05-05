@@ -15,7 +15,6 @@ typedef enum {
     EHS_PRESS,
     EHS_LEAVE,
     EHS_REPEAT,
-    EHS_LEFT,
 } EventHandlingState;
 
 typedef struct
@@ -31,6 +30,6 @@ typedef struct
     unsigned int lastRepeatTick;
 } ButtonComponentState;
 
-ButtonComponentState createButtonState(char *title, Handler handler);
+ButtonComponentState createButtonState(char *title, EventGenerate eventGenerate, Handler handler);
 
 Component createButtonComponent(signed short x, signed short y, signed short w, signed short h, ButtonComponentState *state);
