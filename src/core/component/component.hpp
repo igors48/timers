@@ -4,7 +4,7 @@
 
 typedef struct Component_ Component;
 
-typedef enum {
+typedef enum { // todo prefixes to avoid collisions
     NONE,
     MOVE_UP,
     MOVE_LEFT,

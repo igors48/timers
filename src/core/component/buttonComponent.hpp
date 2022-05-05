@@ -4,12 +4,31 @@
 
 typedef void (*Handler)();
 
+typedef enum {
+    EG_ONCE,
+    EG_REPEAT,
+} EventGenerate;
+
+typedef enum {
+    EHS_INIT,
+    EHS_IDLE,
+    EHS_PRESS,
+    EHS_LEAVE,
+    EHS_REPEAT,
+    EHS_LEFT,
+} EventHandlingState;
+
 typedef struct
 {
     char *title;
-    bool pressed;
-    bool _pressed;
+    EventGenerate eventGenerate;
     Handler handler;
+    unsigned int delayTick;
+    unsigned int repeatTick;
+    EventHandlingState eventHandlingState;
+    EventHandlingState _eventHandlingState;
+    unsigned int firstTouchTick;
+    unsigned int lastRepeatTick;
 } ButtonComponentState;
 
 ButtonComponentState createButtonState(char *title, Handler handler);
