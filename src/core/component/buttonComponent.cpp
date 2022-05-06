@@ -11,7 +11,7 @@ static void render(Component *component, bool forced, TftApi *tftApi)
     {
         rectColor = COLOR_BUTTON_BACK_PRESSED;
     }
-    (tftApi->fillRect)(component->x, component->y, component->w, component->h, rectColor);
+    (tftApi->fillRoundRect)(component->x, component->y, component->w, component->h, 4, rectColor); // todo make radius a parameter or const
     (tftApi->setCursor)(component->x + 4, component->y + 4);
     (tftApi->setTextSize)(2);
     (tftApi->setTextFont)(1);
@@ -105,7 +105,7 @@ ButtonComponentState createButtonState(char *title, EventGenerate eventGenerate,
         .eventGenerate = eventGenerate,
         .handler = handler,
         .delayTick = 1000, // todo pass as a parameter. depends on portTICK_PERIOD_MS
-        .repeatTick = 200, // todo pass as a parameter. depends on portTICK_PERIOD_MS
+        .repeatTick = 250, // todo pass as a parameter. depends on portTICK_PERIOD_MS
         .eventHandlingState = EHS_IDLE,
         ._eventHandlingState = EHS_INIT,
         .firstTouchTick = 0,
