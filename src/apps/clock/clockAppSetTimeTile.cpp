@@ -83,9 +83,9 @@ Component* createClockAppSetTimeTile(ClockAppApi *clockAppApi)
 
     hourMinuteComponent = createTextComponent(10, 90, 140, 48, &hourMinute);
     secondComponent = createTextComponent(150, 90, 75, 48, &second);
-    hourPlusButton = createButtonComponent(10, 20, 66, 25, &hourPlusButtonState);
-    hourMinusButton = createButtonComponent(10, 180, 66, 25, &hourMinusButtonState);
-    setButton = createButtonComponent(80, 20, 66, 25, &setButtonState);
+    hourPlusButton = createButtonComponent(10, 20, 66, 50, &hourPlusButtonState);
+    hourMinusButton = createButtonComponent(10, 180, 66, 50, &hourMinusButtonState);
+    setButton = createButtonComponent(80, 20, 66, 50, &setButtonState);
 
     components[0] = &hourMinuteComponent;
     components[1] = &secondComponent;

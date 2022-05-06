@@ -12,10 +12,15 @@ typedef enum { // todo prefixes to avoid collisions
     MOVE_RIGHT,
 } Gesture;
 
-const unsigned int COLOR_BLACK = 0x0000;
+// always wrote here in comment color in RGB scheme
+const unsigned int COLOR_BLACK = 0x0000; 
 const unsigned int COLOR_INFORMATION = 0xFDA0;
 const unsigned int COLOR_INTERACTION = 0x03E0;
 const unsigned int COLOR_ATTENTION = 0xF800;
+const unsigned int COLOR_BUTTON_TEXT = 0xFFFF;
+const unsigned int COLOR_BUTTON_BACK_RELEASED = 0x8C50;
+const unsigned int COLOR_BUTTON_BACK_PRESSED = 0xD6B9;
+const unsigned int COLOR_BUTTON_BACK_DISABLED = 0xF800;
 
 struct Component_
 {

@@ -1,24 +1,21 @@
 #include <stddef.h>
 
-#include <Arduino.h>
-
 #include "component.hpp"
 #include "buttonComponent.hpp"
 
 static void render(Component *component, bool forced, TftApi *tftApi)
 {
     ButtonComponentState *state = (ButtonComponentState *)(component->state);
-    unsigned int rectColor = COLOR_BLACK;
-    Serial.printf("handling state %d\r\n", state->eventHandlingState);
-    if (state->eventHandlingState == EHS_PRESS)
+    unsigned int rectColor = COLOR_BUTTON_BACK_RELEASED;
+    if (state->eventHandlingState == EHS_PRESS || state->eventHandlingState == EHS_REPEAT)
     {
-        rectColor = COLOR_INTERACTION;
+        rectColor = COLOR_BUTTON_BACK_PRESSED;
     }
-    (tftApi->drawRect)(component->x, component->y, component->w, component->h, rectColor);
+    (tftApi->fillRect)(component->x, component->y, component->w, component->h, rectColor);
     (tftApi->setCursor)(component->x + 4, component->y + 4);
     (tftApi->setTextSize)(2);
     (tftApi->setTextFont)(1);
-    (tftApi->setTextColor)(COLOR_INTERACTION, COLOR_BLACK);
+    (tftApi->setTextColor)(COLOR_BUTTON_TEXT, rectColor);
     (tftApi->print)(state->title);
 }
 
