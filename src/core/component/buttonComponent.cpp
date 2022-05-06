@@ -34,6 +34,58 @@ static bool newState(Component *component)
     return changed;
 }
 
+static void repeat(ButtonComponentState *state, unsigned int tickCount)
+{
+    if (state->eventHandlingState == EHS_PRESS)
+    {
+        unsigned int pressedTick = tickCount - state->firstTouchTick;
+        if (pressedTick > state->delayTick)
+        {
+            state->eventHandlingState = EHS_REPEAT;
+            state->lastRepeatTick = tickCount;
+            (state->handler)();
+        }
+    }
+    if (state->eventHandlingState == EHS_REPEAT)
+    {
+        unsigned int fromLastRepeatTick = tickCount - state->lastRepeatTick;
+        if (fromLastRepeatTick > state->repeatTick)
+        {
+            state->lastRepeatTick = tickCount;
+            (state->handler)();
+        }
+    }
+}
+
+static void press(ButtonComponentState *state, unsigned int tickCount)
+{
+    if (state->eventHandlingState == EHS_LEAVE)
+    {
+        state->eventHandlingState = EHS_PRESS;
+        state->lastRepeatTick = tickCount;
+    }
+}
+
+static void onEnter(ButtonComponentState *state, unsigned int tickCount)
+{
+    if (state->eventGenerate == EG_REPEAT)
+    {
+        repeat(state, tickCount);
+    }
+    else
+    {
+        press(state, tickCount);
+    }
+}
+
+static void onLeave(ButtonComponentState *state)
+{
+    if (state->eventHandlingState == EHS_PRESS || state->eventHandlingState == EHS_REPEAT)
+    {
+        state->eventHandlingState = EHS_LEAVE;
+    }
+}
+
 static void onTouch(Component *component, signed short x, signed short y, unsigned int tickCount)
 {
     ButtonComponentState *state = (ButtonComponentState *)(component->state);
@@ -47,42 +99,11 @@ static void onMove(Component *component, signed short x, signed short y, unsigne
     bool itsMe = (component->contains)(component, x, y) != NULL;
     if (itsMe)
     {
-        if (state->eventGenerate == EG_REPEAT)
-        {
-            if (state->eventHandlingState == EHS_PRESS)
-            {
-                unsigned int pressedTick = tickCount - state->firstTouchTick;
-                if (pressedTick > state->delayTick)
-                {
-                    state->eventHandlingState = EHS_REPEAT;
-                    state->lastRepeatTick = tickCount;
-                    (state->handler)();
-                }
-            }
-            if (state->eventHandlingState == EHS_REPEAT)
-            {
-                unsigned int fromLastRepeatTick = tickCount - state->lastRepeatTick;
-                if (fromLastRepeatTick > state->repeatTick)
-                {
-                    state->lastRepeatTick = tickCount;
-                    (state->handler)();
-                }
-            }
-        }
-        else
-        {
-            if (state->eventHandlingState == EHS_LEAVE)
-            {
-                state->eventHandlingState = EHS_PRESS;
-            }
-        }
+        onEnter(state, tickCount);
     }
     else
     {
-        if (state->eventHandlingState == EHS_PRESS || state->eventHandlingState == EHS_REPEAT)
-        {
-            state->eventHandlingState = EHS_LEAVE;
-        }
+        onLeave(state);
     }
 }
 
