@@ -82,7 +82,6 @@ static void press(ButtonComponentState *state, unsigned int tickCount)
     if (state->eventHandlingState == EHS_LEAVE)
     {
         state->eventHandlingState = EHS_PRESS;
-        state->lastRepeatTick = tickCount;
     }
 }
 
@@ -111,6 +110,7 @@ static void onTouch(Component *component, signed short x, signed short y, unsign
     ButtonComponentState *state = (ButtonComponentState *)(component->state);
     if (state->mode == BM_DISABLED)
     {
+        state->eventHandlingState = EHS_IDLE;
         return;
     }
     state->eventHandlingState = EHS_PRESS;
@@ -122,6 +122,7 @@ static void onMove(Component *component, signed short x, signed short y, unsigne
     ButtonComponentState *state = (ButtonComponentState *)(component->state);
     if (state->mode == BM_DISABLED)
     {
+        state->eventHandlingState = EHS_IDLE;
         return;
     }
     bool itsMe = (component->contains)(component, x, y) != NULL;

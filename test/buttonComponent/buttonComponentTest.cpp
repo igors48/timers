@@ -108,6 +108,44 @@ void whenReleasedNotOnMeRepeated()
     TEST_ASSERT_TRUE(state.eventHandlingState == EHS_IDLE); // THEN state is set to idle
 }
 
+void whenMoveOutside()
+{
+    button.onTouch(&button, 15, 15, 48);
+
+    button.onMove(&button, 115, 115, 148);
+
+    TEST_ASSERT_TRUE(state.eventHandlingState == EHS_LEAVE); // THEN state is set to leave
+}
+
+void whenMoveOutsideDisabled()
+{
+    button.onTouch(&button, 15, 15, 48);
+
+    state.mode = BM_DISABLED;
+    button.onMove(&button, 115, 115, 148);
+
+    TEST_ASSERT_TRUE(state.eventHandlingState == EHS_IDLE); // THEN state is set to idle
+}
+
+void whenMoveInside()
+{
+    button.onTouch(&button, 15, 15, 48);
+
+    button.onMove(&button, 16, 16, 148);
+
+    TEST_ASSERT_TRUE(state.eventHandlingState == EHS_PRESS); // THEN state is set to press
+}
+
+void whenMoveInsideDisabled()
+{
+    button.onTouch(&button, 15, 15, 48);
+
+    state.mode = BM_DISABLED;
+    button.onMove(&button, 16, 16, 148);
+
+    TEST_ASSERT_TRUE(state.eventHandlingState == EHS_IDLE); // THEN state is set to idle
+}
+
 int main()
 {
     UNITY_BEGIN();
@@ -119,5 +157,9 @@ int main()
     RUN_TEST(whenReleasedOnMeRepeatedDisabled);
     RUN_TEST(whenReleasedNotOnMe);
     RUN_TEST(whenReleasedNotOnMeRepeated);
+    RUN_TEST(whenMoveOutside);
+    RUN_TEST(whenMoveOutsideDisabled);
+    RUN_TEST(whenMoveInside);
+    RUN_TEST(whenMoveInsideDisabled);
     UNITY_END();
 }
