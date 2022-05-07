@@ -33,6 +33,7 @@ void whenTouch()
 void whenTouchDisabled()
 {
     state.mode = BM_DISABLED;
+
     button.onTouch(&button, 15, 15, 48);
 
     TEST_ASSERT_TRUE(state.eventHandlingState == EHS_IDLE); // THEN state is not changed
@@ -42,7 +43,9 @@ void whenTouchDisabled()
 
 void whenReleasedOnMe()
 {
-    button.onRelease(&button, 15, 15, 48);
+    button.onTouch(&button, 15, 15, 48);
+
+    button.onRelease(&button, 15, 15, 2048);
 
     TEST_ASSERT_TRUE(handlerCalled) // THEN handler is called
     TEST_ASSERT_TRUE(state.eventHandlingState == EHS_IDLE); // THEN state is set to idle
@@ -50,16 +53,21 @@ void whenReleasedOnMe()
 
 void whenReleasedOnMeRepeated()
 {
-    state.eventHandlingState = EHS_REPEAT;
+    state.eventGenerate = EG_REPEAT;
+    button.onTouch(&button, 15, 15, 48);
+    button.onMove(&button, 15, 15, 2048);
+    handlerCalled = false; // need to reset because it is set to true when first repeat
+
     button.onRelease(&button, 15, 15, 48);
 
-    TEST_ASSERT_FALSE(handlerCalled) // THEN handler is called
+    TEST_ASSERT_FALSE(handlerCalled) // THEN handler is not called
     TEST_ASSERT_TRUE(state.eventHandlingState == EHS_IDLE); // THEN state is set to idle
 }
 
 void whenReleasedOnMeDisabled()
 {
     state.mode = BM_DISABLED;
+
     button.onRelease(&button, 15, 15, 48);
 
     TEST_ASSERT_FALSE(handlerCalled) // THEN handler is not called
@@ -68,12 +76,15 @@ void whenReleasedOnMeDisabled()
 
 void whenReleasedOnMeRepeatedDisabled()
 {
-    state.eventHandlingState = EHS_REPEAT;
+    button.onTouch(&button, 15, 15, 48);
+    button.onMove(&button, 15, 15, 2048);
+    handlerCalled = false; // need to reset because it is set to true when first repeat
     state.mode = BM_DISABLED;
+
     button.onRelease(&button, 15, 15, 48);
 
     TEST_ASSERT_FALSE(handlerCalled) // THEN handler is not called
-    TEST_ASSERT_TRUE(state.eventHandlingState == EHS_REPEAT); // THEN state is not changed
+    TEST_ASSERT_TRUE(state.eventHandlingState == EHS_IDLE); // THEN state is set to idle
 }
 
 void whenReleasedNotOnMe()
@@ -86,7 +97,11 @@ void whenReleasedNotOnMe()
 
 void whenReleasedNotOnMeRepeated()
 {
-    state.eventHandlingState = EHS_REPEAT;
+    state.eventGenerate = EG_REPEAT;
+    button.onTouch(&button, 15, 15, 48);
+    button.onMove(&button, 15, 15, 2048);
+    handlerCalled = false; // need to reset because it is set to true when first repeat
+
     button.onRelease(&button, 115, 115, 48);
 
     TEST_ASSERT_FALSE(handlerCalled) // THEN handler is not called
