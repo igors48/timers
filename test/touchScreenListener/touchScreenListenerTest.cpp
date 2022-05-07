@@ -17,12 +17,15 @@ Component component;
 bool onTouchHandlerCalled;
 signed short onTouchHandlerX;
 signed short onTouchHandlerY;
+unsigned int onTouchHandlerTick;
 bool onMoveHandlerCalled;
 signed short onMoveHandlerX;
 signed short onMoveHandlerY;
+unsigned int onMoveHandlerTick;
 bool onReleaseHandlerCalled;
 signed short onReleaseHandlerX;
 signed short onReleaseHandlerY;
+unsigned int onReleaseHandlerTick;
 Tiler tiler;
 bool screenOnGestureCalled;
 Gesture screenGesture;
@@ -59,6 +62,7 @@ void componentOnTouchStub(Component *component, signed short x, signed short y, 
     onTouchHandlerCalled = true;
     onTouchHandlerX = x;
     onTouchHandlerY = y;
+    onTouchHandlerTick = tickCount;
 }
 
 void componentOnMoveStub(Component *component, signed short x, signed short y, unsigned int tickCount)
@@ -66,6 +70,7 @@ void componentOnMoveStub(Component *component, signed short x, signed short y, u
     onMoveHandlerCalled = true;
     onMoveHandlerX = x;
     onMoveHandlerY = y;
+    onMoveHandlerTick = tickCount;
 }
 
 void componentOnReleaseStub(Component *component, signed short x, signed short y, unsigned int tickCount)
@@ -73,12 +78,18 @@ void componentOnReleaseStub(Component *component, signed short x, signed short y
     onReleaseHandlerCalled = true;
     onReleaseHandlerX = x;
     onReleaseHandlerY = y;
+    onReleaseHandlerTick = tickCount;
 }
 
 void screenOnGestureSub(Gesture gesture)
 {
     screenOnGestureCalled = true;
     screenGesture = gesture;
+}
+
+unsigned int getTickCountStub()
+{
+    return 148;
 }
 
 void setUp(void)
@@ -92,6 +103,7 @@ void setUp(void)
 
     systemApi = systemApiMock();
     systemApi.time = timeStub;
+    systemApi.getTickCount = getTickCountStub;
 
     watchApi = watchApiMock();
     watchApi.getTouch = getTouchStub;
@@ -99,12 +111,15 @@ void setUp(void)
     onTouchHandlerCalled = false;
     onTouchHandlerX = 0;
     onTouchHandlerY = 0;
+    onTouchHandlerTick = 0;
     onMoveHandlerCalled = false;
     onMoveHandlerX = 0;
     onMoveHandlerY = 0;
+    onMoveHandlerTick = 0;
     onReleaseHandlerCalled = false;
     onReleaseHandlerX = 0;
     onReleaseHandlerY = 0;
+    onReleaseHandlerTick = 0;
     component = {};
 
     tiler = {};
@@ -162,6 +177,7 @@ void whenFirstTouchInsideComponent()
     TEST_ASSERT_EQUAL_CHAR(1, onTouchHandlerCalled); // THEN component onTouch handler called
     TEST_ASSERT_EQUAL_INT16(48, onTouchHandlerX);    // THEN last coordinates passed to handler
     TEST_ASSERT_EQUAL_INT16(49, onTouchHandlerY);
+    TEST_ASSERT_EQUAL_UINT32(148, onTouchHandlerTick); // THEN tick count passed to handler
     TEST_ASSERT_EQUAL_CHAR(0, onMoveHandlerCalled);    // THEN component onMove handler not called
     TEST_ASSERT_EQUAL_CHAR(0, onReleaseHandlerCalled); // THEN component onRelease handler not called
     TEST_ASSERT_EQUAL_INT16(48, p.lastX);              // THEN last coordinates updated
@@ -193,6 +209,7 @@ void whenNotFirstTouch()
     TEST_ASSERT_EQUAL_CHAR(1, onMoveHandlerCalled);  // THEN component onMove handler called
     TEST_ASSERT_EQUAL_INT16(50, onMoveHandlerX);     // THEN last coordinates passed to handler
     TEST_ASSERT_EQUAL_INT16(51, onMoveHandlerY);
+    TEST_ASSERT_EQUAL_UINT32(148, onMoveHandlerTick); // THEN tick count passed to handler
     TEST_ASSERT_EQUAL_CHAR(0, onReleaseHandlerCalled);   // THEN component onRelease handler not called
     TEST_ASSERT_EQUAL_INT16(50, p.lastX);                // THEN last coordinates updated
     TEST_ASSERT_EQUAL_INT16(51, p.lastY);                // THEN last coordinates updated
@@ -264,6 +281,7 @@ void whenReleasedWithTouchComponentBefore()
     TEST_ASSERT_EQUAL_CHAR(1, onReleaseHandlerCalled); // THEN component onRelease handler not called
     TEST_ASSERT_EQUAL_INT16(50, onReleaseHandlerX);     // THEN last coordinates passed to handler
     TEST_ASSERT_EQUAL_INT16(51, onReleaseHandlerY);
+    TEST_ASSERT_EQUAL_UINT32(148, onReleaseHandlerTick); // THEN tick count passed to handler
     TEST_ASSERT_EQUAL_INT64(43, lastUserEventTimestamp); //THEN last user event timestamp updated
     TEST_ASSERT_FALSE(screenOnGestureCalled); // THEN no gesture detected (diff is small)
 }
@@ -329,6 +347,7 @@ void whenReleasedWithTouchComponentBeforeButWithGesture()
     TEST_ASSERT_EQUAL_CHAR(1, onReleaseHandlerCalled); // THEN component onRelease handler not called
     TEST_ASSERT_EQUAL_INT16(50, onReleaseHandlerX);     // THEN last coordinates passed to handler
     TEST_ASSERT_EQUAL_INT16(209, onReleaseHandlerY);
+    TEST_ASSERT_EQUAL_UINT32(148, onReleaseHandlerTick); // THEN tick count passed to handler
     TEST_ASSERT_EQUAL_INT64(43, lastUserEventTimestamp); //THEN last user event timestamp not changed
     TEST_ASSERT_TRUE(screenOnGestureCalled); // THEN gesture detected
     TEST_ASSERT_TRUE(screenGesture == MOVE_DOWN); // THEN gesture detected

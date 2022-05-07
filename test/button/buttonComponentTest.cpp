@@ -1,6 +1,7 @@
 #include <unity.h>
 
-#include "core/component/buttonComponent.hpp"
+#include "core/component/component.cpp"
+#include "core/component/buttonComponent.cpp"
 
 static char TEST[] = "test";
 
