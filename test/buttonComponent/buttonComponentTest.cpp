@@ -146,6 +146,28 @@ void whenMoveInsideDisabled()
     TEST_ASSERT_TRUE(state.eventHandlingState == EHS_IDLE); // THEN state is set to idle
 }
 
+void whenMoveInsideRepeatedBeforeDelay()
+{
+    state.eventGenerate = EG_REPEAT;
+    button.onTouch(&button, 15, 15, 48);
+    button.onMove(&button, 16, 16, 148);
+
+    TEST_ASSERT_TRUE(state.eventHandlingState == EHS_PRESS); // THEN state is still press
+    TEST_ASSERT_EQUAL_UINT32(state.lastRepeatTick, 0); // THEN first touch tick is not changed
+    TEST_ASSERT_FALSE(handlerCalled); // THEN no handler is called
+}
+
+void whenMoveInsideRepeatedAfterDelay()
+{
+    state.eventGenerate = EG_REPEAT;
+    button.onTouch(&button, 15, 15, 48);
+    button.onMove(&button, 16, 16, 2048);
+
+    TEST_ASSERT_TRUE(state.eventHandlingState == EHS_REPEAT); // THEN state is changed to repeat
+    TEST_ASSERT_EQUAL_UINT32(state.lastRepeatTick, 2048); // THEN first touch tick is not changed
+    TEST_ASSERT_TRUE(handlerCalled); // THEN handler is called
+}
+
 int main()
 {
     UNITY_BEGIN();
@@ -161,5 +183,7 @@ int main()
     RUN_TEST(whenMoveOutsideDisabled);
     RUN_TEST(whenMoveInside);
     RUN_TEST(whenMoveInsideDisabled);
+    RUN_TEST(whenMoveInsideRepeatedBeforeDelay);
+    RUN_TEST(whenMoveInsideRepeatedAfterDelay);
     UNITY_END();
 }
