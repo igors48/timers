@@ -43,17 +43,17 @@ void onGesture(Component *component, Gesture gesture)
     activeTileOnGestureCalled = true;
 }
 
-void onTouchStub(Component *component, signed short x, signed short y)
+void onTouchStub(Component *component, signed short x, signed short y, unsigned int tickCount)
 {
     onTouchCalled = true;
 }
 
-void onMoveStub(Component *component, signed short x, signed short y)
+void onMoveStub(Component *component, signed short x, signed short y, unsigned int tickCount)
 {
     onMoveCalled = true;
 }
 
-void onReleaseStub(Component *component, signed short x, signed short y)
+void onReleaseStub(Component *component, signed short x, signed short y, unsigned int tickCount)
 {
     onReleaseCalled = true;
 }
@@ -128,7 +128,7 @@ void whenOnGestureCalled()
 
 void whenOnTouchCalled()
 {
-    tiler.onTouch(&activeTileStub, 0, 0);
+    tiler.onTouch(&activeTileStub, 0, 0, 0);
 
     TEST_ASSERT_TRUE(onTouchCalled); // THEN component on touch handler called
     TEST_ASSERT_TRUE(activeTileRendered); // THEN active tile rendered
@@ -137,7 +137,7 @@ void whenOnTouchCalled()
 
 void whenOnMoveCalled()
 {
-    tiler.onMove(&activeTileStub, 0, 0);
+    tiler.onMove(&activeTileStub, 0, 0, 0);
 
     TEST_ASSERT_TRUE(onMoveCalled); // THEN component on move handler called
     TEST_ASSERT_TRUE(activeTileRendered); // THEN active tile rendered
@@ -146,7 +146,7 @@ void whenOnMoveCalled()
 
 void whenOnReleaseCalled()
 {
-    tiler.onRelease(&activeTileStub, 0, 0);
+    tiler.onRelease(&activeTileStub, 0, 0, 0);
 
     TEST_ASSERT_TRUE(onReleaseCalled); // THEN component on release handler called
     TEST_ASSERT_TRUE(activeTileRendered); // THEN active tile rendered

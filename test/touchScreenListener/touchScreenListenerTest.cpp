@@ -54,21 +54,21 @@ long timeStub()
     return timeResult;
 }
 
-void componentOnTouchStub(Component *component, signed short x, signed short y)
+void componentOnTouchStub(Component *component, signed short x, signed short y, unsigned int tickCount)
 {
     onTouchHandlerCalled = true;
     onTouchHandlerX = x;
     onTouchHandlerY = y;
 }
 
-void componentOnMoveStub(Component *component, signed short x, signed short y)
+void componentOnMoveStub(Component *component, signed short x, signed short y, unsigned int tickCount)
 {
     onMoveHandlerCalled = true;
     onMoveHandlerX = x;
     onMoveHandlerY = y;
 }
 
-void componentOnReleaseStub(Component *component, signed short x, signed short y)
+void componentOnReleaseStub(Component *component, signed short x, signed short y, unsigned int tickCount)
 {
     onReleaseHandlerCalled = true;
     onReleaseHandlerX = x;
