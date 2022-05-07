@@ -5,6 +5,12 @@
 typedef void (*Handler)();
 
 typedef enum {
+    BM_INIT,
+    BM_ENABLED,
+    BM_DISABLED,
+} ButtonMode;
+
+typedef enum {
     EG_ONCE,
     EG_REPEAT,
 } EventGenerate;
@@ -26,6 +32,8 @@ typedef struct
     unsigned int repeatTick;
     EventHandlingState eventHandlingState;
     EventHandlingState _eventHandlingState;
+    ButtonMode mode;
+    ButtonMode _mode;
     unsigned int firstTouchTick;
     unsigned int lastRepeatTick;
 } ButtonComponentState;

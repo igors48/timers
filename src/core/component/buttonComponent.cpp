@@ -31,29 +31,45 @@ static bool newState(Component *component)
         state->_eventHandlingState = state->eventHandlingState;
     }
 
+    if (state->mode != state->_mode)
+    {
+        changed = true;
+        state->_mode = state->mode;
+    }
+
     return changed;
+}
+
+static void firstRepeat(ButtonComponentState *state, unsigned int tickCount)
+{
+    unsigned int pressedTick = tickCount - state->firstTouchTick;
+    if (pressedTick > state->delayTick)
+    {
+        state->eventHandlingState = EHS_REPEAT;
+        state->lastRepeatTick = tickCount;
+        (state->handler)();
+    }
+}
+
+static void notFirstRepeat(ButtonComponentState *state, unsigned int tickCount)
+{
+    unsigned int fromLastRepeatTick = tickCount - state->lastRepeatTick;
+    if (fromLastRepeatTick > state->repeatTick)
+    {
+        state->lastRepeatTick = tickCount;
+        (state->handler)();
+    }
 }
 
 static void repeat(ButtonComponentState *state, unsigned int tickCount)
 {
     if (state->eventHandlingState == EHS_PRESS)
     {
-        unsigned int pressedTick = tickCount - state->firstTouchTick;
-        if (pressedTick > state->delayTick)
-        {
-            state->eventHandlingState = EHS_REPEAT;
-            state->lastRepeatTick = tickCount;
-            (state->handler)();
-        }
+        firstRepeat(state, tickCount);
     }
-    if (state->eventHandlingState == EHS_REPEAT)
+    else
     {
-        unsigned int fromLastRepeatTick = tickCount - state->lastRepeatTick;
-        if (fromLastRepeatTick > state->repeatTick)
-        {
-            state->lastRepeatTick = tickCount;
-            (state->handler)();
-        }
+        notFirstRepeat(state, tickCount);
     }
 }
 
@@ -89,6 +105,10 @@ static void onLeave(ButtonComponentState *state)
 static void onTouch(Component *component, signed short x, signed short y, unsigned int tickCount)
 {
     ButtonComponentState *state = (ButtonComponentState *)(component->state);
+    if (state->mode == BM_DISABLED)
+    {
+        return;
+    }
     state->eventHandlingState = EHS_PRESS;
     state->firstTouchTick = tickCount;
 }
@@ -96,6 +116,10 @@ static void onTouch(Component *component, signed short x, signed short y, unsign
 static void onMove(Component *component, signed short x, signed short y, unsigned int tickCount)
 {
     ButtonComponentState *state = (ButtonComponentState *)(component->state);
+    if (state->mode == BM_DISABLED)
+    {
+        return;
+    }
     bool itsMe = (component->contains)(component, x, y) != NULL;
     if (itsMe)
     {
@@ -109,8 +133,12 @@ static void onMove(Component *component, signed short x, signed short y, unsigne
 
 static void onRelease(Component *component, signed short x, signed short y, unsigned int tickCount)
 {
-    bool itsMe = (component->contains)(component, x, y) != NULL;
     ButtonComponentState *state = (ButtonComponentState *)(component->state);
+    if (state->mode == BM_DISABLED)
+    {
+        return;
+    }
+    bool itsMe = (component->contains)(component, x, y) != NULL;
     bool noRepeat = state->eventHandlingState != EHS_REPEAT;
     if (itsMe && noRepeat)
     {
@@ -129,6 +157,8 @@ ButtonComponentState createButtonState(char *title, EventGenerate eventGenerate,
         .repeatTick = 250, // todo pass as a parameter. depends on portTICK_PERIOD_MS
         .eventHandlingState = EHS_IDLE,
         ._eventHandlingState = EHS_INIT,
+        .mode = BM_ENABLED,
+        ._mode = BM_INIT,
         .firstTouchTick = 0,
         .lastRepeatTick = 0,
     };
