@@ -1,7 +1,5 @@
 #include <stddef.h>
 
-#include <cstdio>
-
 #include "component.hpp"
 #include "buttonComponent.hpp"
 
@@ -65,7 +63,6 @@ static void notFirstRepeat(ButtonComponentState *state, unsigned int tickCount)
 
 static void repeat(ButtonComponentState *state, unsigned int tickCount)
 {
-    printf("repeat\r\n");
     if (state->eventHandlingState == EHS_PRESS)
     {
         firstRepeat(state, tickCount);
@@ -78,7 +75,6 @@ static void repeat(ButtonComponentState *state, unsigned int tickCount)
 
 static void press(ButtonComponentState *state, unsigned int tickCount)
 {
-    printf("press\r\n");
     if (state->eventHandlingState == EHS_LEAVE)
     {
         state->eventHandlingState = EHS_PRESS;
