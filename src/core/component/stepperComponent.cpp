@@ -44,6 +44,19 @@ StepperComponentState createStepperComponentState(signed short min, signed short
     Component plusButton = createButtonComponent(0, 0, 50, 50, plusButtonState);
     Component minusButton = createButtonComponent(0, 55, 50, 50, minusButtonState);
 
-    GroupState state;
-    Component group;
+    return {
+        .min = 0,
+        .max = 10,
+        .value = 5,
+        .plusButton = plusButton,
+        .minusButton = minusButton,
+        .onChange = onChange,
+    };
+    //GroupState state = createGroupState(2, children);
+    //Component group;
+}
+
+Component createStepperComponent(signed short x, signed short y, StepperComponentState *state)
+{
+    pdArray = ( double * ) pvPortMalloc( xArraySize * sizeof( double ) );
 }
