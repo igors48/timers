@@ -4,6 +4,9 @@
 
 #include <LilyGoWatch.h>
 
+static char PLUS[] = "+";
+static char MINUS[] = "-";
+
 static ButtonComponentState* createButtonStateRef(char *title, EventGenerate eventGenerate, Handler handler)
 {
     ButtonComponentState *state = (ButtonComponentState *)pvPortMalloc(sizeof(ButtonComponentState));
@@ -23,13 +26,23 @@ static ButtonComponentState* createButtonStateRef(char *title, EventGenerate eve
     return state;
 }
 
+static void onPlus()
+{
+    Serial.println("plus");
+}
+
+static void onMinus()
+{
+    Serial.println("minus");
+}
+
 StepperComponentState createStepperComponentState(signed short min, signed short max, signed short value, OnStepperChange onChange)
 {
-    ButtonComponentState *plusButtonState = (ButtonComponentState *)pvPortMalloc(sizeof(ButtonComponentState));
-    Component plusButton;
+    ButtonComponentState *plusButtonState = createButtonStateRef(PLUS, EG_REPEAT, onPlus);
+    ButtonComponentState *minusButtonState = createButtonStateRef(MINUS, EG_REPEAT, onMinus);
 
-    ButtonComponentState minusButtonState;
-    Component minusButton;
+    Component plusButton = createButtonComponent(0, 0, 50, 50, plusButtonState);
+    Component minusButton = createButtonComponent(0, 55, 50, 50, minusButtonState);
 
     GroupState state;
     Component group;
