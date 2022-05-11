@@ -14,6 +14,6 @@ typedef struct
     OnStepperChange onChange;
 } StepperComponentState;
 
-StepperComponentState createStepperComponentState(signed short min, signed short max, signed short value, OnStepperChange onChange);
+StepperComponentState* createStepperComponentStateRef(signed short min, signed short max, signed short value, OnStepperChange onChange);
 
-Component createStepperComponent(signed short x, signed short y, StepperComponentState *state);
+Component* createStepperComponentRef(signed short x, signed short y, StepperComponentState *state);

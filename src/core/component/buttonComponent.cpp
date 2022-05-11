@@ -1,5 +1,7 @@
 #include <stddef.h>
 
+#include <LilyGoWatch.h>
+
 #include "component.hpp"
 #include "buttonComponent.hpp"
 
@@ -103,6 +105,7 @@ static void onLeave(ButtonComponentState *state)
 
 static void onTouch(Component *component, signed short x, signed short y, unsigned int tickCount)
 {
+    Serial.println("touch");
     ButtonComponentState *state = (ButtonComponentState *)(component->state);
     if (state->mode == BM_DISABLED)
     {

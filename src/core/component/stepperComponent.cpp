@@ -26,6 +26,16 @@ static ButtonComponentState* createButtonStateRef(char *title, EventGenerate eve
     return state;
 }
 
+static GroupState* createGroupStateRef(unsigned char childrenCount, void **children)
+{
+    GroupState *state = (GroupState *)pvPortMalloc(sizeof(GroupState));    
+
+    state->childrenCount = childrenCount;
+    state->children = children;
+
+    return state;
+}
+
 static void onPlus()
 {
     Serial.println("plus");
@@ -36,7 +46,7 @@ static void onMinus()
     Serial.println("minus");
 }
 
-StepperComponentState createStepperComponentState(signed short min, signed short max, signed short value, OnStepperChange onChange)
+StepperComponentState* createStepperComponentStateRef(signed short min, signed short max, signed short value, OnStepperChange onChange)
 {
     ButtonComponentState *plusButtonState = createButtonStateRef(PLUS, EG_REPEAT, onPlus);
     ButtonComponentState *minusButtonState = createButtonStateRef(MINUS, EG_REPEAT, onMinus);
@@ -44,19 +54,24 @@ StepperComponentState createStepperComponentState(signed short min, signed short
     Component plusButton = createButtonComponent(0, 0, 50, 50, plusButtonState);
     Component minusButton = createButtonComponent(0, 55, 50, 50, minusButtonState);
 
-    return {
-        .min = 0,
-        .max = 10,
-        .value = 5,
-        .plusButton = plusButton,
-        .minusButton = minusButton,
-        .onChange = onChange,
-    };
-    //GroupState state = createGroupState(2, children);
-    //Component group;
+    StepperComponentState *state = (StepperComponentState *)pvPortMalloc(sizeof(StepperComponentState));
+
+    state->min = 0;
+    state->max = 10;
+    state->value = 5;
+    state->plusButton = plusButton;
+    state->minusButton = minusButton;
+    state->onChange = onChange;
+
+    return state;
 }
 
-Component createStepperComponent(signed short x, signed short y, StepperComponentState *state)
+Component* createStepperComponentRef(signed short x, signed short y, StepperComponentState *state)
 {
-    pdArray = ( double * ) pvPortMalloc( xArraySize * sizeof( double ) );
+    void** components = (void**)pvPortMalloc(2 * sizeof(void*));
+    components[0] = &(state->plusButton);
+    components[1] = &(state->minusButton);
+
+    GroupState* groupState = createGroupStateRef(2, components);
+    return createGroupComponentRef(0, 0, groupState);
 }

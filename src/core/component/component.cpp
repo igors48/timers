@@ -1,5 +1,7 @@
 #include <stddef.h>
 
+#include <LilyGoWatch.h>
+
 #include "component.hpp"
 
 void componentNoopHandler(Component *component, signed short x, signed short y, unsigned int tickCount)
@@ -21,6 +23,7 @@ Component* componentContains(Component *component, signed short x, signed short 
 {
     if ((x >= component->x) && (x <= (component->x + component->w)) && (y >= component->y) && (y <= (component->y + component->h)))
     {
+        Serial.println("contains");
         return component;
     }
     return NULL;

@@ -1,14 +1,17 @@
 #include <stdio.h>
 
+#include <LilyGoWatch.h>
+
 #include "stepApp.hpp"
 
 #include "core/component/buttonComponent.hpp"
 #include "core/component/textComponent.hpp"
 #include "core/component/group.hpp"
+#include "core/component/stepperComponent.hpp"
 
 static char RESET[] = "RESET";
 
-static const unsigned char COMPONENTS_COUNT = 2;
+static const unsigned char COMPONENTS_COUNT = 3;
 static void *components[COMPONENTS_COUNT];
 
 static TextState stepCounter;
@@ -38,6 +41,11 @@ static void onGesture(Component *component, Gesture gesture)
     (api->onGesture)(gesture);
 }
 
+static void onStepperChange(signed short value)
+{
+    Serial.printf("stepper %d\r\n", value);
+}
+
 Component *createStepAppTile(StepAppApi *stepAppApi)
 {
     api = stepAppApi;
@@ -47,9 +55,13 @@ Component *createStepAppTile(StepAppApi *stepAppApi)
 
     stepCounterComponent = createTextComponent(55, 120, 50, 50, &stepCounter);
     resetButton = createButtonComponent(60, 195, 66, 25, &resetButtonState);
-    
+
+    StepperComponentState* stepperState = createStepperComponentStateRef(0, 10, 5, onStepperChange);   
+    Component* stepper = createStepperComponentRef(0, 0, stepperState);
+
     components[0] = &stepCounterComponent;
     components[1] = &resetButton;
+    components[2] = stepper;
  
     state = createGroupState(COMPONENTS_COUNT, components);
     group = createGroupComponent(0, 0, &state);

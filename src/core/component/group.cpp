@@ -1,5 +1,7 @@
 #include <stddef.h>
 
+#include <LilyGoWatch.h>
+
 #include "group.hpp"
 
 void groupRender(Component *group, bool forced, TftApi *tftApi)
@@ -37,11 +39,14 @@ Component* groupContains(Component *component, signed short x, signed short y)
     for (int i = 0; i < state->childrenCount; i++)
     {
         Component *current = (Component *)(state->children[i]);
-        if ((current->contains)(current, x, y))
+        Component *target = (current->contains)(current, x, y); // todo update test
+        if (target != NULL)
         {
-            return current;
+            Serial.println("found");
+            return target;
         }
     }    
+    Serial.println("not found");
     return NULL;
 }
 
@@ -82,4 +87,25 @@ Component createGroupComponent(signed short x, signed short y, GroupState *state
             .newState = groupNewState,
             .state = state,
         };
+}
+
+Component* createGroupComponentRef(signed short x, signed short y, GroupState *state)
+{
+    Component *component = (Component *)pvPortMalloc(sizeof(Component));
+
+    component->x = x;
+    component->y = y;
+    component->w = 0;
+    component->h = 0;
+    component->contains = groupContains;
+    component->mount = groupMount;
+    component->onTouch = componentNoopHandler;
+    component->onMove = componentNoopHandler;
+    component->onRelease = componentNoopHandler;
+    component->onGesture = componentGestureNoopHandler;
+    component->render = groupRender;
+    component->newState = groupNewState;
+    component->state = state;
+
+    return component;    
 }
