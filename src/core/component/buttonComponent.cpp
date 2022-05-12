@@ -7,6 +7,7 @@
 
 static void render(Component *component, bool forced, TftApi *tftApi)
 {
+    Serial.println("button render");
     ButtonComponentState *state = (ButtonComponentState *)(component->state);
     unsigned int rectColor = COLOR_BUTTON_BACK_RELEASED;
     if (state->eventHandlingState == EHS_PRESS || state->eventHandlingState == EHS_REPEAT)
@@ -38,7 +39,7 @@ static bool newState(Component *component)
         changed = true;
         state->_mode = state->mode;
     }
-
+    Serial.printf("button newstate %d\r\n", changed);
     return changed;
 }
 

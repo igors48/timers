@@ -13,7 +13,8 @@ void groupRender(Component *group, bool forced, TftApi *tftApi)
         bool needRender = (current->newState)(current);
         if (forced || needRender)
         {
-            (current->render)(current, forced, tftApi);
+            Serial.println("group render");
+            (current->render)(current, true/*forced*/, tftApi); // todo fix this quick hack for non idempotent newState
         }
     }
 }
@@ -30,6 +31,7 @@ bool groupNewState(Component *component)
             result = true;
         }
     }
+    Serial.printf("group new state %d\r\n", result);
     return result;
 }
 
