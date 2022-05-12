@@ -53,17 +53,17 @@ static void onGesture(Component *component, Gesture gesture)
     api->onGesture(gesture);
 }
 
-static void hourPlus()
+static void hourPlus(void *context)
 {
     hourDelta++;
 }
 
-static void hourMinus()
+static void hourMinus(void *context)
 {
     hourDelta--;
 }
 
-static void setTime()
+static void setTime(void *context)
 {
     api->adjDate(hourDelta);
     hourDelta = 0;

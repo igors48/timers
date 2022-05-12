@@ -2,7 +2,7 @@
 
 #include "component.hpp"
 
-typedef void (*Handler)();
+typedef void (*Handler)(void *context);
 
 typedef enum {
     BM_INIT,
@@ -27,6 +27,7 @@ typedef struct
 {
     char *title;
     EventGenerate eventGenerate;
+    void *context;
     Handler handler;
     unsigned int delayTick;
     unsigned int repeatTick;
@@ -39,5 +40,7 @@ typedef struct
 } ButtonComponentState;
 
 ButtonComponentState createButtonState(char *title, EventGenerate eventGenerate, Handler handler);
+
+ButtonComponentState* createButtonStateRef(char *title, EventGenerate eventGenerate, Handler handler);
 
 Component createButtonComponent(signed short x, signed short y, signed short w, signed short h, ButtonComponentState *state);

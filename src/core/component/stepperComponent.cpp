@@ -7,42 +7,15 @@
 static char PLUS[] = "+";
 static char MINUS[] = "-";
 
-static ButtonComponentState* createButtonStateRef(char *title, EventGenerate eventGenerate, Handler handler)
+static void onPlus(void *context)
 {
-    ButtonComponentState *state = (ButtonComponentState *)pvPortMalloc(sizeof(ButtonComponentState));
-    
-    state->title = title;
-    state->eventGenerate = eventGenerate;
-    state->handler = handler;
-    state->delayTick = 1000; // todo pass as a parameter. depends on portTICK_PERIOD_MS
-    state->repeatTick = 250; // todo pass as a parameter. depends on portTICK_PERIOD_MS
-    state->eventHandlingState = EHS_IDLE;
-    state->_eventHandlingState = EHS_INIT;
-    state->mode = BM_ENABLED;
-    state->_mode = BM_INIT;
-    state->firstTouchTick = 0;
-    state->lastRepeatTick = 0;
-    
-    return state;
-}
-
-static GroupState* createGroupStateRef(unsigned char childrenCount, void **children)
-{
-    GroupState *state = (GroupState *)pvPortMalloc(sizeof(GroupState));    
-
-    state->childrenCount = childrenCount;
-    state->children = children;
-
-    return state;
-}
-
-static void onPlus()
-{
+    StepperComponentState* state = (StepperComponentState *)context;
     Serial.println("plus");
 }
 
-static void onMinus()
+static void onMinus(void *context)
 {
+    StepperComponentState* state = (StepperComponentState *)context;
     Serial.println("minus");
 }
 
@@ -62,6 +35,9 @@ StepperComponentState* createStepperComponentStateRef(signed short min, signed s
     state->plusButton = plusButton;
     state->minusButton = minusButton;
     state->onChange = onChange;
+
+    plusButtonState->context = (void *)state;
+    minusButtonState->context = (void *)state;
 
     return state;
 }

@@ -50,7 +50,7 @@ static void firstRepeat(ButtonComponentState *state, unsigned int tickCount)
     {
         state->eventHandlingState = EHS_REPEAT;
         state->lastRepeatTick = tickCount;
-        (state->handler)();
+        (state->handler)(state->context);
     }
 }
 
@@ -60,7 +60,7 @@ static void notFirstRepeat(ButtonComponentState *state, unsigned int tickCount)
     if (fromLastRepeatTick > state->repeatTick)
     {
         state->lastRepeatTick = tickCount;
-        (state->handler)();
+        (state->handler)(state->context);
     }
 }
 
@@ -148,7 +148,7 @@ static void onRelease(Component *component, signed short x, signed short y, unsi
     bool noRepeat = state->eventHandlingState != EHS_REPEAT;
     if (itsMe && noRepeat)
     {
-        (state->handler)();
+        (state->handler)(state->context);
     }
     state->eventHandlingState = EHS_IDLE;
 }
@@ -158,6 +158,7 @@ ButtonComponentState createButtonState(char *title, EventGenerate eventGenerate,
     return {
         .title = title,
         .eventGenerate = eventGenerate,
+        .context = NULL,
         .handler = handler,
         .delayTick = 1000, // todo pass as a parameter. depends on portTICK_PERIOD_MS
         .repeatTick = 250, // todo pass as a parameter. depends on portTICK_PERIOD_MS
@@ -168,6 +169,25 @@ ButtonComponentState createButtonState(char *title, EventGenerate eventGenerate,
         .firstTouchTick = 0,
         .lastRepeatTick = 0,
     };
+}
+
+ButtonComponentState* createButtonStateRef(char *title, EventGenerate eventGenerate, Handler handler)
+{
+    ButtonComponentState *state = (ButtonComponentState *)pvPortMalloc(sizeof(ButtonComponentState));
+    
+    state->title = title;
+    state->eventGenerate = eventGenerate;
+    state->handler = handler;
+    state->delayTick = 1000; // todo pass as a parameter. depends on portTICK_PERIOD_MS
+    state->repeatTick = 250; // todo pass as a parameter. depends on portTICK_PERIOD_MS
+    state->eventHandlingState = EHS_IDLE;
+    state->_eventHandlingState = EHS_INIT;
+    state->mode = BM_ENABLED;
+    state->_mode = BM_INIT;
+    state->firstTouchTick = 0;
+    state->lastRepeatTick = 0;
+    
+    return state;
 }
 
 Component createButtonComponent(signed short x, signed short y, signed short w, signed short h, ButtonComponentState *state)

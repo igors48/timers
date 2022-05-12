@@ -72,6 +72,16 @@ GroupState createGroupState(unsigned char childrenCount, void **children)
     };
 }
 
+GroupState* createGroupStateRef(unsigned char childrenCount, void **children)
+{
+    GroupState *state = (GroupState *)pvPortMalloc(sizeof(GroupState));    
+
+    state->childrenCount = childrenCount;
+    state->children = children;
+
+    return state;
+}
+
 Component createGroupComponent(signed short x, signed short y, GroupState *state)
 {
     return {

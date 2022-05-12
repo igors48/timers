@@ -31,7 +31,7 @@ static void provideStepCounterState(TextState *state)
     snprintf(state->content, sizeof(state->content), "S:%05d", stepCount);
 }
 
-static void reset()
+static void reset(void *context)
 {
     (api->resetStepCounter)();
 }
@@ -46,7 +46,7 @@ static void onStepperChange(signed short value)
     Serial.printf("stepper %d\r\n", value);
 }
 
-Component *createStepAppTile(StepAppApi *stepAppApi)
+Component* createStepAppTile(StepAppApi* stepAppApi)
 {
     api = stepAppApi;
     
