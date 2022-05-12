@@ -27,4 +27,8 @@ struct TextState_
 
 TextState createTextState(unsigned char font, unsigned char size, unsigned int fontColor, Provide provide);
 
+TextState* createTextStateRef(unsigned char font, unsigned char size, unsigned int fontColor, Provide provide);
+
 Component createTextComponent(signed short x, signed short y, signed short w, signed short h, TextState *state);
+
+Component* createTextComponentRef(signed short x, signed short y, signed short w, signed short h, TextState *state);

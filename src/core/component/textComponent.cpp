@@ -1,5 +1,7 @@
 #include <string.h>
 
+#include <LilyGoWatch.h>
+
 #include "textComponent.hpp"
 
 static void textComponentRender(Component *component, bool forced, TftApi *tftApi)
@@ -51,6 +53,25 @@ TextState createTextState(unsigned char font, unsigned char size, unsigned int f
     return textState;
 }
 
+TextState* createTextStateRef(unsigned char font, unsigned char size, unsigned int fontColor, Provide provide)
+{
+    TextState *ref = (TextState *)pvPortMalloc(sizeof(TextState));
+
+    strcpy(ref->content, "");
+    strcpy(ref->_content, "_");
+    ref->size = size;
+    ref->_size = 0;
+    ref->fontColor = fontColor;
+    ref->_fontColor = 0;
+    ref->backColor = COLOR_BLACK;
+    ref->_backColor = 0;
+    ref->font = font;
+    ref->_font = 0;
+    ref->provide = provide;
+
+    return ref;
+}
+
 Component createTextComponent(signed short x, signed short y, signed short w, signed short h, TextState *state)
 {
     return {
@@ -68,4 +89,25 @@ Component createTextComponent(signed short x, signed short y, signed short w, si
         .newState = textComponentNewState,
         .state = state,
     };
+}
+
+Component* createTextComponentRef(signed short x, signed short y, signed short w, signed short h, TextState *state)
+{
+    Component* ref = (Component *)pvPortMalloc(sizeof(Component));
+
+    ref->x = x;
+    ref->y = y;
+    ref->w = w;
+    ref->h = h;
+    ref->contains = componentContains;
+    ref->mount = componentMount;
+    ref->onTouch = componentNoopHandler;
+    ref->onMove = componentNoopHandler;
+    ref->onRelease = componentNoopHandler;
+    ref->onGesture = componentGestureNoopHandler;
+    ref->render = textComponentRender;
+    ref->newState = textComponentNewState;
+    ref->state = state;
+
+    return ref;
 }
