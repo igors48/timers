@@ -41,6 +41,4 @@ typedef struct
 
 ButtonComponentState createButtonState(char *title, EventGenerate eventGenerate, Handler handler);
 
-ButtonComponentState* createButtonStateRef(char *title, EventGenerate eventGenerate, Handler handler);
-
 Component createButtonComponent(signed short x, signed short y, signed short w, signed short h, ButtonComponentState *state);

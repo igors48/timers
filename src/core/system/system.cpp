@@ -64,6 +64,11 @@ unsigned int systemGetTickCount()
     return xTaskGetTickCount();
 }
 
+void* systemAllocate(unsigned int size)
+{
+    return pvPortMalloc(size);
+}
+
 SystemApi defaultSystemApi()
 {
     return {
@@ -78,5 +83,6 @@ SystemApi defaultSystemApi()
         .queueReceive = systemQueueReceive,
         .queueSend = systemQueueSend,
         .getTickCount = systemGetTickCount,
+        .allocate = pvPortMalloc, // todo replace calls with pointers where possible in the all APIs
     };
 }

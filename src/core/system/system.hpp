@@ -16,6 +16,7 @@ typedef struct
     bool (*queueReceive)(void *queue, void *buffer, unsigned int blockTimeMillis);
     bool (*queueSend)(void *queue, void *item, unsigned int blockTimeMillis);
     unsigned int (*getTickCount)();
+    void* (*allocate)(unsigned int size);
 } SystemApi;
 
 SystemApi defaultSystemApi();
