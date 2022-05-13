@@ -13,7 +13,6 @@ void groupRender(Component *group, bool forced, TftApi *tftApi)
         bool needRender = (current->newState)(current);
         if (forced || needRender)
         {
-            Serial.println("group render");
             (current->render)(current, true/*forced*/, tftApi); // todo fix this quick hack for non idempotent newState
         }
     }
@@ -31,7 +30,6 @@ bool groupNewState(Component *component)
             result = true;
         }
     }
-    Serial.printf("group new state %d\r\n", result);
     return result;
 }
 
@@ -44,17 +42,14 @@ Component* groupContains(Component *component, signed short x, signed short y)
         Component *target = (current->contains)(current, x, y); // todo update test
         if (target != NULL)
         {
-            Serial.println("found");
             return target;
         }
     }    
-    Serial.println("not found");
     return NULL;
 }
 
 void groupMount(Component *component, signed short x, signed short y)
 {
-    Serial.println("group mount");
     component->x += x;
     component->y += y;
     GroupState *state = (GroupState *)(component->state);

@@ -1,7 +1,5 @@
 #include <stdio.h>
 
-#include <LilyGoWatch.h>
-
 #include "stepApp.hpp"
 
 #include "core/component/buttonComponent.hpp"
@@ -56,13 +54,11 @@ static void onGesture(Component *component, Gesture gesture)
 
 static void onFirstStepperChange(signed short value)
 {
-    Serial.printf("first stepper %d\r\n", value);
     firstStepperValue = value;
 }
 
 static void onSecondStepperChange(signed short value)
 {
-    Serial.printf("second stepper %d\r\n", value);
     secondStepperValue = value;
 }
 

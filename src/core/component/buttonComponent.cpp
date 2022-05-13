@@ -7,7 +7,6 @@
 
 static void render(Component *component, bool forced, TftApi *tftApi)
 {
-    Serial.println("button render");
     ButtonComponentState *state = (ButtonComponentState *)(component->state);
     unsigned int rectColor = COLOR_BUTTON_BACK_RELEASED;
     if (state->eventHandlingState == EHS_PRESS || state->eventHandlingState == EHS_REPEAT)
@@ -39,7 +38,6 @@ static bool newState(Component *component)
         changed = true;
         state->_mode = state->mode;
     }
-    Serial.printf("button newstate %d\r\n", changed);
     return changed;
 }
 
@@ -106,7 +104,6 @@ static void onLeave(ButtonComponentState *state)
 
 static void onTouch(Component *component, signed short x, signed short y, unsigned int tickCount)
 {
-    Serial.println("touch");
     ButtonComponentState *state = (ButtonComponentState *)(component->state);
     if (state->mode == BM_DISABLED)
     {
