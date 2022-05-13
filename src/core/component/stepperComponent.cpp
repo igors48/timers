@@ -10,12 +10,16 @@ static char MINUS[] = "-";
 static void onPlus(void *context)
 {
     StepperComponentState* state = (StepperComponentState *)context;
+    state->value++;
+    state->onChange(state->value);
     Serial.println("plus");
 }
 
 static void onMinus(void *context)
 {
     StepperComponentState* state = (StepperComponentState *)context;
+    state->value--;
+    state->onChange(state->value);
     Serial.println("minus");
 }
 

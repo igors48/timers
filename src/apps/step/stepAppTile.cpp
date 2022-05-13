@@ -25,10 +25,17 @@ static Component group;
 
 static StepAppApi *api;
 
+signed short firstStepperValue;
+
 static void provideStepCounterState(TextState *state)
 {
     unsigned int stepCount = (api->getStepCounter)();
     snprintf(state->content, sizeof(state->content), "S:%05d", stepCount);
+}
+
+static void provideFirstStepperState(TextState *state)
+{
+    snprintf(state->content, sizeof(state->content), "%03d", firstStepperValue);
 }
 
 static void reset(void *context)
@@ -41,9 +48,10 @@ static void onGesture(Component *component, Gesture gesture)
     (api->onGesture)(gesture);
 }
 
-static void onStepperChange(signed short value)
+static void onFirstStepperChange(signed short value)
 {
     Serial.printf("stepper %d\r\n", value);
+    firstStepperValue = value;
 }
 
 Component* createStepAppTile(StepAppApi* stepAppApi)
@@ -56,16 +64,16 @@ Component* createStepAppTile(StepAppApi* stepAppApi)
     stepCounterComponent = createTextComponent(55, 120, 50, 50, &stepCounter);
     resetButton = createButtonComponent(60, 195, 66, 25, &resetButtonState);
 
-    StepperComponentState* stepperState = createStepperComponentStateRef(0, 10, 5, onStepperChange);   
-    Component* stepper = createStepperComponentRef(0, 0, stepperState);
+    StepperComponentState* firstStepperState = createStepperComponentStateRef(0, 10, 5, onFirstStepperChange);   
+    Component* firstStepper = createStepperComponentRef(0, 0, firstStepperState);
 
-    TextState* stepperTextState = createTextStateRef(1, 3, COLOR_ATTENTION, provideStepCounterState);
-    Component* stepperText = createTextComponentRef(55, 10, 50, 50, stepperTextState);
+    TextState* firstStepperTextState = createTextStateRef(1, 3, COLOR_ATTENTION, provideFirstStepperState);
+    Component* firstStepperText = createTextComponentRef(55, 10, 50, 50, firstStepperTextState);
 
     components[0] = &stepCounterComponent;
     components[1] = &resetButton;
-    components[2] = stepper;
-    components[3] = stepperText;
+    components[2] = firstStepper;
+    components[3] = firstStepperText;
  
     state = createGroupState(COMPONENTS_COUNT, components);
     group = createGroupComponent(0, 0, &state);
