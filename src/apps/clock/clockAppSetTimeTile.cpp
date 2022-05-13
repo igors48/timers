@@ -3,7 +3,6 @@
 #include "clockApp.hpp"
 
 #include "core/component/textComponent.hpp"
-#include "core/component/buttonComponent.hpp"
 #include "core/component/group.hpp"
 
 static char PLUS[] = "+";
@@ -19,14 +18,14 @@ static Component hourMinuteComponent;
 static TextState second;
 static Component secondComponent;
 
-static ButtonComponentState hourPlusButtonState;
-static Component hourPlusButton;
+static ButtonComponentState* hourPlusButtonState;
+static Component* hourPlusButton;
 
-static ButtonComponentState hourMinusButtonState;
-static Component hourMinusButton;
+static ButtonComponentState* hourMinusButtonState;
+static Component* hourMinusButton;
 
-static ButtonComponentState setButtonState;
-static Component setButton;
+static ButtonComponentState* setButtonState;
+static Component* setButton;
 
 static GroupState state;
 static Component group;
@@ -69,7 +68,7 @@ static void setTime(void *context)
     hourDelta = 0;
 }
 
-Component* createClockAppSetTimeTile(ClockAppApi *clockAppApi)
+Component* createClockAppSetTimeTile(ClockAppApi *clockAppApi, Factory *factory)
 {
     api = clockAppApi;
 
@@ -77,21 +76,21 @@ Component* createClockAppSetTimeTile(ClockAppApi *clockAppApi)
 
     hourMinute = createTextState(7, 1, COLOR_INTERACTION, provideHourMinuteState);
     second = createTextState(7, 1, COLOR_INTERACTION, provideSecondState);
-    hourPlusButtonState = createButtonState(PLUS, EG_REPEAT, hourPlus);
-    hourMinusButtonState = createButtonState(MINUS, EG_REPEAT, hourMinus);
-    setButtonState = createButtonState(SET, EG_ONCE, setTime);
+    hourPlusButtonState = (factory->createButtonStateRef)(PLUS, EG_REPEAT, hourPlus);
+    hourMinusButtonState = (factory->createButtonStateRef)(MINUS, EG_REPEAT, hourMinus);
+    setButtonState = (factory->createButtonStateRef)(SET, EG_ONCE, setTime);
 
     hourMinuteComponent = createTextComponent(10, 90, 140, 48, &hourMinute);
     secondComponent = createTextComponent(150, 90, 75, 48, &second);
-    hourPlusButton = createButtonComponent(10, 20, 66, 50, &hourPlusButtonState);
-    hourMinusButton = createButtonComponent(10, 180, 66, 50, &hourMinusButtonState);
-    setButton = createButtonComponent(80, 20, 66, 50, &setButtonState);
+    hourPlusButton = (factory->createButtonComponentRef)(10, 20, 66, 50, hourPlusButtonState);
+    hourMinusButton = (factory->createButtonComponentRef)(10, 180, 66, 50, hourMinusButtonState);
+    setButton = (factory->createButtonComponentRef)(80, 20, 66, 50, setButtonState);
 
     components[0] = &hourMinuteComponent;
     components[1] = &secondComponent;
-    components[2] = &hourPlusButton;
-    components[3] = &hourMinusButton;
-    components[4] = &setButton;
+    components[2] = hourPlusButton;
+    components[3] = hourMinusButton;
+    components[4] = setButton;
  
     state = createGroupState(COMPONENTS_COUNT, components);
     group = createGroupComponent(0, 0, &state);

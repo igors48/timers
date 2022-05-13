@@ -64,7 +64,7 @@ void stepAppTick()
     render(false);
 }
 
-App createStepApp(void *backgroundTaskHandleRef, SystemApi *systemApiRef, BmaApi *bmaApiRef, Tiler *tilerRef, Manager *managerRef)
+App createStepApp(void *backgroundTaskHandleRef, SystemApi *systemApiRef, BmaApi *bmaApiRef, Tiler *tilerRef, Manager *managerRef, Factory *factory)
 {
     backgroundTask = backgroundTaskHandleRef;
     systemApi = systemApiRef;
@@ -80,7 +80,7 @@ App createStepApp(void *backgroundTaskHandleRef, SystemApi *systemApiRef, BmaApi
         .onGesture = onGesture,
     };
 
-    stepTile = createStepAppTile(&api);
+    stepTile = createStepAppTile(&api, factory);
 
     return {
         .activate = activate,

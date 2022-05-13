@@ -21,13 +21,13 @@ static void onMinus(void *context)
     state->onChange(state->value);
 }
 
-StepperComponentState* createStepperComponentStateRef(signed short min, signed short max, signed short value, OnStepperChange onChange)
+StepperComponentState* createStepperComponentStateRef(signed short min, signed short max, signed short value, OnStepperChange onChange, Factory *factory)
 {
-    ButtonComponentState *plusButtonState = createButtonStateRef(PLUS, EG_REPEAT, onPlus);
-    ButtonComponentState *minusButtonState = createButtonStateRef(MINUS, EG_REPEAT, onMinus);
+    ButtonComponentState *plusButtonState = (factory->createButtonStateRef)(PLUS, EG_REPEAT, onPlus);
+    ButtonComponentState *minusButtonState = (factory->createButtonStateRef)(MINUS, EG_REPEAT, onMinus);
 
-    Component plusButton = createButtonComponent(0, 0, 50, 50, plusButtonState);
-    Component minusButton = createButtonComponent(0, 55, 50, 50, minusButtonState);
+    Component *plusButton = (factory->createButtonComponentRef)(0, 0, 50, 50, plusButtonState);
+    Component *minusButton = (factory->createButtonComponentRef)(0, 55, 50, 50, minusButtonState);
 
     StepperComponentState *state = (StepperComponentState *)pvPortMalloc(sizeof(StepperComponentState));
 

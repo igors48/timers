@@ -71,6 +71,8 @@ void *apps[APPS_COUNT];
 
 Manager manager;
 
+Factory factory;
+
 void buttonListenerTask(void *p)
 {
     while (true)
@@ -133,7 +135,7 @@ void createClockApplication()
     xTaskCreate(tickerTask, "clockAppTickerTask", 2048, (void *)&clockAppTickerParameters, 1, &clockAppTickerTaskHandle);
     vTaskSuspend(clockAppTickerTaskHandle);
 
-    clockApp = createClockApp(clockAppTickerTaskHandle, &systemApi, &rtcApi, &powerApi, &bmaApi, &tiler, &manager);
+    clockApp = createClockApp(clockAppTickerTaskHandle, &systemApi, &rtcApi, &powerApi, &bmaApi, &tiler, &manager, &factory);
 }
 
 void createStepApplication()
@@ -147,7 +149,7 @@ void createStepApplication()
     xTaskCreate(tickerTask, "stepAppTickerTask", 2048, (void *)&stepAppTickerParameters, 1, &stepAppTickerTaskHandle);
     vTaskSuspend(stepAppTickerTaskHandle);
 
-    stepApp = createStepApp(stepAppTickerTaskHandle, &systemApi, &bmaApi, &tiler, &manager);
+    stepApp = createStepApp(stepAppTickerTaskHandle, &systemApi, &bmaApi, &tiler, &manager, &factory);
 }
 
 void setup()
@@ -237,6 +239,8 @@ void setup()
         };
 
         xTaskCreate(supervisorTask, "supervisorTask", 2048, (void *)&supervisorParameters, 1, NULL);
+
+        factory = createFactory(&systemApi);
 
         createClockApplication();
         createStepApplication();

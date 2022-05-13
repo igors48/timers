@@ -114,7 +114,7 @@ void clockAppTick()
     renderApp(false);
 }
 
-App createClockApp(void *backgroundTaskHandleRef, SystemApi *systemApiRef, RtcApi *rtcApiRef, PowerApi *powerApiRef, BmaApi *bmaApiRef, Tiler *tilerRef, Manager *managerRef)
+App createClockApp(void *backgroundTaskHandleRef, SystemApi *systemApiRef, RtcApi *rtcApiRef, PowerApi *powerApiRef, BmaApi *bmaApiRef, Tiler *tilerRef, Manager *managerRef, Factory *factory)
 {
     rtcApi = rtcApiRef;
     powerApi = powerApiRef;
@@ -147,7 +147,7 @@ App createClockApp(void *backgroundTaskHandleRef, SystemApi *systemApiRef, RtcAp
     };
 
     clockTile = createClockAppTile(&api);
-    setTimeTile = createClockAppSetTimeTile(&api);
+    setTimeTile = createClockAppSetTimeTile(&api, factory);
 
     return {
         .activate = clockAppActivate,

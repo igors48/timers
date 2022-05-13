@@ -8,6 +8,8 @@
 #include "core/watch/power.hpp"
 #include "core/watch/bma.hpp"
 
+#include "core/component/factory.hpp"
+
 typedef struct {
     Date (*getDate)();
     void (*adjDate)(signed char hourDelta);
@@ -18,8 +20,8 @@ typedef struct {
 
 void clockAppTick();
 
-App createClockApp(void *backgroundTaskHandleRef, SystemApi *systemApiRef, RtcApi *rtcApiRef, PowerApi *powerApiRef, BmaApi *bmaApiRef, Tiler *tilerRef, Manager *managerRef);
+App createClockApp(void *backgroundTaskHandleRef, SystemApi *systemApiRef, RtcApi *rtcApiRef, PowerApi *powerApiRef, BmaApi *bmaApiRef, Tiler *tilerRef, Manager *managerRef, Factory *factory);
 
 Component* createClockAppTile(ClockAppApi *clockAppApi);
 
-Component* createClockAppSetTimeTile(ClockAppApi *clockAppApi);
+Component* createClockAppSetTimeTile(ClockAppApi *clockAppApi, Factory *factory);

@@ -9,6 +9,8 @@
 #include "core/watch/bma.hpp"
 #include "core/watch/bma.hpp"
 
+#include "core/component/factory.hpp"
+
 typedef struct {
     unsigned int (*getStepCounter)();
     void (*resetStepCounter)();
@@ -17,6 +19,6 @@ typedef struct {
 
 void stepAppTick();
 
-App createStepApp(void *backgroundTaskHandleRef, SystemApi *systemApiRef, BmaApi *bmaApi, Tiler *tilerRef, Manager *managerRef); 
+App createStepApp(void *backgroundTaskHandleRef, SystemApi *systemApiRef, BmaApi *bmaApi, Tiler *tilerRef, Manager *managerRef, Factory *factory); 
 
-Component* createStepAppTile(StepAppApi *stepAppApi);
+Component* createStepAppTile(StepAppApi *stepAppApi, Factory *factory);

@@ -15,8 +15,8 @@ static void *components[COMPONENTS_COUNT];
 static TextState stepCounter;
 static Component stepCounterComponent;
 
-static ButtonComponentState resetButtonState;
-static Component resetButton;
+static ButtonComponentState* resetButtonState;
+static Component* resetButton;
 
 static GroupState state;
 static Component group;
@@ -62,21 +62,21 @@ static void onSecondStepperChange(signed short value)
     secondStepperValue = value;
 }
 
-Component* createStepAppTile(StepAppApi* stepAppApi)
+Component* createStepAppTile(StepAppApi* stepAppApi, Factory *factory)
 {
     api = stepAppApi;
     
     stepCounter = createTextState(1, 3, COLOR_ATTENTION, provideStepCounterState);
-    resetButtonState = createButtonState(RESET, EG_ONCE, reset);
+    resetButtonState = (factory->createButtonStateRef)(RESET, EG_ONCE, reset);
 
     stepCounterComponent = createTextComponent(55, 120, 50, 50, &stepCounter);
-    resetButton = createButtonComponent(60, 195, 66, 25, &resetButtonState);
+    resetButton = (factory->createButtonComponentRef)(60, 195, 66, 25, resetButtonState);
 
     StepperComponentState* firstStepperState = createStepperComponentStateRef(0, 10, 5, onFirstStepperChange);   
-    Component* firstStepper = createStepperComponentRef(0, 0, firstStepperState);
+    Component* firstStepper = createStepperComponentRef(0, 0, firstStepperState, factory);
 
     StepperComponentState* secondStepperState = createStepperComponentStateRef(0, 10, 5, onSecondStepperChange);   
-    Component* secondStepper = createStepperComponentRef(190, 0, secondStepperState);
+    Component* secondStepper = createStepperComponentRef(190, 0, secondStepperState, factory);
 
     TextState* firstStepperTextState = createTextStateRef(1, 3, COLOR_ATTENTION, provideFirstStepperState);
     Component* firstStepperText = createTextComponentRef(55, 10, 50, 50, firstStepperTextState);
@@ -85,7 +85,7 @@ Component* createStepAppTile(StepAppApi* stepAppApi)
     Component* secondStepperText = createTextComponentRef(120, 10, 50, 50, secondStepperTextState);
 
     components[0] = &stepCounterComponent;
-    components[1] = &resetButton;
+    components[1] = resetButton;
     components[2] = firstStepper;
     components[3] = firstStepperText;
     components[4] = secondStepper;
