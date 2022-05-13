@@ -26,6 +26,7 @@ static Component group;
 static StepAppApi *api;
 
 signed short firstStepperValue;
+signed short secondStepperValue;
 
 static void provideStepCounterState(TextState *state)
 {
@@ -36,6 +37,11 @@ static void provideStepCounterState(TextState *state)
 static void provideFirstStepperState(TextState *state)
 {
     snprintf(state->content, sizeof(state->content), "%03d", firstStepperValue);
+}
+
+static void provideSecondStepperState(TextState *state)
+{
+    snprintf(state->content, sizeof(state->content), "%03d", secondStepperValue);
 }
 
 static void reset(void *context)
@@ -50,8 +56,14 @@ static void onGesture(Component *component, Gesture gesture)
 
 static void onFirstStepperChange(signed short value)
 {
-    Serial.printf("stepper %d\r\n", value);
+    Serial.printf("first stepper %d\r\n", value);
     firstStepperValue = value;
+}
+
+static void onSecondStepperChange(signed short value)
+{
+    Serial.printf("second stepper %d\r\n", value);
+    secondStepperValue = value;
 }
 
 Component* createStepAppTile(StepAppApi* stepAppApi)
@@ -67,17 +79,27 @@ Component* createStepAppTile(StepAppApi* stepAppApi)
     StepperComponentState* firstStepperState = createStepperComponentStateRef(0, 10, 5, onFirstStepperChange);   
     Component* firstStepper = createStepperComponentRef(0, 0, firstStepperState);
 
+    StepperComponentState* secondStepperState = createStepperComponentStateRef(0, 10, 5, onSecondStepperChange);   
+    Component* secondStepper = createStepperComponentRef(0, 190, secondStepperState);
+
     TextState* firstStepperTextState = createTextStateRef(1, 3, COLOR_ATTENTION, provideFirstStepperState);
     Component* firstStepperText = createTextComponentRef(55, 10, 50, 50, firstStepperTextState);
 
+    TextState* secondStepperTextState = createTextStateRef(1, 3, COLOR_ATTENTION, provideSecondStepperState);
+    Component* secondStepperText = createTextComponentRef(120, 10, 50, 50, secondStepperTextState);
+
     components[0] = &stepCounterComponent;
     components[1] = &resetButton;
-    components[2] = firstStepper;
-    components[3] = firstStepperText;
+    // components[2] = firstStepper;
+    // components[3] = firstStepperText;
+    components[2] = secondStepper;
+    components[3] = secondStepperText;
  
     state = createGroupState(COMPONENTS_COUNT, components);
     group = createGroupComponent(0, 0, &state);
     group.onGesture = onGesture; 
+
+    group.mount(&group, 0, 0);
 
     return &group;
 }
