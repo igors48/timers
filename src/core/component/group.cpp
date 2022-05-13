@@ -54,6 +54,7 @@ Component* groupContains(Component *component, signed short x, signed short y)
 
 void groupMount(Component *component, signed short x, signed short y)
 {
+    Serial.println("group mount");
     component->x += x;
     component->y += y;
     GroupState *state = (GroupState *)(component->state);

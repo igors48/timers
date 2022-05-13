@@ -31,6 +31,7 @@ Component* componentContains(Component *component, signed short x, signed short 
 
 void componentMount(Component *component, signed short x, signed short y)
 {
+    Serial.println("component mount");
     component->x += x;
     component->y += y;
 }

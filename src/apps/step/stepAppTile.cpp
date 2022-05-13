@@ -11,7 +11,7 @@
 
 static char RESET[] = "RESET";
 
-static const unsigned char COMPONENTS_COUNT = 4;
+static const unsigned char COMPONENTS_COUNT = 6;
 static void *components[COMPONENTS_COUNT];
 
 static TextState stepCounter;
@@ -80,7 +80,7 @@ Component* createStepAppTile(StepAppApi* stepAppApi)
     Component* firstStepper = createStepperComponentRef(0, 0, firstStepperState);
 
     StepperComponentState* secondStepperState = createStepperComponentStateRef(0, 10, 5, onSecondStepperChange);   
-    Component* secondStepper = createStepperComponentRef(0, 190, secondStepperState);
+    Component* secondStepper = createStepperComponentRef(190, 0, secondStepperState);
 
     TextState* firstStepperTextState = createTextStateRef(1, 3, COLOR_ATTENTION, provideFirstStepperState);
     Component* firstStepperText = createTextComponentRef(55, 10, 50, 50, firstStepperTextState);
@@ -90,10 +90,10 @@ Component* createStepAppTile(StepAppApi* stepAppApi)
 
     components[0] = &stepCounterComponent;
     components[1] = &resetButton;
-    // components[2] = firstStepper;
-    // components[3] = firstStepperText;
-    components[2] = secondStepper;
-    components[3] = secondStepperText;
+    components[2] = firstStepper;
+    components[3] = firstStepperText;
+    components[4] = secondStepper;
+    components[5] = secondStepperText;
  
     state = createGroupState(COMPONENTS_COUNT, components);
     group = createGroupComponent(0, 0, &state);

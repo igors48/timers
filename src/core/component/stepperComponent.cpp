@@ -53,5 +53,5 @@ Component* createStepperComponentRef(signed short x, signed short y, StepperComp
     components[1] = &(state->minusButton);
 
     GroupState* groupState = createGroupStateRef(2, components);
-    return createGroupComponentRef(0, 0, groupState);
+    return createGroupComponentRef(x, y, groupState);
 }

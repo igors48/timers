@@ -97,5 +97,7 @@ Component* createClockAppSetTimeTile(ClockAppApi *clockAppApi)
     group = createGroupComponent(0, 0, &state);
     group.onGesture = onGesture; 
 
+    group.mount(&group, 0, 0);
+    
     return &group;
 }
