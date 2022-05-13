@@ -39,6 +39,8 @@ typedef struct
     unsigned int lastRepeatTick;
 } ButtonComponentState;
 
-ButtonComponentState createButtonState(char *title, EventGenerate eventGenerate, Handler handler);
-
-Component createButtonComponent(signed short x, signed short y, signed short w, signed short h, ButtonComponentState *state);
+void buttonOnTouch(Component *component, signed short x, signed short y, unsigned int tickCount);
+void buttonOnMove(Component *component, signed short x, signed short y, unsigned int tickCount);
+void buttonOnRelease(Component *component, signed short x, signed short y, unsigned int tickCount);
+void buttonRender(Component *component, bool forced, TftApi *tftApi);
+bool buttonNewState(Component *component);

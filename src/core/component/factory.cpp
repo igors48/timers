@@ -21,11 +21,33 @@ static ButtonComponentState* createButtonStateRef(char *title, EventGenerate eve
     return state;
 }
 
+static Component* createButtonComponentRef(signed short x, signed short y, signed short w, signed short h, ButtonComponentState *state)
+{
+    Component *component = (Component *)(systemApi->allocate)(sizeof(Component));
+
+    component->x = x;
+    component->y = y;
+    component->w = w;
+    component->h = h;
+    component->contains = componentContains;
+    component->mount = componentMount;
+    component->onTouch = buttonOnTouch;
+    component->onMove = buttonOnMove;
+    component->onRelease = buttonOnRelease;
+    component->onGesture = componentGestureNoopHandler;
+    component->render = buttonRender;
+    component->newState = buttonNewState;
+    component->state = state;
+
+    return component;
+}
+
 Factory createFactory(SystemApi *systemApiRef)
 {
     systemApi = systemApiRef;
 
     return {
         .createButtonStateRef = createButtonStateRef,
+        .createButtonComponentRef = createButtonComponentRef,
     };
 }
