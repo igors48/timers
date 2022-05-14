@@ -83,6 +83,6 @@ SystemApi defaultSystemApi()
         .queueReceive = systemQueueReceive,
         .queueSend = systemQueueSend,
         .getTickCount = systemGetTickCount,
-        .allocate = pvPortMalloc, // todo replace calls with pointers where possible in the all APIs
+        .allocate = systemAllocate, // todo replace calls with pointers where possible in the all APIs
     };
 }

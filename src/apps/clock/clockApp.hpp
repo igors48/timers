@@ -22,6 +22,6 @@ void clockAppTick();
 
 App createClockApp(void *backgroundTaskHandleRef, SystemApi *systemApiRef, RtcApi *rtcApiRef, PowerApi *powerApiRef, BmaApi *bmaApiRef, Tiler *tilerRef, Manager *managerRef, Factory *factory);
 
-Component* createClockAppTile(ClockAppApi *clockAppApi);
+Component* createClockAppTile(ClockAppApi *clockAppApi, Factory *factory);
 
 Component* createClockAppSetTimeTile(ClockAppApi *clockAppApi, Factory *factory);

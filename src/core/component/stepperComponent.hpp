@@ -1,7 +1,6 @@
 #pragma once
 
 #include "core/component/component.hpp"
-#include "core/component/factory.hpp"
 
 typedef void (*OnStepperChange)(signed short value);
 
@@ -15,6 +14,5 @@ typedef struct
     OnStepperChange onChange;
 } StepperComponentState;
 
-StepperComponentState* createStepperComponentStateRef(signed short min, signed short max, signed short value, OnStepperChange onChange);
-
-Component* createStepperComponentRef(signed short x, signed short y, StepperComponentState *state, Factory *factory);
+void stepperOnPlus(void *context);
+void stepperOnMinus(void *context);

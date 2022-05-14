@@ -1,5 +1,7 @@
 #include <stdio.h>
 
+#include <LilyGoWatch.h>
+
 #include "clockApp.hpp"
 
 #include "core/component/textComponent.hpp"
@@ -12,11 +14,11 @@ static char SET[] = "SET";
 static const unsigned char COMPONENTS_COUNT = 5;
 static void* components[COMPONENTS_COUNT];
 
-static TextState hourMinute;
-static Component hourMinuteComponent;
+static TextState* hourMinute;
+static Component* hourMinuteComponent;
 
-static TextState second;
-static Component secondComponent;
+static TextState* second;
+static Component* secondComponent;
 
 static ButtonComponentState* hourPlusButtonState;
 static Component* hourPlusButton;
@@ -27,8 +29,8 @@ static Component* hourMinusButton;
 static ButtonComponentState* setButtonState;
 static Component* setButton;
 
-static GroupState state;
-static Component group;
+static GroupState* state;
+static Component* group;
 
 static signed char hourDelta;
 
@@ -74,29 +76,29 @@ Component* createClockAppSetTimeTile(ClockAppApi *clockAppApi, Factory *factory)
 
     hourDelta = 0;
 
-    hourMinute = createTextState(7, 1, COLOR_INTERACTION, provideHourMinuteState);
-    second = createTextState(7, 1, COLOR_INTERACTION, provideSecondState);
+    hourMinute = (factory->createTextStateRef)(7, 1, COLOR_INTERACTION, provideHourMinuteState);
+    second = (factory->createTextStateRef)(7, 1, COLOR_INTERACTION, provideSecondState);
     hourPlusButtonState = (factory->createButtonStateRef)(PLUS, EG_REPEAT, hourPlus);
     hourMinusButtonState = (factory->createButtonStateRef)(MINUS, EG_REPEAT, hourMinus);
     setButtonState = (factory->createButtonStateRef)(SET, EG_ONCE, setTime);
 
-    hourMinuteComponent = createTextComponent(10, 90, 140, 48, &hourMinute);
-    secondComponent = createTextComponent(150, 90, 75, 48, &second);
+    hourMinuteComponent = (factory->createTextComponentRef)(10, 90, 140, 48, hourMinute);
+    secondComponent = (factory->createTextComponentRef)(150, 90, 75, 48, second);
     hourPlusButton = (factory->createButtonComponentRef)(10, 20, 66, 50, hourPlusButtonState);
     hourMinusButton = (factory->createButtonComponentRef)(10, 180, 66, 50, hourMinusButtonState);
     setButton = (factory->createButtonComponentRef)(80, 20, 66, 50, setButtonState);
 
-    components[0] = &hourMinuteComponent;
-    components[1] = &secondComponent;
+    components[0] = hourMinuteComponent;
+    components[1] = secondComponent;
     components[2] = hourPlusButton;
     components[3] = hourMinusButton;
     components[4] = setButton;
  
-    state = createGroupState(COMPONENTS_COUNT, components);
-    group = createGroupComponent(0, 0, &state);
-    group.onGesture = onGesture; 
+    state = (factory->createGroupStateRef)(COMPONENTS_COUNT, components);
+    group = (factory->createGroupComponentRef)(0, 0, state);
+    group->onGesture = onGesture; 
 
-    group.mount(&group, 0, 0);
+    group->mount(group, 0, 0);
     
-    return &group;
+    return group;
 }

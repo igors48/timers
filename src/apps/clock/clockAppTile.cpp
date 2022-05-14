@@ -8,23 +8,23 @@
 static const unsigned char COMPONENTS_COUNT = 5;
 static void* components[COMPONENTS_COUNT];
 
-static TextState hourMinute;
-static Component hourMinuteComponent;
+static TextState* hourMinute;
+static Component* hourMinuteComponent;
 
-static TextState second;
-static Component secondComponent;
+static TextState* second;
+static Component* secondComponent;
 
-static TextState battery;
-static Component batteryDisplayComponent;
+static TextState* battery;
+static Component* batteryDisplayComponent;
 
-static TextState dateState;
-static Component dateComponent;
+static TextState* dateState;
+static Component* dateComponent;
 
-static TextState stepCounter;
-static Component stepCounterComponent;
+static TextState* stepCounter;
+static Component* stepCounterComponent;
 
-static GroupState state;
-static Component group;
+static GroupState* state;
+static Component* group;
 
 static ClockAppApi *api;
 
@@ -63,33 +63,33 @@ static void onGesture(Component *component, Gesture gesture)
     api->onGesture(gesture);
 }
 
-Component* createClockAppTile(ClockAppApi *clockAppApi)
+Component* createClockAppTile(ClockAppApi *clockAppApi, Factory *factory)
 {
     api = clockAppApi;
 
-    hourMinute = createTextState(7, 1, COLOR_INFORMATION, provideHourMinuteState);
-    second = createTextState(7, 1, COLOR_INFORMATION, provideSecondState);
-    battery = createTextState(1, 2, COLOR_INFORMATION, provideBatteryState);
-    dateState = createTextState(1, 2, COLOR_ATTENTION, provideDateState);
-    stepCounter = createTextState(1, 2, COLOR_INFORMATION, provideStepCounterState);
+    hourMinute = (factory->createTextStateRef)(7, 1, COLOR_INFORMATION, provideHourMinuteState);
+    second = (factory->createTextStateRef)(7, 1, COLOR_INFORMATION, provideSecondState);
+    battery = (factory->createTextStateRef)(1, 2, COLOR_INFORMATION, provideBatteryState);
+    dateState = (factory->createTextStateRef)(1, 2, COLOR_ATTENTION, provideDateState);
+    stepCounter = (factory->createTextStateRef)(1, 2, COLOR_INFORMATION, provideStepCounterState);
 
-    hourMinuteComponent = createTextComponent(10, 90, 140, 48, &hourMinute);
-    secondComponent = createTextComponent(150, 90, 75, 48, &second);
-    batteryDisplayComponent = createTextComponent(135, 150, 50, 50, &battery);
-    dateComponent = createTextComponent(60, 175, 50, 50, &dateState);
-    stepCounterComponent = createTextComponent(35, 150, 50, 50, &stepCounter);
+    hourMinuteComponent = (factory->createTextComponentRef)(10, 90, 140, 48, hourMinute);
+    secondComponent = (factory->createTextComponentRef)(150, 90, 75, 48, second);
+    batteryDisplayComponent = (factory->createTextComponentRef)(135, 150, 50, 50, battery);
+    dateComponent = (factory->createTextComponentRef)(60, 175, 50, 50, dateState);
+    stepCounterComponent = (factory->createTextComponentRef)(35, 150, 50, 50, stepCounter);
 
-    components[0] = &hourMinuteComponent;
-    components[1] = &secondComponent;
-    components[2] = &batteryDisplayComponent;
-    components[3] = &dateComponent;
-    components[4] = &stepCounterComponent;
+    components[0] = hourMinuteComponent;
+    components[1] = secondComponent;
+    components[2] = batteryDisplayComponent;
+    components[3] = dateComponent;
+    components[4] = stepCounterComponent;
  
-    state = createGroupState(COMPONENTS_COUNT, components);
-    group = createGroupComponent(0, 0, &state);
-    group.onGesture = onGesture; 
+    state = (factory->createGroupStateRef)(COMPONENTS_COUNT, components);
+    group = (factory->createGroupComponentRef)(0, 0, state);
+    group->onGesture = onGesture; 
 
-    group.mount(&group, 0, 0);
+    group->mount(group, 0, 0);
 
-    return &group;
+    return group;
 }

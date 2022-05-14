@@ -242,14 +242,26 @@ void setup()
 
         factory = createFactory(&systemApi);
 
+        Serial.println("before applications create");
+        
         createClockApplication();
+
+        Serial.println("clock application created");
+
         createStepApplication();
+
+        Serial.println("applications created");
         
         apps[0] = &clockApp;
         apps[1] = &stepApp;
 
+        Serial.println("before manager create");
+
         manager = createManager(APPS_COUNT, apps, &tiler);
+
+        Serial.println("before activate");
         manager.activateApp(0);
+        Serial.println("after activate");
 
         xSemaphoreGive(watchMutex);
 

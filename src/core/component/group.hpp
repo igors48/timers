@@ -8,11 +8,7 @@ typedef struct
     void **children;  
 } GroupState;
 
-GroupState createGroupState(unsigned char childrenCount, void **children);
-
-GroupState* createGroupStateRef(unsigned char childrenCount, void **children);
-
-Component createGroupComponent(signed short x, signed short y, GroupState *state);
-
-Component* createGroupComponentRef(signed short x, signed short y, GroupState *state);
-
+void groupRender(Component *group, bool forced, TftApi *tftApi);
+bool groupNewState(Component *component);
+Component* groupContains(Component *component, signed short x, signed short y);
+void groupMount(Component *component, signed short x, signed short y);
