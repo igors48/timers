@@ -55,8 +55,11 @@ void groupMount(Component *component, signed short x, signed short y)
     GroupState *state = (GroupState *)(component->state);
     for (int i = 0; i < state->childrenCount; i++)
     {
+        Serial.printf("mount %d\r\n", i);
         Component *current = (Component *)(state->children[i]);
+        Serial.printf("mount current %d %p\r\n", i, (void *)current);
         (current->mount)(current, component->x, component->y);
+        Serial.printf("after mount current %d\r\n", i);
     }
 }
 

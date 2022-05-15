@@ -11,7 +11,7 @@
 
 static char RESET[] = "RESET";
 
-static const unsigned char COMPONENTS_COUNT = 2/*6*/;
+static const unsigned char COMPONENTS_COUNT = 6;
 static void *components[COMPONENTS_COUNT];
 
 static TextState* stepCounter;
@@ -90,10 +90,10 @@ Component* createStepAppTile(StepAppApi* stepAppApi, Factory *factory)
 
     components[0] = stepCounterComponent;
     components[1] = resetButton;
-    // components[2] = firstStepper;
-    // components[3] = firstStepperText;
-    // components[4] = secondStepper;
-    // components[5] = secondStepperText;
+    components[2] = firstStepperText;
+    components[3] = secondStepperText;
+    components[4] = secondStepper;
+    components[5] = firstStepper;
  
     state = (factory->createGroupStateRef)(COMPONENTS_COUNT, components);
     group = (factory->createGroupComponentRef)(0, 0, state);

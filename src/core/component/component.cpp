@@ -1,5 +1,7 @@
 #include <stddef.h>
 
+#include <LilyGoWatch.h>
+
 #include "component.hpp"
 
 void componentNoopHandler(Component *component, signed short x, signed short y, unsigned int tickCount)
@@ -28,6 +30,8 @@ Component* componentContains(Component *component, signed short x, signed short 
 
 void componentMount(Component *component, signed short x, signed short y)
 {
+    Serial.println("before component mount");
     component->x += x;
     component->y += y;
+    Serial.println("after component mount");
 }

@@ -144,8 +144,8 @@ static StepperComponentState* createStepperComponentStateRef(signed short min, s
 static Component* createStepperComponentRef(signed short x, signed short y, StepperComponentState *state)
 {
     void** components = (void**)(systemApi->allocate)(2 * sizeof(void*));
-    components[0] = &(state->plusButton);
-    components[1] = &(state->minusButton);
+    components[0] = state->plusButton;
+    components[1] = state->minusButton;
 
     GroupState* groupState = createGroupStateRef(2, components);
     return createGroupComponentRef(x, y, groupState);
