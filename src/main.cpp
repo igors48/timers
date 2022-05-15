@@ -97,8 +97,6 @@ void supervisorTask(void *p)
     {
         supervisor((SupervisorParameters *)p);
         vTaskDelay(1000 / portTICK_PERIOD_MS); // todo supervisor task delay -> const
-        // TickType_t count = xTaskGetTickCount();
-        // Serial.printf("count: %d\r\n", count);
     }
 }
 
@@ -241,27 +239,15 @@ void setup()
         xTaskCreate(supervisorTask, "supervisorTask", 2048, (void *)&supervisorParameters, 1, NULL);
 
         factory = createFactory(&systemApi);
-
-        Serial.println("before applications create");
         
         createClockApplication();
-
-        Serial.println("clock application created");
-
         createStepApplication();
 
-        Serial.println("applications created");
-        
         apps[0] = &clockApp;
         apps[1] = &stepApp;
 
-        Serial.println("before manager create");
-
         manager = createManager(APPS_COUNT, apps, &tiler);
-
-        Serial.println("before activate");
         manager.activateApp(0);
-        Serial.println("after activate");
 
         xSemaphoreGive(watchMutex);
 

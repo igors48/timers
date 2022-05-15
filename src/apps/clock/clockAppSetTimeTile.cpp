@@ -1,7 +1,5 @@
 #include <stdio.h>
 
-#include <LilyGoWatch.h>
-
 #include "clockApp.hpp"
 
 #include "core/component/textComponent.hpp"

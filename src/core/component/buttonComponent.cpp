@@ -1,7 +1,5 @@
 #include <stddef.h>
 
-#include <LilyGoWatch.h>
-
 #include "component.hpp"
 #include "buttonComponent.hpp"
 

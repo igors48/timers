@@ -1,7 +1,5 @@
 #include <string.h>
 
-#include <LilyGoWatch.h>
-
 #include "textComponent.hpp"
 
 void textComponentRender(Component *component, bool forced, TftApi *tftApi)

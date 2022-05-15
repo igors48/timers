@@ -1,7 +1,5 @@
 #include "clockApp.hpp"
 
-#include <LilyGoWatch.h>
-
 #include "core/watch/rtc.hpp"
 #include "core/app/tiler.hpp"
 
@@ -148,11 +146,8 @@ App createClockApp(void *backgroundTaskHandleRef, SystemApi *systemApiRef, RtcAp
         .onGesture = onGesture,
     };
 
-    Serial.println("before clock tiles");
     clockTile = createClockAppTile(&api, factory);
-    Serial.println("after clock tile");
     setTimeTile = createClockAppSetTimeTile(&api, factory);
-    Serial.println("after clock tiles");
 
     return {
         .activate = clockAppActivate,

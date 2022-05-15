@@ -1,7 +1,5 @@
 #include <stdio.h>
 
-#include <LilyGoWatch.h>
-
 #include "stepApp.hpp"
 
 #include "core/component/buttonComponent.hpp"
@@ -68,7 +66,6 @@ Component* createStepAppTile(StepAppApi* stepAppApi, Factory *factory)
 {
     api = stepAppApi;
     
-    Serial.println("before components creation");
     stepCounter = (factory->createTextStateRef)(1, 3, COLOR_ATTENTION, provideStepCounterState);
     resetButtonState = (factory->createButtonStateRef)(RESET, EG_ONCE, reset);
 
@@ -86,7 +83,6 @@ Component* createStepAppTile(StepAppApi* stepAppApi, Factory *factory)
 
     TextState* secondStepperTextState = (factory->createTextStateRef)(1, 3, COLOR_ATTENTION, provideSecondStepperState);
     Component* secondStepperText = (factory->createTextComponentRef)(120, 10, 50, 50, secondStepperTextState);
-    Serial.println("after components creation");
 
     components[0] = stepCounterComponent;
     components[1] = resetButton;
@@ -99,11 +95,7 @@ Component* createStepAppTile(StepAppApi* stepAppApi, Factory *factory)
     group = (factory->createGroupComponentRef)(0, 0, state);
     group->onGesture = onGesture; 
 
-    Serial.println("before group mount");
-
     group->mount(group, 0, 0);
-
-    Serial.println("before group return");
     
     return group;
 }

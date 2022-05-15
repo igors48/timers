@@ -1,5 +1,3 @@
-#include <LilyGoWatch.h>
-
 #include "stepperComponent.hpp"
 #include "buttonComponent.hpp"
 #include "group.hpp"
