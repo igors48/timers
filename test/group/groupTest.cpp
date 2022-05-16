@@ -1,7 +1,13 @@
 #include <unity.h>
 
-#include "core/component/component.cpp"
+#include "../systemMock.hpp"
+
+#include "core/component/factory.cpp"
 #include "core/component/group.cpp"
+#include "core/component/component.cpp"
+#include "core/component/textComponent.cpp"
+#include "core/component/buttonComponent.cpp"
+#include "core/component/stepperComponent.cpp"
 
 typedef struct
 {
@@ -12,14 +18,17 @@ typedef struct
 const unsigned char CHILDREN_COUNT = 3;
 void* children[CHILDREN_COUNT];
 
-Component group;
+Factory factory;
+
+Component *group;
+GroupState *groupState;
+
 Component child00;
 ChildState child00State;
 Component child01;
 ChildState child01State;
 Component child02;
 ChildState child02State;
-GroupState groupState;
 
 void childRenderStub(Component *component, bool forced, TftApi *tftApi)
 {
@@ -43,6 +52,9 @@ bool childNewStateFalseStub(Component *component)
 
 void setUp(void)
 {
+    SystemApi systemApi = systemApiMock();
+    factory = createFactory(&systemApi);
+
     child00State = {
         .rendered = false,
         .updated = false,
@@ -92,17 +104,13 @@ void setUp(void)
     children[1] = &child01;
     children[2] = &child02;
 
-    groupState = {
-        .childrenCount = CHILDREN_COUNT,
-        .children = children,
-    };
-
-    group = createGroupComponent(5, 6, &groupState); 
+    groupState = factory.createGroupStateRef(CHILDREN_COUNT, children);
+    group = factory.createGroupComponentRef(5, 6, groupState); 
 }
 
 void whenMount() 
 {
-    groupMount(&group, 12, 13);
+    groupMount(group, 12, 13);
 
     TEST_ASSERT_EQUAL_INT16(10 + 5 + 12, child00.x); // THEN child x coordinate adjusted
     TEST_ASSERT_EQUAL_INT16(20 + 6 + 13, child00.y); // THEN child y coordinate adjusted
@@ -116,21 +124,21 @@ void whenMount()
 
 void whenContains()
 {
-    groupMount(&group, 12, 13);
+    groupMount(group, 12, 13);
 
-    TEST_ASSERT_EQUAL_UINT64(&child00, groupContains(&group, 28, 40)); // THEN pointer to child returns
+    TEST_ASSERT_EQUAL_UINT64(&child00, groupContains(group, 28, 40)); // THEN pointer to child returns
 }
 
 void whenNotContains()
 {
-    groupMount(&group, 112, 113);
+    groupMount(group, 112, 113);
 
-    TEST_ASSERT_EQUAL_UINT64(NULL, groupContains(&group, 28, 40)); // THEN NULL returns
+    TEST_ASSERT_EQUAL_UINT64(NULL, groupContains(group, 28, 40)); // THEN NULL returns
 }
 
 void whenRender()
 {
-    groupRender(&group, false, NULL);
+    groupRender(group, false, NULL);
 
     TEST_ASSERT_EQUAL_UINT8(1, child00State.rendered); // THEN all children rendered
     TEST_ASSERT_EQUAL_UINT8(1, child01State.rendered); // THEN all children rendered
@@ -143,7 +151,7 @@ void whenRenderNotChangedChildren()
     child01.newState = childNewStateFalseStub;
     child02.newState = childNewStateFalseStub;
 
-    groupRender(&group, false, NULL);
+    groupRender(group, false, NULL);
 
     TEST_ASSERT_EQUAL_UINT8(0, child00State.rendered); // THEN children not rendered
     TEST_ASSERT_EQUAL_UINT8(0, child01State.rendered); // THEN children not rendered
@@ -156,7 +164,7 @@ void whenRenderNotChangedChildrenInForcedMode()
     child01.newState = childNewStateFalseStub;
     child02.newState = childNewStateFalseStub;
 
-    groupRender(&group, true, NULL);
+    groupRender(group, true, NULL);
 
     TEST_ASSERT_EQUAL_UINT8(1, child00State.rendered); // THEN all children rendered
     TEST_ASSERT_EQUAL_UINT8(1, child01State.rendered); // THEN all children rendered
@@ -165,7 +173,7 @@ void whenRenderNotChangedChildrenInForcedMode()
 
 void whenNewState()
 {
-    bool newState = groupNewState(&group);
+    bool newState = groupNewState(group);
 
     TEST_ASSERT_EQUAL_UINT8(1, newState); // THEN true as a result
     TEST_ASSERT_EQUAL_UINT8(1, child00State.updated); // THEN all children rendered
@@ -179,7 +187,7 @@ void whenAllChildrenNewStateReturnedFalse()
     child01.newState = childNewStateFalseStub;
     child02.newState = childNewStateFalseStub;
 
-    bool newState = groupNewState(&group);
+    bool newState = groupNewState(group);
 
     TEST_ASSERT_EQUAL_UINT8(0, newState); // THEN false as a result
     TEST_ASSERT_EQUAL_UINT8(1, child00State.updated); // THEN all children rendered
@@ -192,7 +200,7 @@ void whenNotAllChildrenNewStateReturnedFalse()
     child00.newState = childNewStateFalseStub;
     child02.newState = childNewStateFalseStub;
 
-    bool newState = groupNewState(&group);
+    bool newState = groupNewState(group);
 
     TEST_ASSERT_EQUAL_UINT8(1, newState); // THEN true as a result
     TEST_ASSERT_EQUAL_UINT8(1, child00State.updated); // THEN all children rendered
