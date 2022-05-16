@@ -1,3 +1,5 @@
+#include <stdlib.h>
+
 #include "systemMock.hpp"
 
 // todo consider verification of take count and give count
@@ -42,6 +44,11 @@ void resumeMock(void *handle)
     // empty
 }
 
+void* allocateMock(unsigned int size)
+{
+    return malloc(size);
+}
+
 SystemApi systemApiMock()
 {
     return {
@@ -52,5 +59,7 @@ SystemApi systemApiMock()
         .delay = delayMock,
         .delayUntil = delayUntilMock,
         .suspend = suspendMock,
-        .resume = resumeMock};
+        .resume = resumeMock,
+        .allocate = allocateMock,
+        };
 }
