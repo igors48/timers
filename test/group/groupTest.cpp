@@ -129,6 +129,29 @@ void whenContains()
     TEST_ASSERT_EQUAL_UINT64(&child00, groupContains(group, 28, 40)); // THEN pointer to child returns
 }
 
+void whenGroupContainsGroupWithChild()
+{
+    void* childGroupComponents[1 * sizeof(void*)];
+    childGroupComponents[0] = &child00;
+    GroupState* childGroupState = factory.createGroupStateRef(1, childGroupComponents);
+    Component* childGroup = factory.createGroupComponentRef(5, 6, childGroupState);
+
+    void* parentGroupComponents[1 * sizeof(void*)]; // todo do the same 1 * sizeof(void*) in other places
+    parentGroupComponents[0] = childGroup;
+
+    GroupState* parentGroupState = factory.createGroupStateRef(1, parentGroupComponents);
+    Component* parentGroup = factory.createGroupComponentRef(5, 6, parentGroupState);
+    
+    signed short mountX = 10;
+    signed short mountY = 20;
+    signed short xInsideMountedChild = child00.x + childGroup->x + parentGroup->x + mountX + 2;
+    signed short yInsideMountedChild = child00.y + childGroup->y + parentGroup->y + mountY + 2;
+
+    groupMount(parentGroup, mountX, mountY); 
+
+    TEST_ASSERT_EQUAL_UINT64(&child00, groupContains(parentGroup, xInsideMountedChild, yInsideMountedChild)); // THEN pointer to a child of a child group returns
+}
+
 void whenNotContains()
 {
     groupMount(group, 112, 113);
@@ -213,6 +236,7 @@ int main()
     UNITY_BEGIN();
     RUN_TEST(whenMount);
     RUN_TEST(whenContains);
+    RUN_TEST(whenGroupContainsGroupWithChild);
     RUN_TEST(whenNotContains);
     RUN_TEST(whenRender);
     RUN_TEST(whenRenderNotChangedChildren);

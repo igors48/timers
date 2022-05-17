@@ -37,7 +37,7 @@ Component* groupContains(Component *component, signed short x, signed short y)
     for (int i = 0; i < state->childrenCount; i++)
     {
         Component *current = (Component *)(state->children[i]);
-        Component *target = (current->contains)(current, x, y); // todo update test
+        Component *target = (current->contains)(current, x, y);
         if (target != NULL)
         {
             return target;
