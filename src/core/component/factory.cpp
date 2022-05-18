@@ -128,9 +128,9 @@ static StepperComponentState* createStepperComponentStateRef(signed short min, s
 
     StepperComponentState *state = (StepperComponentState *)(systemApi->allocate)(sizeof(StepperComponentState));
 
-    state->min = 0;
-    state->max = 10;
-    state->value = 5;
+    state->min = min;
+    state->max = max;
+    state->value = value;
     state->plusButton = plusButton;
     state->minusButton = minusButton;
     state->onChange = onChange;
