@@ -41,3 +41,9 @@ void stepperOnMinus(void *context)
     updateButtonsMode(state);
     state->onChange(state->value);
 }
+
+void stepperSetValue(void *context, signed short value)
+{
+    StepperComponentState *state = (StepperComponentState *)context;
+    state->value = value;    
+}

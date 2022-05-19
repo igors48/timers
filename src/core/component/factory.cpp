@@ -134,8 +134,9 @@ static StepperComponentState* createStepperComponentStateRef(signed short min, s
     state->plusButton = plusButton;
     state->minusButton = minusButton;
     state->onChange = onChange;
+    state->setValue = stepperSetValue;
 
-    plusButtonState->context = (void *)state;
+    plusButtonState->context = (void *)state; // todo add it to the createButtonStateRef
     minusButtonState->context = (void *)state;
 
     return state;

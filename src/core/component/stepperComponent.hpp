@@ -12,7 +12,9 @@ typedef struct
     Component* plusButton;
     Component* minusButton;
     OnStepperChange onChange;
+    void (*setValue)(void *context, signed short value);
 } StepperComponentState;
 
 void stepperOnPlus(void *context);
 void stepperOnMinus(void *context);
+void stepperSetValue(void *context, signed short value);

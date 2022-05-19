@@ -1,7 +1,5 @@
 #include <stdio.h>
 
-#include <LilyGoWatch.h>
-
 #include "clockApp.hpp"
 
 #include "core/component/textComponent.hpp"
@@ -17,6 +15,9 @@ static unsigned char hour;
 static unsigned char minute;
 
 static ClockAppApi *api;
+
+static StepperComponentState* hourStepperState;
+static StepperComponentState* minuteStepperState;
 
 static void provideHourMinuteState(TextState *state)
 {
@@ -35,7 +36,11 @@ static void setTime(void *context)
 
 static void resetTime(void *context)
 {
-    Serial.println("resetTime");
+    Date date = api->getDate();
+    hour = date.hour;
+    minute = date.minute;
+    (hourStepperState->setValue)(hourStepperState, date.hour);
+    (minuteStepperState->setValue)(minuteStepperState, date.minute);
 }
 
 static void onHourStepperChange(signed short value)
@@ -64,10 +69,10 @@ Component* createClockAppSetTimeTile(ClockAppApi *clockAppApi, Factory *factory)
     ButtonComponentState* resetButtonState = (factory->createButtonStateRef)(RESET, EG_ONCE, resetTime);
     Component* resetButton = (factory->createButtonComponentRef)(160, 170, 66, 50, resetButtonState);
 
-    StepperComponentState* hourStepperState = (factory->createStepperComponentStateRef)(0, 23, hour, onHourStepperChange);
+    hourStepperState = (factory->createStepperComponentStateRef)(0, 23, hour, onHourStepperChange);
     Component* hourStepper = (factory->createStepperComponentRef)(15, 90, hourStepperState);
 
-    StepperComponentState* minuteStepperState = (factory->createStepperComponentStateRef)(0, 59, minute, onMinuteStepperChange);
+    minuteStepperState = (factory->createStepperComponentStateRef)(0, 59, minute, onMinuteStepperChange);
     Component* minuteStepper = (factory->createStepperComponentRef)(90, 90, minuteStepperState);
 
     components[0] = hourMinuteComponent;
