@@ -64,7 +64,7 @@ Component* createClockAppSetTimeTile(ClockAppApi *clockAppApi, Factory *factory)
     ButtonComponentState* resetButtonState = (factory->createButtonStateRef)(RESET, EG_ONCE, resetTime);
     Component* resetButton = (factory->createButtonComponentRef)(160, 170, 66, 50, resetButtonState);
 
-    StepperComponentState* hourStepperState = (factory->createStepperComponentStateRef)(0, 24, hour, onHourStepperChange);
+    StepperComponentState* hourStepperState = (factory->createStepperComponentStateRef)(0, 23, hour, onHourStepperChange);
     Component* hourStepper = (factory->createStepperComponentRef)(15, 90, hourStepperState);
 
     StepperComponentState* minuteStepperState = (factory->createStepperComponentStateRef)(0, 59, minute, onMinuteStepperChange);
