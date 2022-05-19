@@ -85,15 +85,15 @@ static Date getDate()
     return date;
 }
 
-static void adjDate(signed char hourDelta)
+static void setTime(unsigned char hour, unsigned char minute)
 {
     Date adjustedDate = {
         .year = date.year,
         .month = date.month,
         .day = date.day,
-        .hour = (unsigned char)(date.hour + hourDelta),
-        .minute = date.minute,
-        .second = date.second,
+        .hour = hour,
+        .minute = minute,
+        .second = 0,
     };
     rtcApi->setDate(adjustedDate);
 }
@@ -140,7 +140,7 @@ App createClockApp(void *backgroundTaskHandleRef, SystemApi *systemApiRef, RtcAp
 
     api = {
         .getDate = getDate,
-        .adjDate = adjDate,
+        .setTime = setTime,
         .getBattery = getBattery,
         .getStepCounter = getStepCounter,
         .onGesture = onGesture,

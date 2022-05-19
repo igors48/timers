@@ -12,7 +12,7 @@
 
 typedef struct {
     Date (*getDate)();
-    void (*adjDate)(signed char hourDelta);
+    void (*setTime)(unsigned char hour, unsigned char minute);
     int (*getBattery)();
     unsigned int (*getStepCounter)();
     void (*onGesture)(Gesture gesture);

@@ -13,13 +13,14 @@ static char RESET[] = "RESET";
 static const unsigned char COMPONENTS_COUNT = 5;
 static void* components[COMPONENTS_COUNT];
 
+static unsigned char hour;
+static unsigned char minute;
+
 static ClockAppApi *api;
 
 static void provideHourMinuteState(TextState *state)
 {
-    Date date = api->getDate();
-    unsigned char hour = date.hour;
-    snprintf(state->content, sizeof(state->content), "%02d:%02d", hour, date.minute);
+    snprintf(state->content, sizeof(state->content), "%02d:%02d", hour, minute);
 }
 
 static void onGesture(Component *component, Gesture gesture)
@@ -29,7 +30,7 @@ static void onGesture(Component *component, Gesture gesture)
 
 static void setTime(void *context)
 {
-    Serial.println("setTime");
+    api->setTime(hour, minute);
 }
 
 static void resetTime(void *context)
@@ -39,17 +40,20 @@ static void resetTime(void *context)
 
 static void onHourStepperChange(signed short value)
 {
-    Serial.printf("hour %d\r\n", value);
+    hour = value;
 }
 
 static void onMinuteStepperChange(signed short value)
 {
-    Serial.printf("minute %d\r\n", value);
+    minute = value;
 }
 
 Component* createClockAppSetTimeTile(ClockAppApi *clockAppApi, Factory *factory)
 {
     api = clockAppApi;
+
+    hour = 12;
+    minute = 12;
 
     TextState* hourMinute = (factory->createTextStateRef)(7, 1, COLOR_INTERACTION, provideHourMinuteState);
     Component* hourMinuteComponent = (factory->createTextComponentRef)(10, 30, 140, 48, hourMinute);
@@ -60,10 +64,10 @@ Component* createClockAppSetTimeTile(ClockAppApi *clockAppApi, Factory *factory)
     ButtonComponentState* resetButtonState = (factory->createButtonStateRef)(RESET, EG_ONCE, resetTime);
     Component* resetButton = (factory->createButtonComponentRef)(160, 170, 66, 50, resetButtonState);
 
-    StepperComponentState* hourStepperState = (factory->createStepperComponentStateRef)(0, 24, 12, onHourStepperChange);
+    StepperComponentState* hourStepperState = (factory->createStepperComponentStateRef)(0, 24, hour, onHourStepperChange);
     Component* hourStepper = (factory->createStepperComponentRef)(15, 90, hourStepperState);
 
-    StepperComponentState* minuteStepperState = (factory->createStepperComponentStateRef)(0, 59, 30, onMinuteStepperChange);
+    StepperComponentState* minuteStepperState = (factory->createStepperComponentStateRef)(0, 59, minute, onMinuteStepperChange);
     Component* minuteStepper = (factory->createStepperComponentRef)(90, 90, minuteStepperState);
 
     components[0] = hourMinuteComponent;
