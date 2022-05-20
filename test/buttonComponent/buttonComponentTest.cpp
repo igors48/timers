@@ -53,7 +53,7 @@ void whenTouch()
 
     TEST_ASSERT_TRUE(state->eventHandlingState == EHS_PRESS); // THEN state is set to press
     TEST_ASSERT_EQUAL_UINT32(state->firstTouchTick, firstTouchTick); // THEN first touch tick is stored
-    TEST_ASSERT_FALSE(handlerCalled) // THEN handler is not called
+    TEST_ASSERT_FALSE(handlerCalled); // THEN handler is not called
 }
 
 void whenTouchDisabled()
@@ -64,7 +64,7 @@ void whenTouchDisabled()
 
     TEST_ASSERT_TRUE(state->eventHandlingState == EHS_IDLE); // THEN state is not changed
     TEST_ASSERT_EQUAL_UINT32(state->firstTouchTick, 0); // THEN first touch tick is not changed
-    TEST_ASSERT_FALSE(handlerCalled) // THEN handler is not called
+    TEST_ASSERT_FALSE(handlerCalled); // THEN handler is not called
 }
 
 void whenReleasedOnMe()
@@ -73,7 +73,7 @@ void whenReleasedOnMe()
 
     button->onRelease(button, 15, 15, secondTouchTick);
 
-    TEST_ASSERT_TRUE(handlerCalled) // THEN handler is called
+    TEST_ASSERT_TRUE(handlerCalled); // THEN handler is called
     TEST_ASSERT_TRUE(state->eventHandlingState == EHS_IDLE); // THEN state is set to idle
 }
 
@@ -86,7 +86,7 @@ void whenReleasedOnMeRepeated()
 
     button->onRelease(button, 15, 15, touchAfterRepeatDelay);
 
-    TEST_ASSERT_FALSE(handlerCalled) // THEN handler is not called
+    TEST_ASSERT_FALSE(handlerCalled); // THEN handler is not called
     TEST_ASSERT_TRUE(state->eventHandlingState == EHS_IDLE); // THEN state is set to idle
 }
 
@@ -96,7 +96,7 @@ void whenReleasedOnMeDisabled()
 
     button->onRelease(button, 15, 15, firstTouchTick);
 
-    TEST_ASSERT_FALSE(handlerCalled) // THEN handler is not called
+    TEST_ASSERT_FALSE(handlerCalled); // THEN handler is not called
     TEST_ASSERT_TRUE(state->eventHandlingState == EHS_IDLE); // THEN state is set to idle
 }
 
@@ -109,7 +109,7 @@ void whenReleasedOnMeRepeatedDisabled()
 
     button->onRelease(button, 15, 15, touchAfterRepeatDelay);
 
-    TEST_ASSERT_FALSE(handlerCalled) // THEN handler is not called
+    TEST_ASSERT_FALSE(handlerCalled); // THEN handler is not called
     TEST_ASSERT_TRUE(state->eventHandlingState == EHS_IDLE); // THEN state is set to idle
 }
 
@@ -117,7 +117,7 @@ void whenReleasedNotOnMe()
 {
     button->onRelease(button, 115, 115, firstTouchTick);
 
-    TEST_ASSERT_FALSE(handlerCalled) // THEN handler is not called
+    TEST_ASSERT_FALSE(handlerCalled); // THEN handler is not called
     TEST_ASSERT_TRUE(state->eventHandlingState == EHS_IDLE); // THEN state is set to idle
 }
 
@@ -130,7 +130,7 @@ void whenReleasedNotOnMeRepeated()
 
     button->onRelease(button, 115, 115, touchAfterRepeatDelay);
 
-    TEST_ASSERT_FALSE(handlerCalled) // THEN handler is not called
+    TEST_ASSERT_FALSE(handlerCalled); // THEN handler is not called
     TEST_ASSERT_TRUE(state->eventHandlingState == EHS_IDLE); // THEN state is set to idle
 }
 
