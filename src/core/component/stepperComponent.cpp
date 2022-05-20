@@ -27,7 +27,7 @@ void stepperOnPlus(void *context)
     }
     state->value++;
     updateButtonsMode(state);
-    state->onChange(state->value);
+    (state->onChange)(state->value);
 }
 
 void stepperOnMinus(void *context)
@@ -39,7 +39,7 @@ void stepperOnMinus(void *context)
     }
     state->value--;
     updateButtonsMode(state);
-    state->onChange(state->value);
+    (state->onChange)(state->value);
 }
 
 void stepperSetValue(void *context, signed short value)
@@ -47,4 +47,5 @@ void stepperSetValue(void *context, signed short value)
     StepperComponentState *state = (StepperComponentState *)context;
     state->value = value;    
     updateButtonsMode(state);
+    (state->onChange)(state->value);
 }
