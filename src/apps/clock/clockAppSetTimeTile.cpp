@@ -5,10 +5,11 @@
 #include "core/component/textComponent.hpp"
 #include "core/component/group.hpp"
 
+static char TITLE[] = "SET TIME";
 static char SET[] = "SET";
 static char RESET[] = "RESET";
 
-static const unsigned char COMPONENTS_COUNT = 5;
+static const unsigned char COMPONENTS_COUNT = 6;
 static void* components[COMPONENTS_COUNT];
 
 static unsigned char hour;
@@ -18,6 +19,11 @@ static ClockAppApi *api;
 
 static StepperComponentState* hourStepperState;
 static StepperComponentState* minuteStepperState;
+
+static void provideTitle(TextState *state)
+{
+    snprintf(state->content, sizeof(state->content), "%s", TITLE);
+}
 
 static void provideHourMinuteState(TextState *state)
 {
@@ -58,28 +64,21 @@ Component* createClockAppSetTimeTile(ClockAppApi *clockAppApi, Factory *factory)
     api = clockAppApi;
 
     hour = 12;
-    minute = 12;
+    minute = 30;
 
+    TextState* title = (factory->createTextStateRef)(2, 1, COLOR_INFORMATION, provideTitle);
     TextState* hourMinute = (factory->createTextStateRef)(7, 1, COLOR_INTERACTION, provideHourMinuteState);
-    Component* hourMinuteComponent = (factory->createTextComponentRef)(10, 30, 140, 48, hourMinute);
-
     ButtonComponentState* setButtonState = (factory->createButtonStateRef)(SET, EG_ONCE, setTime);
-    Component* setButton = (factory->createButtonComponentRef)(160, 20, 66, 50, setButtonState);
-
     ButtonComponentState* resetButtonState = (factory->createButtonStateRef)(RESET, EG_ONCE, resetTime);
-    Component* resetButton = (factory->createButtonComponentRef)(160, 170, 66, 50, resetButtonState);
-
     hourStepperState = (factory->createStepperComponentStateRef)(0, 23, hour, onHourStepperChange);
-    Component* hourStepper = (factory->createStepperComponentRef)(15, 90, hourStepperState);
-
     minuteStepperState = (factory->createStepperComponentStateRef)(0, 59, minute, onMinuteStepperChange);
-    Component* minuteStepper = (factory->createStepperComponentRef)(90, 90, minuteStepperState);
 
-    components[0] = hourMinuteComponent;
-    components[1] = setButton;
-    components[2] = resetButton;
-    components[3] = hourStepper;
-    components[4] = minuteStepper;
+    components[0] = (factory->createTextComponentRef)(10, 40, 140, 48, hourMinute);
+    components[1] = (factory->createButtonComponentRef)(160, 20, 66, 50, setButtonState);
+    components[2] = (factory->createButtonComponentRef)(160, 170, 66, 50, resetButtonState);
+    components[3] = (factory->createStepperComponentRef)(15, 100, hourStepperState);
+    components[4] = (factory->createStepperComponentRef)(90, 100, minuteStepperState);
+    components[5] = (factory->createTextComponentRef)(5, 5, 140, 48, title);
  
     GroupState* state = (factory->createGroupStateRef)(COMPONENTS_COUNT, components);
     Component* group = (factory->createGroupComponentRef)(0, 0, state);

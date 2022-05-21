@@ -17,6 +17,7 @@ static int batteryPercent;
 static int tileNo;
 static Component *clockTile;
 static Component *setTimeTile;
+static Component *setDateTile;
 
 static ClockAppApi api;
 
@@ -39,13 +40,14 @@ static void clockAppDeactivate(App *app)
 
 static Component *clockAppGetActiveTile()
 {
-    if (tileNo == 0)
+    switch (tileNo)
     {
-        return clockTile;
-    }
-    else
-    {
+    case 1:
         return setTimeTile;
+    case 2:
+        return setDateTile;
+    default:
+        return clockTile;
     }
 }
 
@@ -54,15 +56,31 @@ static void renderApp(bool forced)
     tiler->renderApp(forced);
 }
 
-static void switchTile()
+static void setNextTile()
 {
-    if (tileNo == 0)
+    if (tileNo < 2)
     {
-        tileNo = 1;
+        tileNo++;
+    }
+}
+
+static void setPrevTile()
+{
+    if (tileNo > 0)
+    {
+        tileNo--;
+    }
+}
+
+static void switchTile(Gesture gesture)
+{
+    if (gesture == MOVE_RIGHT)
+    {
+        setPrevTile();
     }
     else
     {
-        tileNo = 0;
+        setNextTile();
     }
     renderApp(true);
 }
@@ -72,11 +90,11 @@ static void onGesture(Gesture gesture)
     bool horizontal = (gesture == MOVE_LEFT) || (gesture == MOVE_RIGHT);
     if (horizontal)
     {
-        switchTile();
+        switchTile(gesture);
     }
     else
     {
-        (manager->switchApp)(gesture == MOVE_UP);
+        (manager->switchApp)(gesture == MOVE_UP); // todo should be manager->onGesture let manager decide how to handle
     }
 }
 
@@ -93,6 +111,19 @@ static void setTime(unsigned char hour, unsigned char minute)
         .day = date.day,
         .hour = hour,
         .minute = minute,
+        .second = 0,
+    };
+    rtcApi->setDate(adjustedDate);
+}
+
+static void setDate(unsigned char day, unsigned char month)
+{
+    Date adjustedDate = {
+        .year = date.year,
+        .month = month,
+        .day = day,
+        .hour = date.hour,
+        .minute = date.minute,
         .second = 0,
     };
     rtcApi->setDate(adjustedDate);
@@ -141,6 +172,7 @@ App createClockApp(void *backgroundTaskHandleRef, SystemApi *systemApiRef, RtcAp
     api = {
         .getDate = getDate,
         .setTime = setTime,
+        .setDate = setDate,
         .getBattery = getBattery,
         .getStepCounter = getStepCounter,
         .onGesture = onGesture,
@@ -148,6 +180,7 @@ App createClockApp(void *backgroundTaskHandleRef, SystemApi *systemApiRef, RtcAp
 
     clockTile = createClockAppTile(&api, factory);
     setTimeTile = createClockAppSetTimeTile(&api, factory);
+    setDateTile = createClockAppSetDateTile(&api, factory);
 
     return {
         .activate = clockAppActivate,
