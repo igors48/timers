@@ -30,7 +30,7 @@ void watchInitI2S()
         .sample_rate = 8000,
         .bits_per_sample = I2S_BITS_PER_SAMPLE_16BIT,
         .channel_format = I2S_CHANNEL_FMT_RIGHT_LEFT,
-        .communication_format = (i2s_comm_format_t)(I2S_COMM_FORMAT_I2S | I2S_COMM_FORMAT_I2S_MSB),
+        .communication_format = (i2s_comm_format_t)(I2S_COMM_FORMAT_STAND_I2S | I2S_COMM_FORMAT_STAND_MSB),
         .intr_alloc_flags = ESP_INTR_FLAG_LEVEL1,
         .dma_buf_count = 2,
         .dma_buf_len = 1024,
@@ -53,7 +53,7 @@ void watchInit()
     watch = TTGOClass::getWatch();
     watch->begin();
 
-    Serial.println(__DATE__);
+    //Serial.println(__DATE__);
     Serial.println(__DATE__);
     Serial.println(__TIME__);
     RTC_Date compiled = RTC_Date(__DATE__, __TIME__); // seems __DATE__, __TIME__ set to compilation time for this file not the project
