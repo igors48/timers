@@ -33,7 +33,8 @@ struct Component_
     void (*onTouch)(Component *component, signed short x, signed short y, unsigned int tickCount); // todo consider interface EventListener 
     void (*onMove)(Component *component, signed short x, signed short y, unsigned int tickCount);  
     void (*onRelease)(Component *component, signed short x, signed short y, unsigned int tickCount);  
-    void (*onGesture)(Component *component, Gesture gesture);
+    void (*onGesture)(Component *component, Gesture gesture); // todo gesture and button events are tile level events. consider remove handlers from component
+    void (*onButton)(Component *component);
     void (*render)(Component *component, bool forced, TftApi *tftApi);  // todo consider interface Renderable
     bool (*isStateModified)(Component *component);
     void (*updateState)(Component *component);
@@ -43,6 +44,8 @@ struct Component_
 void componentNoopHandler(Component *component, signed short x, signed short y, unsigned int tickCount);
 
 void componentGestureNoopHandler(Component *component, Gesture gesture);
+
+void componentButtonNoopHandler(Component *component);
 
 Component* componentContains(Component *component, signed short x, signed short y);
 

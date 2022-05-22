@@ -28,6 +28,7 @@ static Component* createGroupComponentRef(signed short x, signed short y, GroupS
     component->onMove = componentNoopHandler;
     component->onRelease = componentNoopHandler;
     component->onGesture = componentGestureNoopHandler;
+    component->onButton = componentButtonNoopHandler;
     component->isStateModified = groupIsStateModified;
     component->updateState = groupUpdateState;
     component->render = groupRender;
@@ -69,6 +70,7 @@ static Component* createTextComponentRef(signed short x, signed short y, signed 
     ref->onMove = componentNoopHandler;
     ref->onRelease = componentNoopHandler;
     ref->onGesture = componentGestureNoopHandler;
+    ref->onButton = componentButtonNoopHandler;
     ref->render = textComponentRender;
     ref->isStateModified = textComponentIsStateModified;
     ref->updateState = textComponentUpdateState;
@@ -110,6 +112,7 @@ static Component* createButtonComponentRef(signed short x, signed short y, signe
     component->onMove = buttonOnMove;
     component->onRelease = buttonOnRelease;
     component->onGesture = componentGestureNoopHandler;
+    component->onButton = componentButtonNoopHandler;
     component->render = buttonRender;
     component->isStateModified = buttonIsStateModified;
     component->updateState = buttonUpdateState;

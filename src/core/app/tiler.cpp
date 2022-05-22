@@ -50,6 +50,13 @@ static void onGesture(Gesture gesture)
     renderApp(false);
 }
 
+static void onButton()
+{
+    Component *activeTile = (activeApp->getActiveTile)(); 
+    (activeTile->onButton)(activeTile);  
+    renderApp(false);
+}
+
 Tiler createTiler(TftApi *tftApi)
 {
     tilerTftApi = tftApi;
@@ -61,6 +68,7 @@ Tiler createTiler(TftApi *tftApi)
         .onTouch = onTouch, 
         .onMove = onMove,  
         .onRelease = onRelease,  
-        .onGesture = onGesture,  
+        .onGesture = onGesture, 
+        .onButton = onButton, 
     };
 }

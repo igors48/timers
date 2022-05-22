@@ -17,6 +17,11 @@ static void onGesture(Component *component, Gesture gesture)
     api->onGesture(gesture);
 }
 
+static void onButton(Component *component)
+{
+    api->beep();
+}
+
 Component* createToolsAppTile(ToolsAppApi *toolsAppApi, Factory *factory)
 {
     api = toolsAppApi;
@@ -28,6 +33,7 @@ Component* createToolsAppTile(ToolsAppApi *toolsAppApi, Factory *factory)
     GroupState* state = (factory->createGroupStateRef)(COMPONENTS_COUNT, components);
     Component* group = (factory->createGroupComponentRef)(0, 0, state);
     group->onGesture = onGesture; 
+    group->onButton = onButton;
 
     group->mount(group, 0, 0);
     

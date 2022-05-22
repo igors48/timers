@@ -9,6 +9,7 @@ void buttonListener(ButtonListenerParameters *p)
         {
             p->systemApi->log("buttonListener", "PowerKey Press");
             *p->lastUserEventTimestamp = p->systemApi->time();
+            (p->tiler->onButton)();
         }
         p->powerApi->clearIRQ();
         p->systemApi->give(p->watchMutex);

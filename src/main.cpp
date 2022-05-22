@@ -189,8 +189,10 @@ void setup()
         buttonListenerParameters = {
             .watchMutex = &watchMutex,
             .lastUserEventTimestamp = &lastUserEventTimestamp,
+            .tiler = &tiler,
             .powerApi = &powerApi,
-            .systemApi = &systemApi};
+            .systemApi = &systemApi,
+        };
         xTaskCreate(buttonListenerTask, "buttonListenerTask", 2048, (void *)&buttonListenerParameters, 1, &buttonListenerTaskHandle);
 
         pinMode(AXP202_INT, INPUT_PULLUP);
