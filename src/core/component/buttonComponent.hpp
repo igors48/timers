@@ -43,4 +43,5 @@ void buttonOnTouch(Component *component, signed short x, signed short y, unsigne
 void buttonOnMove(Component *component, signed short x, signed short y, unsigned int tickCount);
 void buttonOnRelease(Component *component, signed short x, signed short y, unsigned int tickCount);
 void buttonRender(Component *component, bool forced, TftApi *tftApi);
-bool buttonNewState(Component *component);
+bool buttonIsStateModified(Component *component);
+void buttonUpdateState(Component *component);

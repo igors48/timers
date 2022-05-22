@@ -8,22 +8,22 @@ void groupRender(Component *group, bool forced, TftApi *tftApi)
     for (int i = 0; i < state->childrenCount; i++)
     {
         Component *current = (Component *)(state->children[i]);
-        bool needRender = (current->newState)(current);
+        bool needRender = (current->isStateModified)(current);
         if (forced || needRender)
         {
-            (current->render)(current, true/*forced*/, tftApi); // todo fix this quick hack for non idempotent newState
+            (current->render)(current, forced, tftApi);
         }
     }
 }
 
-bool groupNewState(Component *component)
+bool groupIsStateModified(Component *component)
 {
     GroupState *state = (GroupState *)(component->state);
     bool result = false;
     for (int i = 0; i < state->childrenCount; i++)
     {
         Component *current = (Component *)(state->children[i]);
-        if ((current->newState)(current))
+        if ((current->isStateModified)(current))
         {
             result = true;
         }
@@ -31,7 +31,18 @@ bool groupNewState(Component *component)
     return result;
 }
 
-Component* groupContains(Component *component, signed short x, signed short y)
+void groupUpdateState(Component *component)
+{
+    GroupState *state = (GroupState *)(component->state);
+    bool result = false;
+    for (int i = 0; i < state->childrenCount; i++)
+    {
+        Component *current = (Component *)(state->children[i]);
+        (current->updateState)(current);
+    }
+}
+
+Component *groupContains(Component *component, signed short x, signed short y)
 {
     GroupState *state = (GroupState *)(component->state);
     for (int i = 0; i < state->childrenCount; i++)
@@ -42,7 +53,7 @@ Component* groupContains(Component *component, signed short x, signed short y)
         {
             return target;
         }
-    }    
+    }
     return NULL;
 }
 
@@ -57,4 +68,3 @@ void groupMount(Component *component, signed short x, signed short y)
         (current->mount)(current, component->x, component->y);
     }
 }
-

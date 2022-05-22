@@ -132,22 +132,15 @@ void buttonRender(Component *component, bool forced, TftApi *tftApi)
     (tftApi->print)(state->title);
 }
 
-bool buttonNewState(Component *component)
+bool buttonIsStateModified(Component *component)
 {
     ButtonComponentState *state = (ButtonComponentState *)component->state;
+    return (state->eventHandlingState != state->_eventHandlingState) || (state->mode != state->_mode);
+}
 
-    bool changed = false;
-
-    if (state->eventHandlingState != state->_eventHandlingState)
-    {
-        changed = true;
-        state->_eventHandlingState = state->eventHandlingState;
-    }
-
-    if (state->mode != state->_mode)
-    {
-        changed = true;
-        state->_mode = state->mode;
-    }
-    return changed;
+void buttonUpdateState(Component *component)
+{
+    ButtonComponentState *state = (ButtonComponentState *)component->state;
+    state->_eventHandlingState = state->eventHandlingState;
+    state->_mode = state->mode;
 }

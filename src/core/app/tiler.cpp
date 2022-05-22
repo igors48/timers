@@ -11,6 +11,7 @@ static void renderApp(bool forced)
         (tilerTftApi->fillRect)(0, 0, 240, 240, COLOR_BLACK);
     } 
     (activeTile->render)(activeTile, forced, tilerTftApi);
+    (activeTile->updateState)(activeTile); // todo update test
 }
 
 static void setApp(App *app)

@@ -9,6 +9,7 @@ typedef struct
 } GroupState;
 
 void groupRender(Component *group, bool forced, TftApi *tftApi);
-bool groupNewState(Component *component);
 Component* groupContains(Component *component, signed short x, signed short y);
 void groupMount(Component *component, signed short x, signed short y);
+bool groupIsStateModified(Component *component);
+void groupUpdateState(Component *component);

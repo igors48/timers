@@ -12,24 +12,23 @@ void textComponentRender(Component *component, bool forced, TftApi *tftApi)
     (tftApi->print)(state->content);
 }
 
-bool textComponentNewState(Component *component)
+bool textComponentIsStateModified(Component *component)
 {
     TextState *state = (TextState *)component->state;
     (state->provide)(state);
-    if (strcmp(state->content, state->_content) != 0) { // todo update prev state _* variables
-        return true;
-    }
-    if (state->size != state->_size) {
-        return true;
-    }
-    if (state->fontColor != state->_fontColor) {
-        return true;
-    }
-    if (state->backColor != state->_backColor) {
-        return true;
-    }
-    if (state->font != state->_font) {
-        return true;
-    }
-    return false;
+    return (strcmp(state->content, state->_content) != 0) ||
+    (state->size != state->_size) ||
+    (state->fontColor != state->_fontColor) ||
+    (state->backColor != state->_backColor) ||
+    (state->font != state->_font);
+}
+
+void textComponentUpdateState(Component *component)
+{
+    TextState *state = (TextState *)component->state;
+    strcpy(state->content, state->_content);
+    state->_size = state->size;
+    state->_fontColor = state->fontColor;
+    state->_backColor = state->backColor;
+    state->_font = state->font;
 }

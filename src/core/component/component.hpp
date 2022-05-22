@@ -35,15 +35,14 @@ struct Component_
     void (*onRelease)(Component *component, signed short x, signed short y, unsigned int tickCount);  
     void (*onGesture)(Component *component, Gesture gesture);
     void (*render)(Component *component, bool forced, TftApi *tftApi);  // todo consider interface Renderable
-    bool (*newState)(Component *component); // todo consider better name
+    bool (*isStateModified)(Component *component);
+    void (*updateState)(Component *component);
     void *state;    
 };
 
 void componentNoopHandler(Component *component, signed short x, signed short y, unsigned int tickCount);
 
 void componentGestureNoopHandler(Component *component, Gesture gesture);
-
-bool componentNewState(Component *component);
 
 Component* componentContains(Component *component, signed short x, signed short y);
 

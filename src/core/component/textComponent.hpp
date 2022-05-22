@@ -26,4 +26,5 @@ struct TextState_
 };
 
 void textComponentRender(Component *component, bool forced, TftApi *tftApi);
-bool textComponentNewState(Component *component);
+bool textComponentIsStateModified(Component *component);
+void textComponentUpdateState(Component *component);
