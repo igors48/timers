@@ -10,6 +10,7 @@ bool activeTileRendered;
 bool activeTileRenderMode;
 bool activeTileContainsCalled;
 bool activeTileOnGestureCalled;
+bool activeTileStateUpdated;
 bool onTouchCalled;
 bool onMoveCalled;
 bool onReleaseCalled;
@@ -30,6 +31,11 @@ void render(Component *component, bool forced, TftApi *tftApi)
 {
     activeTileRendered = true;
     activeTileRenderMode = forced;
+}
+
+void updateState(Component *component)
+{
+    activeTileStateUpdated = true;
 }
 
 Component* contains(Component *component, signed short x, signed short y)
@@ -64,6 +70,7 @@ void setUp(void)
     activeTileRenderMode = false;
     activeTileContainsCalled = false;
     activeTileOnGestureCalled = false;
+    activeTileStateUpdated = false;
 
     onTouchCalled = false;
     onMoveCalled = false;
@@ -76,6 +83,7 @@ void setUp(void)
         .onRelease = onReleaseStub,
         .onGesture = onGesture,
         .render = render,
+        .updateState = updateState,
     };
 
     appStub = {
@@ -99,6 +107,7 @@ void whenRenderInForcedMode()
     TEST_ASSERT_TRUE(fillRectCalled); // THEN screen cleared
     TEST_ASSERT_TRUE(activeTileRendered); // THEN active tile rendered
     TEST_ASSERT_TRUE(activeTileRenderMode); // THEN active tile rendered in the forced mode
+    TEST_ASSERT_TRUE(activeTileStateUpdated); // THEN active tile state updated
 }
 
 void whenRenderInNotForcedMode()
@@ -108,6 +117,7 @@ void whenRenderInNotForcedMode()
     TEST_ASSERT_FALSE(fillRectCalled); // THEN screen not cleared
     TEST_ASSERT_TRUE(activeTileRendered); // THEN active tile rendered
     TEST_ASSERT_FALSE(activeTileRenderMode); // THEN active tile rendered in the not forced mode
+    TEST_ASSERT_TRUE(activeTileStateUpdated); // THEN active tile state updated
 }
 
 void whenContainsCalled()
@@ -124,6 +134,7 @@ void whenOnGestureCalled()
     TEST_ASSERT_TRUE(activeTileOnGestureCalled); // THEN active tile gesture handler called
     TEST_ASSERT_TRUE(activeTileRendered); // THEN active tile rendered
     TEST_ASSERT_FALSE(activeTileRenderMode); // THEN active tile rendered in the not forced mode
+    TEST_ASSERT_TRUE(activeTileStateUpdated); // THEN active tile state updated
 }
 
 void whenOnTouchCalled()
@@ -133,6 +144,7 @@ void whenOnTouchCalled()
     TEST_ASSERT_TRUE(onTouchCalled); // THEN component on touch handler called
     TEST_ASSERT_TRUE(activeTileRendered); // THEN active tile rendered
     TEST_ASSERT_FALSE(activeTileRenderMode); // THEN active tile rendered in the not forced mode
+    TEST_ASSERT_TRUE(activeTileStateUpdated); // THEN active tile state updated
 }
 
 void whenOnMoveCalled()
@@ -142,6 +154,7 @@ void whenOnMoveCalled()
     TEST_ASSERT_TRUE(onMoveCalled); // THEN component on move handler called
     TEST_ASSERT_TRUE(activeTileRendered); // THEN active tile rendered
     TEST_ASSERT_FALSE(activeTileRenderMode); // THEN active tile rendered in the not forced mode
+    TEST_ASSERT_TRUE(activeTileStateUpdated); // THEN active tile state updated
 }
 
 void whenOnReleaseCalled()
@@ -151,6 +164,7 @@ void whenOnReleaseCalled()
     TEST_ASSERT_TRUE(onReleaseCalled); // THEN component on release handler called
     TEST_ASSERT_TRUE(activeTileRendered); // THEN active tile rendered
     TEST_ASSERT_FALSE(activeTileRenderMode); // THEN active tile rendered in the not forced mode
+    TEST_ASSERT_TRUE(activeTileStateUpdated); // THEN active tile state updated
 }
 
 int main()

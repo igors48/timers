@@ -36,18 +36,20 @@ void childRenderStub(Component *component, bool forced, TftApi *tftApi)
     state->rendered = true;
 }
 
-bool childNewStateTrueStub(Component *component)
+bool childIsStateModifiedTrueStub(Component *component)
 {
-    ChildState *state = (ChildState *)component->state;
-    state->updated = true;
     return true;
 }
 
-bool childNewStateFalseStub(Component *component)
+bool childIsStateModifiedFalseStub(Component *component)
+{
+    return false;
+}
+
+void childUpdateStateStub(Component *component)
 {
     ChildState *state = (ChildState *)component->state;
     state->updated = true;
-    return false;
 }
 
 void setUp(void)
@@ -67,7 +69,8 @@ void setUp(void)
     child00.mount = componentMount;
     child00.contains = componentContains;
     child00.render = childRenderStub;
-    child00.newState = childNewStateTrueStub;
+    child00.isStateModified = childIsStateModifiedTrueStub;
+    child00.updateState = childUpdateStateStub;
     child00.state = &child00State;
 
     child01State = {
@@ -82,7 +85,8 @@ void setUp(void)
     child01.mount = componentMount;
     child01.contains = componentContains;
     child01.render = childRenderStub;
-    child01.newState = childNewStateTrueStub;
+    child01.isStateModified = childIsStateModifiedTrueStub;
+    child01.updateState = childUpdateStateStub;
     child01.state = &child01State;
 
     child02State = {
@@ -97,7 +101,8 @@ void setUp(void)
     child02.mount = componentMount;
     child02.contains = componentContains;
     child02.render = childRenderStub;
-    child02.newState = childNewStateTrueStub;
+    child02.isStateModified = childIsStateModifiedTrueStub;
+    child02.updateState = childUpdateStateStub;
     child02.state = &child02State;
 
     children[0] = &child00;
@@ -163,72 +168,72 @@ void whenRender()
 {
     groupRender(group, false, NULL);
 
-    TEST_ASSERT_EQUAL_UINT8(1, child00State.rendered); // THEN all children rendered
-    TEST_ASSERT_EQUAL_UINT8(1, child01State.rendered); // THEN all children rendered
-    TEST_ASSERT_EQUAL_UINT8(1, child02State.rendered); // THEN all children rendered
+    TEST_ASSERT_TRUE(child00State.rendered); // THEN all children rendered
+    TEST_ASSERT_TRUE(child01State.rendered); // THEN all children rendered
+    TEST_ASSERT_TRUE(child02State.rendered); // THEN all children rendered
 }
 
 void whenRenderNotChangedChildren()
 {
-    child00.newState = childNewStateFalseStub;
-    child01.newState = childNewStateFalseStub;
-    child02.newState = childNewStateFalseStub;
+    child00.isStateModified = childIsStateModifiedFalseStub;
+    child01.isStateModified = childIsStateModifiedFalseStub;
+    child02.isStateModified = childIsStateModifiedFalseStub;
 
     groupRender(group, false, NULL);
 
-    TEST_ASSERT_EQUAL_UINT8(0, child00State.rendered); // THEN children not rendered
-    TEST_ASSERT_EQUAL_UINT8(0, child01State.rendered); // THEN children not rendered
-    TEST_ASSERT_EQUAL_UINT8(0, child02State.rendered); // THEN children not rendered
+    TEST_ASSERT_FALSE(child00State.rendered); // THEN children not rendered
+    TEST_ASSERT_FALSE(child01State.rendered); // THEN children not rendered
+    TEST_ASSERT_FALSE(child02State.rendered); // THEN children not rendered
 }
 
 void whenRenderNotChangedChildrenInForcedMode()
 {
-    child00.newState = childNewStateFalseStub;
-    child01.newState = childNewStateFalseStub;
-    child02.newState = childNewStateFalseStub;
+    child00.isStateModified = childIsStateModifiedFalseStub;
+    child01.isStateModified = childIsStateModifiedFalseStub;
+    child02.isStateModified = childIsStateModifiedFalseStub;
 
     groupRender(group, true, NULL);
 
-    TEST_ASSERT_EQUAL_UINT8(1, child00State.rendered); // THEN all children rendered
-    TEST_ASSERT_EQUAL_UINT8(1, child01State.rendered); // THEN all children rendered
-    TEST_ASSERT_EQUAL_UINT8(1, child02State.rendered); // THEN all children rendered
+    TEST_ASSERT_TRUE(child00State.rendered); // THEN all children rendered
+    TEST_ASSERT_TRUE(child01State.rendered); // THEN all children rendered
+    TEST_ASSERT_TRUE(child02State.rendered); // THEN all children rendered
 }
 
 void whenNewState()
 {
-    bool newState = groupNewState(group);
+    bool newState = groupIsStateModified(group);
 
-    TEST_ASSERT_EQUAL_UINT8(1, newState); // THEN true as a result
-    TEST_ASSERT_EQUAL_UINT8(1, child00State.updated); // THEN all children rendered
-    TEST_ASSERT_EQUAL_UINT8(1, child01State.updated); // THEN all children rendered
-    TEST_ASSERT_EQUAL_UINT8(1, child02State.updated); // THEN all children rendered
+    TEST_ASSERT_TRUE(newState); // THEN true as a result
 }
 
 void whenAllChildrenNewStateReturnedFalse()
 {
-    child00.newState = childNewStateFalseStub;
-    child01.newState = childNewStateFalseStub;
-    child02.newState = childNewStateFalseStub;
+    child00.isStateModified = childIsStateModifiedFalseStub;
+    child01.isStateModified = childIsStateModifiedFalseStub;
+    child02.isStateModified = childIsStateModifiedFalseStub;
 
-    bool newState = groupNewState(group);
+    bool newState = groupIsStateModified(group);
 
-    TEST_ASSERT_EQUAL_UINT8(0, newState); // THEN false as a result
-    TEST_ASSERT_EQUAL_UINT8(1, child00State.updated); // THEN all children rendered
-    TEST_ASSERT_EQUAL_UINT8(1, child01State.updated); // THEN all children rendered
-    TEST_ASSERT_EQUAL_UINT8(1, child02State.updated); // THEN all children rendered
+    TEST_ASSERT_FALSE(newState); // THEN false as a result
 }
 
 void whenNotAllChildrenNewStateReturnedFalse()
 {
-    child00.newState = childNewStateFalseStub;
-    child02.newState = childNewStateFalseStub;
+    child00.isStateModified = childIsStateModifiedFalseStub;
+    child02.isStateModified = childIsStateModifiedFalseStub;
 
-    bool newState = groupNewState(group);
+    bool newState = groupIsStateModified(group);
 
-    TEST_ASSERT_EQUAL_UINT8(1, newState); // THEN true as a result
-    TEST_ASSERT_EQUAL_UINT8(1, child00State.updated); // THEN all children rendered
-    TEST_ASSERT_EQUAL_UINT8(1, child01State.updated); // THEN all children rendered
-    TEST_ASSERT_EQUAL_UINT8(1, child02State.updated); // THEN all children rendered
+    TEST_ASSERT_TRUE(newState); // THEN true as a result
+}
+
+void whenGroupUpdatingState()
+{
+    groupUpdateState(group);
+
+    TEST_ASSERT_TRUE(child00State.updated); // THEN all children states updated
+    TEST_ASSERT_TRUE(child01State.updated); // THEN all children states updated
+    TEST_ASSERT_TRUE(child02State.updated); // THEN all children states updated
 }
 
 int main()
@@ -244,5 +249,6 @@ int main()
     RUN_TEST(whenNewState);
     RUN_TEST(whenAllChildrenNewStateReturnedFalse);
     RUN_TEST(whenNotAllChildrenNewStateReturnedFalse);
+    RUN_TEST(whenGroupUpdatingState);
     UNITY_END();
 }
