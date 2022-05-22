@@ -3,7 +3,7 @@
 static void *queue;
 static SystemApi *systemApi; 
 
-void soundBeep()
+static void soundBeep()
 {
     unsigned char item = 1;
     (systemApi->queueSend)(queue, &item, 0xffffffffUL); // todo use const for port max delay
