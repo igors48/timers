@@ -7,15 +7,23 @@ static ToolsAppApi api;
 
 static Component *tile;
 
+static void activate(App *app)
+{
+}
+
+static void deactivate(App *app)
+{
+}
+
+static Component *getActiveTile()
+{
+    return tile;
+}
+
 static void beep()
 {
-
+    (soundApi->beep)();
 }
-    
-static void onGesture(Gesture gesture)
-{
-
-} 
 
 static void onGesture(Gesture gesture)
 {
@@ -26,12 +34,21 @@ static void onGesture(Gesture gesture)
     }
 }
 
-App createClockApp(SoundApi *soundApiRef, Manager *managerRef, Factory *factoryRef)
+App createToolsApp(SoundApi *soundApiRef, Manager *managerRef, Factory *factoryRef)
 {
     manager = managerRef;
-    soundApi = soundApi;
+    soundApi = soundApiRef;
 
-    api = {};
+    api = {
+        .beep = beep,
+        .onGesture = onGesture,
+    };
 
     tile = createToolsAppTile(&api, factoryRef);
+
+    return {
+        .activate = activate,
+        .deactivate = deactivate,
+        .getActiveTile = getActiveTile,
+    };
 }

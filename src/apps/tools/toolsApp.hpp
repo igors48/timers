@@ -11,6 +11,6 @@ typedef struct
     void (*onGesture)(Gesture gesture);    
 } ToolsAppApi;
 
-App createClockApp(SoundApi *soundApiRef, Manager *managerRef, Factory *factoryRef);
+App createToolsApp(SoundApi *soundApiRef, Manager *managerRef, Factory *factoryRef);
 
 Component* createToolsAppTile(ToolsAppApi *toolsAppApi, Factory *factory);

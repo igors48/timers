@@ -22,6 +22,7 @@
 
 #include "apps/clock/clockApp.hpp"
 #include "apps/step/stepApp.hpp"
+#include "apps/tools/toolsApp.hpp"
 
 TTGOClass *watch;
 
@@ -66,7 +67,9 @@ TickerParameters stepAppTickerParameters;
 TaskHandle_t stepAppTickerTaskHandle;
 App stepApp;
 
-const unsigned char APPS_COUNT = 2;
+App toolsApp;
+
+const unsigned char APPS_COUNT = 3;
 void *apps[APPS_COUNT];
 
 Manager manager;
@@ -148,6 +151,11 @@ void createStepApplication()
     vTaskSuspend(stepAppTickerTaskHandle);
 
     stepApp = createStepApp(stepAppTickerTaskHandle, &systemApi, &bmaApi, &tiler, &manager, &factory);
+}
+
+void createToolsApplication()
+{
+    toolsApp = createToolsApp(&soundApi, &manager, &factory);
 }
 
 void setup()
@@ -242,9 +250,11 @@ void setup()
         
         createClockApplication();
         createStepApplication();
+        createToolsApplication();
 
         apps[0] = &clockApp;
         apps[1] = &stepApp;
+        apps[2] = &toolsApp;
 
         manager = createManager(APPS_COUNT, apps, &tiler);
         manager.activateApp(0);
