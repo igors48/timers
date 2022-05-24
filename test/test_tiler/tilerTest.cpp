@@ -30,6 +30,16 @@ void fillRect(signed int x, signed int y, signed int w, signed int h, unsigned i
     fillRectCalled = true;
 }
 
+void drawFastVLine(signed int x, signed int y, signed int h, unsigned int color)
+{
+    // empty
+}
+
+void drawFastHLine(signed int x, signed int y, signed int w, unsigned int color)
+{
+    // empty
+}
+
 void render(Component *component, bool forced, TftApi *tftApi)
 {
     activeTileRendered = true;
@@ -114,6 +124,8 @@ void setUp(void)
 
     tftApiStub = {
         .fillRect = fillRect,
+        .drawFastVLine = drawFastVLine,
+        .drawFastHLine = drawFastHLine,
     };
 
     tiler = createTiler(&tftApiStub);
@@ -164,7 +176,7 @@ void whenOnButtonCalled()
 
     TEST_ASSERT_TRUE(activeTileOnButtonCalled);             // THEN active tile button handler called
     TEST_ASSERT_TRUE(activeTileRendered);                   // THEN active tile rendered
-    TEST_ASSERT_FALSE(activeTileRenderMode);                // THEN active tile rendered in the not forced mode
+    TEST_ASSERT_TRUE(activeTileRenderMode);                // THEN active tile rendered in the not forced mode
     TEST_ASSERT_TRUE(activeTileStateUpdated);               // THEN active tile state updated
     TEST_ASSERT_EQUAL_UINT64(eventTarget, &activeTileStub); // THEN event target is active tile
 }
