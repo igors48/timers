@@ -41,6 +41,16 @@ static void fillRoundRect(signed int x, signed int y, signed int w, signed int h
     watch->tft->fillRoundRect(x, y, w, h, r, color);
 }
 
+static void drawFastVLine(signed int x, signed int y, signed int h, unsigned int color)
+{
+    watch->tft->drawFastVLine(x, y, h, color);
+}
+
+static void drawFastHLine(signed int x, signed int y, signed int w, unsigned int color)
+{
+    watch->tft->drawFastHLine(x, y, w, color);
+}
+
 TftApi watchTftApi()
 {
     return {
@@ -52,5 +62,7 @@ TftApi watchTftApi()
         .drawRect = drawRect,
         .fillRect = fillRect,
         .fillRoundRect = fillRoundRect,
+        .drawFastVLine = drawFastVLine,
+        .drawFastHLine = drawFastHLine,
     };
 }

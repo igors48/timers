@@ -26,7 +26,7 @@ bool textComponentIsStateModified(Component *component)
 void textComponentUpdateState(Component *component)
 {
     TextState *state = (TextState *)component->state;
-    strcpy(state->content, state->_content);
+    strcpy(state->_content, state->content);
     state->_size = state->size;
     state->_fontColor = state->fontColor;
     state->_backColor = state->backColor;
