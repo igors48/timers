@@ -6,34 +6,14 @@
 
 static const char SUPERVISOR[] = "supervisor";
 
-void suspendTasks(void **tasks, int count, Suspend suspend)
-{
-    for (int i = 0; i < count; i++)
-    {
-        void *current = tasks[i];
-        suspend(current);
-    }
-}
-
-void resumeTasks(void **tasks, int count, Resume resume)
-{
-    for (int i = 0; i < count; i++)
-    {
-        void *current = tasks[i];
-        resume(current);
-    }
-}
-
 void supervisorSleep(void *v, unsigned short sleepTimeSec)
 {
     SupervisorParameters *p = (SupervisorParameters *)v;
-    suspendTasks(p->tasks, p->tasksCount, p->systemApi->suspend); // todo seems not needed
     p->systemApi->log(SUPERVISOR, "sleep for %d sec", sleepTimeSec);
     p->watchApi->beforeGoToSleep();
     p->watchApi->goToSleep(sleepTimeSec * uS_TO_S_FACTOR); // here it stops
     p->watchApi->afterWakeUp();
     p->systemApi->log(SUPERVISOR, "after wake up");
-    resumeTasks(p->tasks, p->tasksCount, p->systemApi->resume); // todo seems not needed
 }
 
 unsigned long calcSleepTime(SupervisorParameters *p)
