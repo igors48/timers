@@ -58,6 +58,11 @@ static void onGesture(Gesture gesture)
     }
 }
 
+static unsigned int getNextWakeUpPeriod()
+{
+    return NW_DONT_CARE;
+}
+
 void stepAppTick()
 {
     update();
@@ -86,5 +91,6 @@ App createStepApp(void *backgroundTaskHandleRef, SystemApi *systemApiRef, BmaApi
         .activate = activate,
         .deactivate = deactivate,
         .getActiveTile = getActiveTile,
+        .getNextWakeUpPeriod = getNextWakeUpPeriod,
     };
 }

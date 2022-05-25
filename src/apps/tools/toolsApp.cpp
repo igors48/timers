@@ -20,6 +20,11 @@ static Component *getActiveTile()
     return tile;
 }
 
+static unsigned int getNextWakeUpPeriod()
+{
+    return NW_DONT_CARE;
+}
+
 static void beep()
 {
     (soundApi->beep)();
@@ -50,5 +55,6 @@ App createToolsApp(SoundApi *soundApiRef, Manager *managerRef, Factory *factoryR
         .activate = activate,
         .deactivate = deactivate,
         .getActiveTile = getActiveTile,
+        .getNextWakeUpPeriod = getNextWakeUpPeriod,
     };
 }

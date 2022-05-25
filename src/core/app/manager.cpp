@@ -53,6 +53,21 @@ static void switchApp(bool next)
     }
 }
 
+static unsigned int getNextWakeUpPeriod()
+{
+    unsigned int minNextWakeUpPeriod = UINT_MAX;
+    for (int i = 0; i < managedAppsCount; i++)
+    {
+        App *app = (App *)managedApps[i];
+        unsigned int nextWakeUpPeriod = app->getNextWakeUpPeriod();
+        if (nextWakeUpPeriod < minNextWakeUpPeriod)
+        {
+            minNextWakeUpPeriod = nextWakeUpPeriod;
+        }
+    }
+    return minNextWakeUpPeriod;
+}
+
 Manager createManager(unsigned char appsCount, void **apps, Tiler *tilerRef)
 {
     managedApps = apps;
@@ -64,5 +79,6 @@ Manager createManager(unsigned char appsCount, void **apps, Tiler *tilerRef)
     return {
         .activateApp = activateApp,
         .switchApp = switchApp,
+        .getNextWakeUpPeriod = getNextWakeUpPeriod,
     };
 }

@@ -4,10 +4,16 @@
 
 App firstApp;
 bool firstAppActive;
+unsigned int nextWakeUpPeriodFirst;
+
 App secondApp;
 bool secondAppActive;
+unsigned int nextWakeUpPeriodSecond;
+
 App thirdApp;
 bool thirdAppActive;
+unsigned int nextWakeUpPeriodThird;
+
 bool tilerNotifiedAboutApp;
 bool tilerRenderApp;
 Tiler tilerStub;
@@ -45,6 +51,21 @@ void deactivateThird(App *app)
     thirdAppActive = false;
 }
 
+unsigned int getNextWakeUpPeriodFirst()
+{
+    return nextWakeUpPeriodFirst;
+}
+
+unsigned int getNextWakeUpPeriodSecond()
+{
+    return nextWakeUpPeriodSecond;
+}
+
+unsigned int getNextWakeUpPeriodThird()
+{
+    return nextWakeUpPeriodThird;
+}
+
 void setApp(App *app)
 {
     tilerNotifiedAboutApp = true;
@@ -61,19 +82,26 @@ void setUp(void)
     secondAppActive = false;
     thirdAppActive = false;
 
+    nextWakeUpPeriodFirst = NW_DONT_CARE;
+    nextWakeUpPeriodSecond = NW_DONT_CARE;
+    nextWakeUpPeriodThird = NW_DONT_CARE;
+    
     firstApp = {
         .activate = activateFirst,
         .deactivate = deactivateFirst,
+        .getNextWakeUpPeriod = getNextWakeUpPeriodFirst,
     };
 
     secondApp = {
         .activate = activateSecond,
         .deactivate = deactivateSecond,
+        .getNextWakeUpPeriod = getNextWakeUpPeriodSecond,
     };
 
     thirdApp = {
         .activate = activateThird,
         .deactivate = deactivateThird,
+        .getNextWakeUpPeriod = getNextWakeUpPeriodThird,
     };
 
     tilerNotifiedAboutApp = false;
@@ -156,6 +184,33 @@ void whenSwitchToPrev()
     TEST_ASSERT_FALSE(thirdAppActive);
 }
 
+void whenAllAppsReturnsDontCareAboutNextWakeUp()
+{
+    unsigned int nextWakeUp = manager.getNextWakeUpPeriod();
+    
+    TEST_ASSERT_EQUAL_UINT32(NW_DONT_CARE, nextWakeUp); // THEN manager also dont care
+}
+
+void whenOneAppReturnsNoSleep()
+{
+    nextWakeUpPeriodFirst = 1;
+    nextWakeUpPeriodSecond = NW_NO_SLEEP;
+
+    unsigned int nextWakeUp = manager.getNextWakeUpPeriod();
+    
+    TEST_ASSERT_EQUAL_UINT32(NW_NO_SLEEP, nextWakeUp); // THEN manager also no sleep
+}
+
+void whenManagerAsksAboutNextWakeUpPeriod()
+{
+    nextWakeUpPeriodFirst = 1; // minimal(shortest) period
+    nextWakeUpPeriodSecond = 4;
+
+    unsigned int nextWakeUp = manager.getNextWakeUpPeriod();
+    
+    TEST_ASSERT_EQUAL_UINT32(1, nextWakeUp); // THEN minimal(shortest) period returns
+}
+
 int main()
 {
     UNITY_BEGIN();
@@ -163,5 +218,8 @@ int main()
     RUN_TEST(whenActivated);
     RUN_TEST(whenSwitchToNext);
     RUN_TEST(whenSwitchToPrev);
+    RUN_TEST(whenAllAppsReturnsDontCareAboutNextWakeUp);
+    RUN_TEST(whenOneAppReturnsNoSleep);
+    RUN_TEST(whenManagerAsksAboutNextWakeUpPeriod);
     UNITY_END();
 }
