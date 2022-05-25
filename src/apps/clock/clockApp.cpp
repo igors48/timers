@@ -139,6 +139,11 @@ static unsigned int getStepCounter()
     return (bmaApi->getCounter)();
 }
 
+static unsigned int getNextWakeUpPeriod()
+{
+    return NW_DONT_CARE;
+}
+
 void clockAppTick()
 {
     update();
@@ -186,5 +191,6 @@ App createClockApp(void *backgroundTaskHandleRef, SystemApi *systemApiRef, RtcAp
         .activate = clockAppActivate,
         .deactivate = clockAppDeactivate,
         .getActiveTile = clockAppGetActiveTile,
+        .getNextWakeUpPeriod = getNextWakeUpPeriod,
     };
 }
