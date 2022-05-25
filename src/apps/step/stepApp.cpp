@@ -18,13 +18,13 @@ static void update()
     counter = (bmaApi->getCounter)();
 }
 
-static void activate(App *app)
+static void activate()
 {
     update();
     (systemApi->resume)(backgroundTask);
 }
 
-static void deactivate(App *app)
+static void deactivate()
 {
     (systemApi->suspend)(backgroundTask);
 }

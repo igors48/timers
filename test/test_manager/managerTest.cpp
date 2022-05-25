@@ -21,32 +21,32 @@ Manager manager;
 const unsigned char APPS_COUNT = 3;
 void *apps[APPS_COUNT];
 
-void activateFirst(App *app)
+void activateFirst()
 {
     firstAppActive = true;
 }
 
-void activateSecond(App *app)
+void activateSecond()
 {
     secondAppActive = true;
 }
 
-void activateThird(App *app)
+void activateThird()
 {
     thirdAppActive = true;
 }
 
-void deactivateFirst(App *app)
+void deactivateFirst()
 {
     firstAppActive = false;
 }
 
-void deactivateSecond(App *app)
+void deactivateSecond()
 {
     secondAppActive = false;
 }
 
-void deactivateThird(App *app)
+void deactivateThird()
 {
     thirdAppActive = false;
 }

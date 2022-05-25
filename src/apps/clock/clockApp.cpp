@@ -27,13 +27,13 @@ static void update()
     batteryPercent = (powerApi->getBattPercentage)();
 }
 
-static void clockAppActivate(App *app)
+static void clockAppActivate()
 {
     update();
     (systemApi->resume)(backgroundTask);
 }
 
-static void clockAppDeactivate(App *app)
+static void clockAppDeactivate()
 {
     (systemApi->suspend)(backgroundTask);
 }

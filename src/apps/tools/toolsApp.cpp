@@ -7,11 +7,11 @@ static ToolsAppApi api;
 
 static Component *tile;
 
-static void activate(App *app)
+static void activate()
 {
 }
 
-static void deactivate(App *app)
+static void deactivate()
 {
 }
 

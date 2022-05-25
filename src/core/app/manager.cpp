@@ -12,11 +12,11 @@ static void activateApp(unsigned char index)
     if (activeAppIndex != NO_CURRENT_APP)
     {
         App *currentApp = (App *)managedApps[activeAppIndex];
-        (currentApp->deactivate)(currentApp);
+        (currentApp->deactivate)();
     }
     activeAppIndex = index;
     App *app = (App *)managedApps[activeAppIndex];
-    (app->activate)(app);
+    (app->activate)();
     (tiler->setApp)(app);
     (tiler->renderApp)(true);
 }
