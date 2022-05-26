@@ -1,12 +1,39 @@
 #include "supervisor.hpp"
 #include "core/tools/tools.hpp"
 
-#define uS_TO_S_FACTOR 1000000 /* Conversion factor for micro seconds to seconds */
+#define uS_TO_S_FACTOR 1000000 // Conversion factor for micro seconds to seconds
 #define SLEEP_TIME_TRESHOLD 3 
 
 static const char SUPERVISOR[] = "supervisor";
 
-void supervisorSleep(void *v, unsigned short sleepTimeSec)
+static unsigned long calcSleepTime(SupervisorParameters *p)
+{
+    Date now = p->rtcApi->getDate();
+    unsigned int period = (p->manager->getNextWakeUpPeriod)();
+    return secondsToNextHourStart(now);
+}
+
+static void goToSleep(SupervisorParameters *p)
+{
+    unsigned long sleepTime = calcSleepTime(p);
+    sleepTime = sleepTime - SLEEP_TIME_TRESHOLD;// todo consinder the new parameter
+    if (sleepTime > 1)
+    {
+        p->supervisorSleep(p, sleepTime);
+    }
+    *p->lastUserEventTimestamp = p->systemApi->time();
+}
+
+static bool timeToSleep(SupervisorParameters *p)
+{
+    long lastEventTimestamp = *p->lastUserEventTimestamp;
+    long current = p->systemApi->time();
+    long diff = current - lastEventTimestamp;
+    p->systemApi->log(SUPERVISOR, "diff %d", diff);
+    return diff >= p->goToSleepTime; 
+}
+
+void supervisorSleep(void *v, unsigned int sleepTimeSec)
 {
     SupervisorParameters *p = (SupervisorParameters *)v;
     p->systemApi->log(SUPERVISOR, "sleep for %d sec", sleepTimeSec);
@@ -16,30 +43,13 @@ void supervisorSleep(void *v, unsigned short sleepTimeSec)
     p->systemApi->log(SUPERVISOR, "after wake up");
 }
 
-unsigned long calcSleepTime(SupervisorParameters *p)
-{
-    Date now = p->rtcApi->getDate();
-    return secondsToNextHourStart(now);
-}
-
 void supervisor(SupervisorParameters *p)
 {
     if (p->systemApi->take(p->watchMutex, 10)) // todo there was missprint lastEventTimestamp vs lastEventTimestampMutex - tests dont see it
     {
-        long lastEventTimestamp = *p->lastUserEventTimestamp;
-        long current = p->systemApi->time();
-        long diff = current - lastEventTimestamp;
-        p->systemApi->log(SUPERVISOR, "diff %d", diff);
-        bool sleep = diff >= p->goToSleepTime; // todo extract the logic from here
-        if (sleep)
+        if (timeToSleep(p))
         {
-            unsigned long sleepTime = calcSleepTime(p);
-            sleepTime = sleepTime - SLEEP_TIME_TRESHOLD;// todo consinder the new parameter
-            if (sleepTime > 1)
-            {
-                p->supervisorSleep(p, sleepTime);
-            }
-            *p->lastUserEventTimestamp = p->systemApi->time();
+            goToSleep(p);
         }
         p->systemApi->give(p->watchMutex);
     }

@@ -44,9 +44,6 @@ time_t lastUserEventTimestamp; // todo consider rename. this value is updated by
 ButtonListenerParameters buttonListenerParameters;
 TaskHandle_t buttonListenerTaskHandle;
 
-const unsigned char TASK_COUNT = 1;
-TaskHandle_t tasks[TASK_COUNT];
-
 SupervisorParameters supervisorParameters;
 
 TouchScreenListenerParameters touchScreenListenerParameters;
@@ -232,18 +229,15 @@ void setup()
         };
         xTaskCreate(soundPlayerTask, "soundPlayerTask", 2048, (void *)&soundPlayerParameters, 1, NULL);
 
-        tasks[0] = touchScreenListenerTaskHandle;
-
         supervisorParameters = {
             .watchMutex = &watchMutex,
             .lastUserEventTimestamp = &lastUserEventTimestamp,
             .goToSleepTime = 5,
             .supervisorSleep = supervisorSleep,
-            .tasks = tasks,
-            .tasksCount = TASK_COUNT,
             .systemApi = &systemApi,
             .watchApi = &watchApi,
             .rtcApi = &rtcApi,
+            .manager = &manager,
         };
 
         xTaskCreate(supervisorTask, "supervisorTask", 2048, (void *)&supervisorParameters, 1, NULL);

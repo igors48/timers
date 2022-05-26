@@ -19,6 +19,7 @@ int watchMutex;
 SystemApi systemApi;
 WatchApi watchApi;
 RtcApi rtcApi;
+Manager manager;
 
 SupervisorParameters p;
 
@@ -27,13 +28,13 @@ long time() // todo name convention for common and local mock funcs
     return timeResult;
 }
 
-void supervisorSleepMock(void *p, unsigned short sleepTimeSec)
+void supervisorSleepMock(void *p, unsigned int sleepTimeSec)
 {
     goToSleepCalled = true;
     sleepTimeSecValue = sleepTimeSec;
 }
 
-void supervisorSleepSomeTimeMock(void *p, unsigned short sleepTimeSec)
+void supervisorSleepSomeTimeMock(void *p, unsigned int sleepTimeSec)
 {
     goToSleepCalled = true;
     sleepTimeSecValue = sleepTimeSec;
@@ -43,6 +44,11 @@ void supervisorSleepSomeTimeMock(void *p, unsigned short sleepTimeSec)
 Date getDateStub()
 {
     return dateResult;
+}
+
+unsigned int getNextWakeUpPeriodStub()
+{
+    return NW_DONT_CARE;
 }
 
 void setUp(void)
@@ -58,6 +64,9 @@ void setUp(void)
 
     watchApi = watchApiMock();
     rtcApi = rtcApiMock();
+    manager ={
+        .getNextWakeUpPeriod = getNextWakeUpPeriodStub 
+    };
 
     p = {
         .watchMutex = &watchMutex,
@@ -67,6 +76,7 @@ void setUp(void)
         .systemApi = &systemApi,
         .watchApi = &watchApi,
         .rtcApi = &rtcApi,
+        .manager = &manager,
     };
 }
 
