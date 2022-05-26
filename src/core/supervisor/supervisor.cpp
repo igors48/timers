@@ -13,7 +13,7 @@ static unsigned long calcSleepTime(SupervisorParameters *p)
     return secondsToNextHourStart(now);
 }
 
-static void goToSleep(SupervisorParameters *p)
+static void tryToSleep(SupervisorParameters *p)
 {
     unsigned long sleepTime = calcSleepTime(p);
     sleepTime = sleepTime - SLEEP_TIME_TRESHOLD;// todo consinder the new parameter
@@ -49,7 +49,7 @@ void supervisor(SupervisorParameters *p)
     {
         if (timeToSleep(p))
         {
-            goToSleep(p);
+            tryToSleep(p);
         }
         p->systemApi->give(p->watchMutex);
     }

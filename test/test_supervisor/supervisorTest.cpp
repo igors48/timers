@@ -109,7 +109,7 @@ void whenAfterWakeUp()
 
     supervisor(&p);
 
-    TEST_ASSERT_EQUAL_INT64(48, lastUserEventTimestamp); // THEN go to sleep
+    TEST_ASSERT_EQUAL_INT64(48, lastUserEventTimestamp); // THEN last event timestamp updated
 }
 
 void whenActionModeAndIdleTimeNotPassed()
