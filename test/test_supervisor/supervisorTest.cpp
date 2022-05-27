@@ -1,5 +1,7 @@
 #include <unity.h>
 
+#include <cstdio>
+
 #include "../systemMock.hpp"
 #include "../watchMock.hpp"
 #include "../rtcMock.hpp"
@@ -10,9 +12,10 @@
 long timeResult;
 Date dateResult;
 bool goToSleepCalled;
-unsigned short sleepTimeSecValue;
+unsigned int sleepTimeSecValue;
 long lastUserEventTimestamp;
 long goToSleepTime;
+unsigned int nextWakeUpPeriod;
 
 int watchMutex;
 
@@ -28,13 +31,13 @@ long time() // todo name convention for common and local mock funcs
     return timeResult;
 }
 
-void supervisorSleepMock(void *p, unsigned int sleepTimeSec)
+void supervisorSleepStub(void *p, unsigned int sleepTimeSec)
 {
     goToSleepCalled = true;
     sleepTimeSecValue = sleepTimeSec;
 }
 
-void supervisorSleepSomeTimeMock(void *p, unsigned int sleepTimeSec)
+void supervisorSleepSomeTimeStub(void *p, unsigned int sleepTimeSec)
 {
     goToSleepCalled = true;
     sleepTimeSecValue = sleepTimeSec;
@@ -48,16 +51,17 @@ Date getDateStub()
 
 unsigned int getNextWakeUpPeriodStub()
 {
-    return NW_DONT_CARE;
+    return nextWakeUpPeriod;
 }
 
 void setUp(void)
 {
     timeResult = 0;
     goToSleepCalled = false;
-    sleepTimeSecValue = -1;
+    sleepTimeSecValue = 0;
     lastUserEventTimestamp = 0;
     goToSleepTime = 10;
+    nextWakeUpPeriod = NW_DONT_CARE;
 
     systemApi = systemApiMock();
     systemApi.time = time;
@@ -72,13 +76,15 @@ void setUp(void)
         .watchMutex = &watchMutex,
         .lastUserEventTimestamp = &lastUserEventTimestamp,
         .goToSleepTime = goToSleepTime,
-        .supervisorSleep = supervisorSleepMock,
+        .supervisorSleep = supervisorSleepStub,
         .systemApi = &systemApi,
         .watchApi = &watchApi,
         .rtcApi = &rtcApi,
         .manager = &manager,
     };
 }
+
+//platformio test -v --environment native --filter "*_super*"
 
 void whenActionModeAndIdleTimePassed()
 {
@@ -94,18 +100,66 @@ void whenActionModeAndIdleTimePassed()
     };
     
     lastUserEventTimestamp = 1;
-    timeResult = 15;
+    timeResult = lastUserEventTimestamp + p.goToSleepTime + 1; // after configured go to sleep time
 
     supervisor(&p);
 
-    TEST_ASSERT_EQUAL_UINT8(1, goToSleepCalled); // THEN go to sleep
+    TEST_ASSERT_TRUE(goToSleepCalled); // THEN go to sleep
+    unsigned int sleepTime = 3600 - 1 - 3; // (hour in sec) - (1sec from dateResult.second) - (supervisor threshold)
+    TEST_ASSERT_EQUAL_UINT32(sleepTime, sleepTimeSecValue); // THEN for sleep calculated time
+}
+
+void whenActionModeAndIdleTimePassedButManagerReturnsNoSleep()
+{
+    rtcApi.getDate = getDateStub;
+
+    dateResult = {
+        .year = 2021,
+        .month = 8,
+        .day = 13,
+        .hour = 7,
+        .minute = 0,
+        .second = 1, // start of the the new hour 
+    };
+    
+    nextWakeUpPeriod = NW_NO_SLEEP;
+    lastUserEventTimestamp = 1;
+    timeResult = lastUserEventTimestamp + p.goToSleepTime + 1; // after configured go to sleep time
+
+    supervisor(&p);
+
+    TEST_ASSERT_FALSE(goToSleepCalled); // THEN go to sleep
+}
+
+void whenActionModeAndIdleTimePassedButManagerReturnsTimeLesserToNextHour()
+{
+    rtcApi.getDate = getDateStub;
+
+    dateResult = {
+        .year = 2021,
+        .month = 8,
+        .day = 13,
+        .hour = 7,
+        .minute = 0,
+        .second = 1, // start of the the new hour 
+    };
+    
+    nextWakeUpPeriod = 48 * 60;
+    lastUserEventTimestamp = 1;
+    timeResult = lastUserEventTimestamp + p.goToSleepTime + 1; // after configured go to sleep time
+
+    supervisor(&p);
+
+    TEST_ASSERT_FALSE(goToSleepCalled); // THEN go to sleep
+    unsigned int sleepTime = 3600 - 1 - 3; // (hour in sec) - (1sec from dateResult.second) - (supervisor threshold)
+    TEST_ASSERT_EQUAL_UINT32(sleepTime, sleepTimeSecValue); // THEN for sleep calculated time
 }
 
 void whenAfterWakeUp()
 {
     lastUserEventTimestamp = 1;
     timeResult = 15;
-    p.supervisorSleep = supervisorSleepSomeTimeMock;
+    p.supervisorSleep = supervisorSleepSomeTimeStub;
 
     supervisor(&p);
 
@@ -119,7 +173,7 @@ void whenActionModeAndIdleTimeNotPassed()
 
     supervisor(&p);
 
-    TEST_ASSERT_EQUAL_UINT8(0, goToSleepCalled); // THEN stay in action
+    TEST_ASSERT_FALSE(goToSleepCalled); // THEN stay in action
 }
 
 void whenSleepModeAndEvent()
@@ -129,7 +183,7 @@ void whenSleepModeAndEvent()
 
     supervisor(&p);
 
-    TEST_ASSERT_EQUAL_UINT8(0, goToSleepCalled); // THEN wake up
+    TEST_ASSERT_FALSE(goToSleepCalled); // THEN wake up
 }
 
 void whenSleepTimeLesserThanGotoSleepPeriod()
@@ -149,7 +203,7 @@ void whenSleepTimeLesserThanGotoSleepPeriod()
 
     supervisor(&p);
 
-    TEST_ASSERT_EQUAL_UINT8(0, goToSleepCalled); // THEN no sleep
+    TEST_ASSERT_FALSE(goToSleepCalled); // THEN no sleep
 }
 
 void whenSleepTimeGreaterThanGotoSleepPeriod()
@@ -169,14 +223,16 @@ void whenSleepTimeGreaterThanGotoSleepPeriod()
 
     supervisor(&p);
 
-    TEST_ASSERT_EQUAL_UINT8(1, goToSleepCalled); // THEN sleep
-    TEST_ASSERT_EQUAL_UINT8(7, sleepTimeSecValue); // THEN for 7 second
+    TEST_ASSERT_TRUE(goToSleepCalled); // THEN sleep
+    TEST_ASSERT_EQUAL_UINT32(7, sleepTimeSecValue); // THEN for 7 second
 }
 
 int main()
 {
     UNITY_BEGIN();
     RUN_TEST(whenActionModeAndIdleTimePassed);
+    RUN_TEST(whenActionModeAndIdleTimePassedButManagerReturnsNoSleep);
+    RUN_TEST(whenActionModeAndIdleTimePassedButManagerReturnsTimeLesserToNextHour);
     RUN_TEST(whenAfterWakeUp);
     RUN_TEST(whenActionModeAndIdleTimeNotPassed);
     RUN_TEST(whenSleepModeAndEvent);

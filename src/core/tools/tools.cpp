@@ -3,7 +3,7 @@
 
 #include "tools.hpp"
 
-unsigned long secondsToNextHourStart(Date now)
+unsigned int secondsToNextHourStart(Date now)
 {
     unsigned char seconds = now.second;
     unsigned char minutes = now.minute;

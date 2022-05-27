@@ -72,7 +72,7 @@ void watchInit()
     watchInitI2S();
 }
 
-void watchAfterWakeUp()
+void watchAfterWakeUp() // todo return wake up reason
 {
     watch->bma->readInterrupt();
     watch->openBL();
