@@ -15,9 +15,9 @@ void beforeGoToSleepMock()
     // empty
 }
 
-void goToSleepMock(unsigned long sleepTimeMicros)
+WakeUpReason goToSleepMock(unsigned long sleepTimeMicros)
 {
-    // empty
+    return WUR_UNKNOWN;
 }
 
 bool getTouchMock(signed short &x, signed short &y)
