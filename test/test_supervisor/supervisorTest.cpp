@@ -114,6 +114,7 @@ void whenActionModeAndIdleTimePassed()
     TEST_ASSERT_TRUE(goToSleepCalled); // THEN go to sleep
     unsigned int sleepTime = 3600 - 1 - 3; // (hour in sec) - (1sec from dateResult.second) - (supervisor threshold)
     TEST_ASSERT_EQUAL_UINT32(sleepTime, sleepTimeSecValue); // THEN for sleep calculated time
+    TEST_ASSERT_EQUAL_INT64(timeResult, lastUserEventTimestamp); // THEN last user event timestamp updated
 }
 
 void whenActionModeAndIdleTimePassedButManagerReturnsNoSleep()
@@ -136,6 +137,7 @@ void whenActionModeAndIdleTimePassedButManagerReturnsNoSleep()
     supervisor(&p);
 
     TEST_ASSERT_FALSE(goToSleepCalled); // THEN no sleep
+    TEST_ASSERT_EQUAL_INT64(timeResult, lastUserEventTimestamp); // THEN last user event timestamp updated
 }
 
 void whenActionModeAndIdleTimePassedButManagerReturnsTimeLesserToNextHour()
@@ -161,6 +163,7 @@ void whenActionModeAndIdleTimePassedButManagerReturnsTimeLesserToNextHour()
     unsigned int sleepTime = nextWakeUpPeriod - 3; // (next wake up period) - (supervisor threshold)
     TEST_ASSERT_EQUAL_UINT32(sleepTime, sleepTimeSecValue); // THEN for sleep calculated time
     TEST_ASSERT_EQUAL_UINT32(nextWakeUpPeriod, supervisorApi.getNextWakeUpPeriod()); // THEN next wake up period returned by api
+    TEST_ASSERT_EQUAL_INT64(timeResult, lastUserEventTimestamp); // THEN last user event timestamp updated
 }
 
 void whenAfterWakeUp()
@@ -214,6 +217,7 @@ void whenSleepTimeLesserThanGotoSleepPeriod()
     supervisor(&p);
 
     TEST_ASSERT_FALSE(goToSleepCalled); // THEN no sleep
+    TEST_ASSERT_EQUAL_INT64(timeResult, lastUserEventTimestamp); // THEN last user event timestamp updated
 }
 
 void whenSleepTimeGreaterThanGotoSleepPeriod()
@@ -235,6 +239,7 @@ void whenSleepTimeGreaterThanGotoSleepPeriod()
 
     TEST_ASSERT_TRUE(goToSleepCalled); // THEN sleep
     TEST_ASSERT_EQUAL_UINT32(7, sleepTimeSecValue); // THEN for 7 second
+    TEST_ASSERT_EQUAL_INT64(timeResult, lastUserEventTimestamp); // THEN last user event timestamp updated
 }
 
 int main()
