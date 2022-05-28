@@ -1,7 +1,5 @@
 #include <stdio.h>
 
-#include <Arduino.h>
-
 #include "clockApp.hpp"
 
 #include "core/component/textComponent.hpp"
@@ -11,8 +9,8 @@ static const unsigned char COMPONENTS_COUNT = 8;
 static void* components[COMPONENTS_COUNT];
 
 static char WAKE_UP_REASON[] = "WUR: %d";
-static char TIME_TO_SLEEP[] = "TTS: %d";
-static char NEXT_WAKE_UP[] = "NWU: %d";
+static char TIME_TO_SLEEP[] = "TTS: %ds";
+static char NEXT_WAKE_UP[] = "NWU: %dm %ds";
 
 static TextState* hourMinute;
 static TextState* second;
@@ -43,7 +41,9 @@ static void provideTimeToSleep(TextState *state)
 static void provideNextWakeUp(TextState *state)
 {
     unsigned int nextWakeUpPeriod = (api->getNextWakeUpPeriod)();
-    snprintf(state->content, sizeof(state->content), NEXT_WAKE_UP, nextWakeUpPeriod);
+    unsigned int minutes = nextWakeUpPeriod / 60;
+    unsigned int seconds = nextWakeUpPeriod - minutes * 60;
+    snprintf(state->content, sizeof(state->content), NEXT_WAKE_UP, minutes, seconds);
 }
 
 static void provideHourMinuteState(TextState *state)
@@ -94,11 +94,11 @@ Component* createClockAppTile(ClockAppApi *clockAppApi, Factory *factory)
     timeToSleep = (factory->createTextStateRef)(1, 2, COLOR_INTERACTION, provideTimeToSleep);
     nextWakeUp = (factory->createTextStateRef)(1, 2, COLOR_INTERACTION, provideNextWakeUp);
 
-    components[0] = (factory->createTextComponentRef)(10, 30, 140, 48, hourMinute);
-    components[1] = (factory->createTextComponentRef)(150, 30, 75, 48, second);
-    components[2] = (factory->createTextComponentRef)(135, 90, 50, 50, battery);
-    components[3] = (factory->createTextComponentRef)(60, 115, 50, 50, dateState);
-    components[4] = (factory->createTextComponentRef)(35, 90, 50, 50, stepCounter);
+    components[0] = (factory->createTextComponentRef)(10, 50, 140, 48, hourMinute);
+    components[1] = (factory->createTextComponentRef)(150, 50, 75, 48, second);
+    components[2] = (factory->createTextComponentRef)(135, 110, 50, 50, battery);
+    components[3] = (factory->createTextComponentRef)(60, 135, 50, 50, dateState);
+    components[4] = (factory->createTextComponentRef)(35, 110, 50, 50, stepCounter);
     components[5] = (factory->createTextComponentRef)(10, 180, 50, 50, wakeUpReason);
     components[6] = (factory->createTextComponentRef)(10, 200, 50, 50, timeToSleep);
     components[7] = (factory->createTextComponentRef)(10, 220, 50, 50, nextWakeUp);
