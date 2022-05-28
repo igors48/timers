@@ -26,6 +26,7 @@ RtcApi rtcApi;
 Manager manager;
 
 SupervisorParameters p;
+SupervisorApi supervisorApi;
 
 long time() // todo name convention for common and local mock funcs
 {
@@ -86,6 +87,8 @@ void setUp(void)
         .rtcApi = &rtcApi,
         .manager = &manager,
     };
+
+    supervisorApi = watchSupervisorApi();
 }
 
 //platformio test -v --environment native --filter "*_super*"
@@ -157,6 +160,7 @@ void whenActionModeAndIdleTimePassedButManagerReturnsTimeLesserToNextHour()
     TEST_ASSERT_TRUE(goToSleepCalled); // THEN go to sleep
     unsigned int sleepTime = nextWakeUpPeriod - 3; // (next wake up period) - (supervisor threshold)
     TEST_ASSERT_EQUAL_UINT32(sleepTime, sleepTimeSecValue); // THEN for sleep calculated time
+    TEST_ASSERT_EQUAL_UINT32(nextWakeUpPeriod, supervisorApi.getNextWakeUpPeriod()); // THEN next wake up period returned by api
 }
 
 void whenAfterWakeUp()
@@ -168,6 +172,8 @@ void whenAfterWakeUp()
     supervisor(&p);
 
     TEST_ASSERT_EQUAL_INT64(48, lastUserEventTimestamp); // THEN last event timestamp updated
+    TEST_ASSERT_TRUE(wakeUpReason == supervisorApi.getWakeUpReason()); // THEN last wake up reason returned by the api
+    TEST_ASSERT_EQUAL_UINT16(15 - 1, supervisorApi.getTimeToSleep()); // THEN time to sleep (timeResult - lastUserEventTimestamp) returned by api
 }
 
 void whenActionModeAndIdleTimeNotPassed()
