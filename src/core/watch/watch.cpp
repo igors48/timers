@@ -53,7 +53,7 @@ void watchInit()
     watch = TTGOClass::getWatch();
     watch->begin();
 
-    //Serial.println(__DATE__);
+    // Serial.println(__DATE__);
     Serial.println(__DATE__);
     Serial.println(__TIME__);
     RTC_Date compiled = RTC_Date(__DATE__, __TIME__); // seems __DATE__, __TIME__ set to compilation time for this file not the project
@@ -91,21 +91,53 @@ void watchBeforeGoToSleep()
     watch->powerOff();
 }
 
-void watchGoToSleep(unsigned long sleepTimeMicros)
+WakeUpReason watchGoToSleep(unsigned long sleepTimeMicros)
 {
     esp_sleep_enable_ext0_wakeup((gpio_num_t)AXP202_INT, LOW);
     delay(100); // seen some false wake ups without those delays
     esp_sleep_enable_ext1_wakeup(GPIO_SEL_39, ESP_EXT1_WAKEUP_ANY_HIGH);
     delay(100);
-    esp_sleep_enable_timer_wakeup(sleepTimeMicros);
+    esp_sleep_enable_timer_wakeup(sleepTimeMicros); // todo subtract those delays from sleep time
     delay(100);
     watch->bma->readInterrupt();
     delay(100);
     watch->power->clearIRQ();
     delay(100);
-    //esp_deep_sleep_start();
+    // esp_deep_sleep_start();
     esp_light_sleep_start();
-    Serial.println("after esp_light_sleep_start");
+    esp_sleep_wakeup_cause_t wakeupReason = esp_sleep_get_wakeup_cause();
+    Serial.printf("after esp_light_sleep_start. wakeup reason %d\r\n", wakeupReason);
+    switch (wakeupReason)
+    {
+    case ESP_SLEEP_WAKEUP_UNDEFINED:
+        return WUR_SLEEP_WAKEUP_UNDEFINED;
+    case ESP_SLEEP_WAKEUP_ALL:
+        return WUR_SLEEP_WAKEUP_ALL;
+    case ESP_SLEEP_WAKEUP_EXT0:
+        return WUR_SLEEP_WAKEUP_EXT0;
+    case ESP_SLEEP_WAKEUP_EXT1:
+        return WUR_SLEEP_WAKEUP_EXT1;
+    case ESP_SLEEP_WAKEUP_TIMER:
+        return WUR_SLEEP_WAKEUP_TIMER;
+    case ESP_SLEEP_WAKEUP_TOUCHPAD:
+        return WUR_SLEEP_WAKEUP_TOUCHPAD;
+    case ESP_SLEEP_WAKEUP_ULP:
+        return WUR_SLEEP_WAKEUP_ULP;
+    case ESP_SLEEP_WAKEUP_GPIO:
+        return WUR_SLEEP_WAKEUP_GPIO;
+    case ESP_SLEEP_WAKEUP_UART:
+        return WUR_SLEEP_WAKEUP_UART;
+    case ESP_SLEEP_WAKEUP_WIFI:
+        return WUR_SLEEP_WAKEUP_WIFI;
+    case ESP_SLEEP_WAKEUP_COCPU:
+        return WUR_SLEEP_WAKEUP_COCPU;
+    case ESP_SLEEP_WAKEUP_COCPU_TRAP_TRIG:
+        return WUR_SLEEP_WAKEUP_COCPU_TRAP_TRIG;
+    case ESP_SLEEP_WAKEUP_BT:
+        return WUR_SLEEP_WAKEUP_BT;
+    default:
+        return WUR_UNKNOWN;
+    }
 }
 
 bool watchGetTouch(signed short &x, signed short &y)
