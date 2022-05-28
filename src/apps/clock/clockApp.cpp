@@ -10,6 +10,7 @@ static Tiler *tiler;
 static SystemApi *systemApi;
 static void *backgroundTask;
 static Manager *manager;
+static SupervisorApi *supervisorApi;
 
 static Date date;
 static int batteryPercent;
@@ -150,7 +151,7 @@ void clockAppTick()
     renderApp(false);
 }
 
-App createClockApp(void *backgroundTaskHandleRef, SystemApi *systemApiRef, RtcApi *rtcApiRef, PowerApi *powerApiRef, BmaApi *bmaApiRef, Tiler *tilerRef, Manager *managerRef, Factory *factory)
+App createClockApp(void *backgroundTaskHandleRef, SystemApi *systemApiRef, RtcApi *rtcApiRef, PowerApi *powerApiRef, BmaApi *bmaApiRef, SupervisorApi *supervisorApiRef, Tiler *tilerRef, Manager *managerRef, Factory *factory)
 {
     rtcApi = rtcApiRef;
     powerApi = powerApiRef;
@@ -159,6 +160,7 @@ App createClockApp(void *backgroundTaskHandleRef, SystemApi *systemApiRef, RtcAp
     manager = managerRef;
     backgroundTask = backgroundTaskHandleRef;
     systemApi = systemApiRef;
+    supervisorApi = supervisorApiRef; 
 
     tileNo = 0;
 
@@ -180,6 +182,9 @@ App createClockApp(void *backgroundTaskHandleRef, SystemApi *systemApiRef, RtcAp
         .setDate = setDate,
         .getBattery = getBattery,
         .getStepCounter = getStepCounter,
+        .getTimeToSleep = supervisorApi->getTimeToSleep,
+        .getNextWakeUpPeriod = supervisorApi->getNextWakeUpPeriod,
+        .getWakeUpReason = supervisorApi->getWakeUpReason,
         .onGesture = onGesture,
     };
 

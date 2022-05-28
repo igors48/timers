@@ -1,32 +1,50 @@
 #include <stdio.h>
 
+#include <Arduino.h>
+
 #include "clockApp.hpp"
 
 #include "core/component/textComponent.hpp"
 #include "core/component/group.hpp"
 
-static const unsigned char COMPONENTS_COUNT = 5;
+static const unsigned char COMPONENTS_COUNT = 8;
 static void* components[COMPONENTS_COUNT];
 
+static char WAKE_UP_REASON[] = "WUR: %d";
+static char TIME_TO_SLEEP[] = "TTS: %d";
+static char NEXT_WAKE_UP[] = "NWU: %d";
+
 static TextState* hourMinute;
-static Component* hourMinuteComponent;
-
 static TextState* second;
-static Component* secondComponent;
-
 static TextState* battery;
-static Component* batteryDisplayComponent;
-
 static TextState* dateState;
-static Component* dateComponent;
-
 static TextState* stepCounter;
-static Component* stepCounterComponent;
+static TextState* wakeUpReason;
+static TextState* timeToSleep;
+static TextState* nextWakeUp;
 
 static GroupState* state;
 static Component* group;
 
 static ClockAppApi *api;
+
+static void provideWakeUpReason(TextState *state)
+{
+    WakeUpReason wakeUpReason = (api->getWakeUpReason)();
+    snprintf(state->content, sizeof(state->content), WAKE_UP_REASON, wakeUpReason);
+}
+
+static void provideTimeToSleep(TextState *state)
+{
+    unsigned short timeToSleep = (api->getTimeToSleep)();
+    snprintf(state->content, sizeof(state->content), TIME_TO_SLEEP, timeToSleep);
+}
+
+static void provideNextWakeUp(TextState *state)
+{
+    unsigned int nextWakeUpPeriod = (api->getNextWakeUpPeriod)();
+    snprintf(state->content, sizeof(state->content), NEXT_WAKE_UP, nextWakeUpPeriod);
+}
 
 static void provideHourMinuteState(TextState *state)
 {
@@ -72,18 +90,18 @@ Component* createClockAppTile(ClockAppApi *clockAppApi, Factory *factory)
     battery = (factory->createTextStateRef)(1, 2, COLOR_INFORMATION, provideBatteryState);
     dateState = (factory->createTextStateRef)(1, 2, COLOR_ATTENTION, provideDateState);
     stepCounter = (factory->createTextStateRef)(1, 2, COLOR_INFORMATION, provideStepCounterState);
+    wakeUpReason = (factory->createTextStateRef)(1, 2, COLOR_INTERACTION, provideWakeUpReason);
+    timeToSleep = (factory->createTextStateRef)(1, 2, COLOR_INTERACTION, provideTimeToSleep);
+    nextWakeUp = (factory->createTextStateRef)(1, 2, COLOR_INTERACTION, provideNextWakeUp);
 
-    hourMinuteComponent = (factory->createTextComponentRef)(10, 90, 140, 48, hourMinute);
-    secondComponent = (factory->createTextComponentRef)(150, 90, 75, 48, second);
-    batteryDisplayComponent = (factory->createTextComponentRef)(135, 150, 50, 50, battery);
-    dateComponent = (factory->createTextComponentRef)(60, 175, 50, 50, dateState);
-    stepCounterComponent = (factory->createTextComponentRef)(35, 150, 50, 50, stepCounter);
-
-    components[0] = hourMinuteComponent;
-    components[1] = secondComponent;
-    components[2] = batteryDisplayComponent;
-    components[3] = dateComponent;
-    components[4] = stepCounterComponent;
+    components[0] = (factory->createTextComponentRef)(10, 30, 140, 48, hourMinute);
+    components[1] = (factory->createTextComponentRef)(150, 30, 75, 48, second);
+    components[2] = (factory->createTextComponentRef)(135, 90, 50, 50, battery);
+    components[3] = (factory->createTextComponentRef)(60, 115, 50, 50, dateState);
+    components[4] = (factory->createTextComponentRef)(35, 90, 50, 50, stepCounter);
+    components[5] = (factory->createTextComponentRef)(10, 180, 50, 50, wakeUpReason);
+    components[6] = (factory->createTextComponentRef)(10, 200, 50, 50, timeToSleep);
+    components[7] = (factory->createTextComponentRef)(10, 220, 50, 50, nextWakeUp);
  
     state = (factory->createGroupStateRef)(COMPONENTS_COUNT, components);
     group = (factory->createGroupComponentRef)(0, 0, state);

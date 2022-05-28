@@ -8,7 +8,7 @@ typedef struct TextState_ TextState;
 // todo or even just pass newState function as a parameter
 typedef void (*Provide)(TextState *state); 
 
-const unsigned char CONTENT_LENGTH = 16;
+const unsigned char CONTENT_LENGTH = 16; // todo increase or make it dynamic
 
 struct TextState_
 {

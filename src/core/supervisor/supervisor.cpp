@@ -60,7 +60,7 @@ static bool timeToSleep(SupervisorParameters *p)
     long lastEventTimestamp = *p->lastUserEventTimestamp;
     long current = (p->systemApi->time)();
     long diff = current - lastEventTimestamp;
-    cachedTimeToSleep = diff;
+    cachedTimeToSleep = p->goToSleepTime - diff;
     (p->systemApi->log)(SUPERVISOR, "diff %d", diff);
     return diff >= p->goToSleepTime;
 }

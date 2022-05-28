@@ -38,6 +38,7 @@ TftApi tftApi;
 BmaApi bmaApi;
 MotorApi motorApi;
 I2sApi i2sApi;
+SupervisorApi supervisorApi;
 
 time_t lastUserEventTimestamp; // todo consider rename. this value is updated by timer wakeup also
 
@@ -133,7 +134,7 @@ void createClockApplication()
     xTaskCreate(tickerTask, "clockAppTickerTask", 2048, (void *)&clockAppTickerParameters, 1, &clockAppTickerTaskHandle);
     vTaskSuspend(clockAppTickerTaskHandle);
 
-    clockApp = createClockApp(clockAppTickerTaskHandle, &systemApi, &rtcApi, &powerApi, &bmaApi, &tiler, &manager, &factory);
+    clockApp = createClockApp(clockAppTickerTaskHandle, &systemApi, &rtcApi, &powerApi, &bmaApi, &supervisorApi, &tiler, &manager, &factory);
 }
 
 void createStepApplication()
@@ -244,6 +245,8 @@ void setup()
 
         factory = createFactory(&systemApi);
         
+        supervisorApi = watchSupervisorApi();
+
         createClockApplication();
         createStepApplication();
         createToolsApplication();
