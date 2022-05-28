@@ -128,7 +128,7 @@ void whenActionModeAndIdleTimePassedButManagerReturnsNoSleep()
 
     supervisor(&p);
 
-    TEST_ASSERT_FALSE(goToSleepCalled); // THEN go to sleep
+    TEST_ASSERT_FALSE(goToSleepCalled); // THEN no sleep
 }
 
 void whenActionModeAndIdleTimePassedButManagerReturnsTimeLesserToNextHour()
@@ -150,8 +150,8 @@ void whenActionModeAndIdleTimePassedButManagerReturnsTimeLesserToNextHour()
 
     supervisor(&p);
 
-    TEST_ASSERT_FALSE(goToSleepCalled); // THEN go to sleep
-    unsigned int sleepTime = 3600 - 1 - 3; // (hour in sec) - (1sec from dateResult.second) - (supervisor threshold)
+    TEST_ASSERT_TRUE(goToSleepCalled); // THEN go to sleep
+    unsigned int sleepTime = nextWakeUpPeriod - 3; // (next wake up period) - (supervisor threshold)
     TEST_ASSERT_EQUAL_UINT32(sleepTime, sleepTimeSecValue); // THEN for sleep calculated time
 }
 
