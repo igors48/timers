@@ -32,7 +32,7 @@ static unsigned long calcSleepTime(SupervisorParameters *p)
     {
         return NW_NO_SLEEP;
     }
-    Date now = p->rtcApi->getDate();
+    Date now = (p->rtcApi->getDate)();
     unsigned int secondsToNextHour = secondsToNextHourStart(now);
     unsigned int minimum = secondsToNextHour;
     if (secondsToNextWakeUp < secondsToNextHour)
@@ -49,46 +49,47 @@ static void tryToSleep(SupervisorParameters *p, unsigned long sleepTime)
         sleepTime = sleepTime - SLEEP_TIME_TRESHOLD; // todo consinder the new parameter
         if (sleepTime > 1)
         {
-            p->supervisorSleep(p, sleepTime);
+            cachedWakeUpReason = (p->supervisorSleep)(p, sleepTime);
         }
     }
-    *p->lastUserEventTimestamp = p->systemApi->time();
+    *p->lastUserEventTimestamp = (p->systemApi->time)();
 }
 
 static bool timeToSleep(SupervisorParameters *p)
 {
     long lastEventTimestamp = *p->lastUserEventTimestamp;
-    long current = p->systemApi->time();
+    long current = (p->systemApi->time)();
     long diff = current - lastEventTimestamp;
     cachedTimeToSleep = diff;
-    p->systemApi->log(SUPERVISOR, "diff %d", diff);
+    (p->systemApi->log)(SUPERVISOR, "diff %d", diff);
     return diff >= p->goToSleepTime;
 }
 
-void supervisorSleep(void *v, unsigned int sleepTimeSec)
+WakeUpReason supervisorSleep(void *v, unsigned int sleepTimeSec)
 {
     SupervisorParameters *p = (SupervisorParameters *)v;
-    p->systemApi->log(SUPERVISOR, "sleep for %d sec", sleepTimeSec);
-    p->watchApi->beforeGoToSleep();
-    cachedWakeUpReason = p->watchApi->goToSleep(sleepTimeSec * uS_TO_S_FACTOR); // here it stops
-    p->watchApi->afterWakeUp();
-    p->systemApi->log(SUPERVISOR, "after wake up");
+    (p->systemApi->log)(SUPERVISOR, "sleep for %d sec", sleepTimeSec);
+    (p->watchApi->beforeGoToSleep)();
+    WakeUpReason wakeUpReason = (p->watchApi->goToSleep)(sleepTimeSec * uS_TO_S_FACTOR); // here it stops
+    (p->watchApi->afterWakeUp)();
+    (p->systemApi->log)(SUPERVISOR, "after wake up");
+    return wakeUpReason;
 }
 
 void supervisor(SupervisorParameters *p)
 {
-    if (p->systemApi->take(p->watchMutex, 10)) // todo there was missprint lastEventTimestamp vs lastEventTimestampMutex - tests dont see it
+    if ((p->systemApi->take)(p->watchMutex, 10)) // todo there was missprint lastEventTimestamp vs lastEventTimestampMutex - tests dont see it
     {
         cachedNextWakeUpPeriod = calcSleepTime(p);
         if (timeToSleep(p))
         {
             tryToSleep(p, cachedNextWakeUpPeriod);
         }
-        p->systemApi->give(p->watchMutex);
+        (p->systemApi->give)(p->watchMutex);
     }
     else
     {
-        p->systemApi->log(SUPERVISOR, "failed to take watch mutex");
+        (p->systemApi->log)(SUPERVISOR, "failed to take watch mutex");
     }
 }
 

@@ -14,8 +14,9 @@ Date dateResult;
 bool goToSleepCalled;
 unsigned int sleepTimeSecValue;
 long lastUserEventTimestamp;
-long goToSleepTime;
+unsigned short goToSleepTime;
 unsigned int nextWakeUpPeriod;
+WakeUpReason wakeUpReason;
 
 int watchMutex;
 
@@ -31,17 +32,19 @@ long time() // todo name convention for common and local mock funcs
     return timeResult;
 }
 
-void supervisorSleepStub(void *p, unsigned int sleepTimeSec)
+WakeUpReason supervisorSleepStub(void *p, unsigned int sleepTimeSec)
 {
     goToSleepCalled = true;
     sleepTimeSecValue = sleepTimeSec;
+    return wakeUpReason;
 }
 
-void supervisorSleepSomeTimeStub(void *p, unsigned int sleepTimeSec)
+WakeUpReason supervisorSleepSomeTimeStub(void *p, unsigned int sleepTimeSec)
 {
     goToSleepCalled = true;
     sleepTimeSecValue = sleepTimeSec;
     timeResult = 48; // to simulate time pass
+    return wakeUpReason;
 }
 
 Date getDateStub()
@@ -62,6 +65,7 @@ void setUp(void)
     lastUserEventTimestamp = 0;
     goToSleepTime = 10;
     nextWakeUpPeriod = NW_DONT_CARE;
+    wakeUpReason = WUR_SLEEP_WAKEUP_TIMER;
 
     systemApi = systemApiMock();
     systemApi.time = time;
