@@ -1,17 +1,15 @@
 #pragma once
 
-typedef struct Timer_ Timer;
-
-typedef enum TimerResponse {
+typedef enum {
     TMR_OK,
     TMR_ERROR,
-};
+} TimerResponse ;
 
-typedef enum TimerState {
+typedef enum {
     TMS_IDLE,
     TMS_RUN,
     TMS_ALARM,
-};
+} TimerState;
 
 typedef struct
 {
@@ -19,15 +17,13 @@ typedef struct
     unsigned short counter;
     unsigned char alarmDuration;
     TimerState state;
-} TimerContext;
+} Timer;
 
-struct Timer_
-{
-    void *context;
-    TimerResponse (*setPeriod)(Timer *timer, unsigned short seconds);
-    TimerResponse (*start)(Timer *timer);
-    TimerResponse (*stop)(Timer *timer);
-    TimerResponse (*reset)(Timer *timer);
-    TimerResponse (*stopAlarm)(Timer *timer);
-    TimerResponse (*tick)(Timer *timer); 
-};
+TimerResponse setPeriod(Timer *timer, unsigned short seconds);
+TimerResponse start(Timer *timer);
+TimerResponse stop(Timer *timer);
+TimerResponse reset(Timer *timer);
+TimerResponse stopAlarm(Timer *timer);
+
+void tick(Timer *timer); 
+
