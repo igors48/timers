@@ -168,15 +168,15 @@ void whenActionModeAndIdleTimePassedButManagerReturnsTimeLesserToNextHour()
 
 void whenAfterWakeUp()
 {
-    lastUserEventTimestamp = 1;
+    lastUserEventTimestamp = 14;
     timeResult = 15;
     p.supervisorSleep = supervisorSleepSomeTimeStub;
 
     supervisor(&p);
 
-    TEST_ASSERT_EQUAL_INT64(48, lastUserEventTimestamp); // THEN last event timestamp updated
+    TEST_ASSERT_EQUAL_INT64(14, lastUserEventTimestamp); // THEN last event timestamp updated
     TEST_ASSERT_TRUE(wakeUpReason == supervisorApi.getWakeUpReason()); // THEN last wake up reason returned by the api
-    TEST_ASSERT_EQUAL_UINT16(15 - 1, supervisorApi.getTimeToSleep()); // THEN time to sleep (timeResult - lastUserEventTimestamp) returned by api
+    TEST_ASSERT_EQUAL_UINT16(9, supervisorApi.getTimeToSleep()); // THEN time to sleep (goToSleepTime - (timeResult - lastUserEventTimestamp)) returned by api
 }
 
 void whenActionModeAndIdleTimeNotPassed()
