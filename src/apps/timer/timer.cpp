@@ -1,12 +1,12 @@
 #include "timer.hpp"
 
-TimerResponse setPeriod(Timer *timer, unsigned short seconds)
+TimerResponse setPeriod(Timer *timer, unsigned int millis)
 {
     if (timer->state != TMS_IDLE)
     {
         return TMR_ERROR;
     }
-    timer->period = seconds;
+    timer->period = millis;
     return TMR_OK;
 }
 
@@ -45,25 +45,44 @@ TimerResponse stopAlarm(Timer *timer)
     return TMR_OK;
 }
 
-static void tickRun(Timer *timer)
+static void tick(TimeKeeper *timeKeeper, unsigned int tickCount)
+{
+    unsigned int passed = tickCount - timeKeeper->lastTick;
+    if (passed >= timeKeeper->counter)
+    {
+        timeKeeper->counter = 0;
+    }
+    else
+    {
+        timeKeeper->counter -= passed;  
+    }
+    timeKeeper->lastTick = tickCount;
+}
+
+void reset(TimeKeeper *timeKeeper, unsigned int counter, unsigned int tickCount)
+{
+
+}
+
+static void tickRun(Timer *timer, unsigned int tickCount)
 {
     
 }
 
-static void tickAlarm(Timer *timer)
+static void tickAlarm(Timer *timer, unsigned int tickCount)
 {
     
 }
 
-void tick(Timer *timer)
+void tick(Timer *timer, unsigned int tickCount)
 {
     switch (timer->state)
     {
     case TMS_RUN:
-        tickRun(timer);
+        tickRun(timer, tickCount);
         return;
     case TMS_ALARM:
-        tickAlarm(timer);
+        tickAlarm(timer, tickCount);
         return;    
     default:
         return;

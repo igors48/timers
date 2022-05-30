@@ -11,19 +11,22 @@ typedef enum {
     TMS_ALARM,
 } TimerState;
 
+
 typedef struct
 {
-    unsigned short period;
-    unsigned short counter;
+    unsigned int duration; 
+    TimeKeeper durationKeeper;
     unsigned char alarmDuration;
+    TimeKeeper alarmKeeper;
     TimerState state;
 } Timer;
 
-TimerResponse setPeriod(Timer *timer, unsigned short seconds);
+TimerResponse setDuration(Timer *timer, unsigned int millis);
 TimerResponse start(Timer *timer);
 TimerResponse stop(Timer *timer);
 TimerResponse reset(Timer *timer);
 TimerResponse stopAlarm(Timer *timer);
 
-void tick(Timer *timer); 
+void tick(Timer *timer, unsigned int tickCount); 
+
 
