@@ -3,27 +3,27 @@
 void timeKeeperTick(TimeKeeper *timeKeeper, unsigned int tickCount)
 {
     unsigned int passed = tickCount - timeKeeper->lastTick;
-    if (passed >= timeKeeper->counter)
+    if (passed >= timeKeeper->duration)
     {
-        timeKeeper->counter = 0;
+        timeKeeper->duration = 0;
     }
     else
     {
-        timeKeeper->counter -= passed;
+        timeKeeper->duration -= passed;
     }
     timeKeeper->lastTick = tickCount;
 }
 
-void timeKeeperReset(TimeKeeper *timeKeeper, unsigned int counter, unsigned int tickCount)
+void timeKeeperReset(TimeKeeper *timeKeeper, unsigned int duration, unsigned int tickCount)
 {
-    timeKeeper->counter = counter;
+    timeKeeper->duration = duration;
     timeKeeper->lastTick = tickCount;
 }
 
 TimeKeeper timeKeeperCreate()
 {
     return {
-        .counter = 0,
+        .duration = 0,
         .lastTick = 0,
     };
 }

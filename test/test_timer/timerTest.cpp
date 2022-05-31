@@ -7,7 +7,7 @@ const unsigned short COUNTER = 24;
 const unsigned char DURATION = 10;
 
 Timer timer;
-
+/*
 void setUp(void)
 {
     timer = {
@@ -54,7 +54,7 @@ void whenSetPeriodInIdleMode()
     TEST_ASSERT_EQUAL_UINT16(COUNTER, timer.counter);
     TEST_ASSERT_EQUAL_UINT8(DURATION, timer.alarmDuration);
 }
-/*
+
 void whenStartInIdleMode()
 {
     TEST_ASSERT_TRUE(start(&timer) == TMR_OK); // THEN ok returns
@@ -161,9 +161,9 @@ int main()
 {
     UNITY_BEGIN();
 
-    RUN_TEST(whenSetPeriodInIdleMode);
-    RUN_TEST(whenSetPeriodInRunMode);
-    RUN_TEST(whenSetPeriodInAlarmMode);
+    // RUN_TEST(whenSetPeriodInIdleMode);
+    // RUN_TEST(whenSetPeriodInRunMode);
+    // RUN_TEST(whenSetPeriodInAlarmMode);
     
     // RUN_TEST(whenStartInIdleMode);
     // RUN_TEST(whenStartInRunMode);
