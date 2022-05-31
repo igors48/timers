@@ -54,7 +54,7 @@ void whenSetPeriodInIdleMode()
     TEST_ASSERT_EQUAL_UINT16(COUNTER, timer.counter);
     TEST_ASSERT_EQUAL_UINT8(DURATION, timer.alarmDuration);
 }
-
+/*
 void whenStartInIdleMode()
 {
     TEST_ASSERT_TRUE(start(&timer) == TMR_OK); // THEN ok returns
@@ -156,7 +156,7 @@ void whenResetInAlarmMode()
     TEST_ASSERT_EQUAL_UINT16(COUNTER, timer.counter);
     TEST_ASSERT_EQUAL_UINT8(DURATION, timer.alarmDuration);
 }
-
+*/
 int main()
 {
     UNITY_BEGIN();
@@ -165,17 +165,17 @@ int main()
     RUN_TEST(whenSetPeriodInRunMode);
     RUN_TEST(whenSetPeriodInAlarmMode);
     
-    RUN_TEST(whenStartInIdleMode);
-    RUN_TEST(whenStartInRunMode);
-    RUN_TEST(whenStartInAlarmMode);
+    // RUN_TEST(whenStartInIdleMode);
+    // RUN_TEST(whenStartInRunMode);
+    // RUN_TEST(whenStartInAlarmMode);
     
-    RUN_TEST(whenStopInIdleMode);
-    RUN_TEST(whenStopInRunMode);
-    RUN_TEST(whenStopInAlarmMode);
+    // RUN_TEST(whenStopInIdleMode);
+    // RUN_TEST(whenStopInRunMode);
+    // RUN_TEST(whenStopInAlarmMode);
     
-    RUN_TEST(whenResetInIdleMode);
-    RUN_TEST(whenResetInRunMode);
-    RUN_TEST(whenResetInAlarmMode);
+    // RUN_TEST(whenResetInIdleMode);
+    // RUN_TEST(whenResetInRunMode);
+    // RUN_TEST(whenResetInAlarmMode);
 
     UNITY_END();
 }

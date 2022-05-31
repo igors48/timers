@@ -1,26 +1,30 @@
 #include "timer.hpp"
 
-TimerResponse setPeriod(Timer *timer, unsigned int millis)
+const unsigned short BEEP_PAUSE = 500;
+const unsigned int ALARM_DURATION = 15000;
+
+TimerResponse timerSetDuration(Timer *timer, unsigned int millis)
 {
     if (timer->state != TMS_IDLE)
     {
         return TMR_ERROR;
     }
-    timer->period = millis;
+    timer->duration = millis;
     return TMR_OK;
 }
 
-TimerResponse start(Timer *timer)
+TimerResponse timerStart(Timer *timer, unsigned int tickCount)
 {
     if (timer->state == TMS_ALARM)
     {
         return TMR_ERROR;
     }
     timer->state = TMS_RUN;
+    timeKeeperReset(&(timer->durationKeeper), timer->duration, tickCount);
     return TMR_OK;
 }
 
-TimerResponse stop(Timer *timer)
+TimerResponse timerStop(Timer *timer)
 {
     if (timer->state == TMS_ALARM)
     {
@@ -30,51 +34,41 @@ TimerResponse stop(Timer *timer)
     return TMR_OK;
 }
 
-TimerResponse reset(Timer *timer)
+TimerResponse timerResume(Timer *timer)
 {
-    if (timer->state != TMS_IDLE)
-    {
-        return TMR_ERROR;
-    }
-    timer->counter = timer->period;
-    return TMR_OK;
 }
 
-TimerResponse stopAlarm(Timer *timer)
+TimerResponse timerStopAlarm(Timer *timer)
 {
     return TMR_OK;
-}
-
-static void tick(TimeKeeper *timeKeeper, unsigned int tickCount)
-{
-    unsigned int passed = tickCount - timeKeeper->lastTick;
-    if (passed >= timeKeeper->counter)
-    {
-        timeKeeper->counter = 0;
-    }
-    else
-    {
-        timeKeeper->counter -= passed;  
-    }
-    timeKeeper->lastTick = tickCount;
-}
-
-void reset(TimeKeeper *timeKeeper, unsigned int counter, unsigned int tickCount)
-{
-
 }
 
 static void tickRun(Timer *timer, unsigned int tickCount)
 {
-    
+    timeKeeperTick(&(timer->durationKeeper), tickCount);
+    if (timer->durationKeeper.counter == 0)
+    {
+        timeKeeperReset(&(timer->alarmKeeper), timer->alarmDuration, tickCount);
+        timer->lastBeep = tickCount;
+        timer->state = TMS_ALARM;
+    }
 }
 
 static void tickAlarm(Timer *timer, unsigned int tickCount)
 {
-    
+    timeKeeperTick(&(timer->alarmKeeper), tickCount);
+    if (timer->durationKeeper.counter == 0)
+    {
+        timer->state = TMS_IDLE;
+    }
+    if (tickCount - timer->lastBeep >= BEEP_PAUSE)
+    {
+        (timer->soundApi->beep)();
+        timer->lastBeep = tickCount;
+    }
 }
 
-void tick(Timer *timer, unsigned int tickCount)
+void timerTick(Timer *timer, unsigned int tickCount)
 {
     switch (timer->state)
     {
@@ -83,8 +77,21 @@ void tick(Timer *timer, unsigned int tickCount)
         return;
     case TMS_ALARM:
         tickAlarm(timer, tickCount);
-        return;    
+        return;
     default:
         return;
     }
+}
+
+Timer timerCreate(SoundApi *soundApi)
+{
+    return {
+        .duration = 0,
+        .durationKeeper = timeKeeperCreate(),
+        .alarmDuration = ALARM_DURATION,
+        .alarmKeeper = timeKeeperCreate(),
+        .lastBeep = 0,
+        .state = TMS_CREATED,
+        .soundApi = soundApi,
+    };
 }
