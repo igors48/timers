@@ -3,61 +3,39 @@
 const unsigned short BEEP_PAUSE = 500;
 const unsigned int ALARM_DURATION = 15000;
 
-TimerResponse timerSetDuration(Timer *timer, unsigned int millis)
+TimerResponse timerStart(Timer *timer, unsigned int duration, unsigned int tickCount)
 {
-    if (timer->state != TMS_IDLE)
-    {
-        return TMR_ERROR;
-    }
-    timer->duration = millis;
-    return TMR_OK;
-}
-
-TimerResponse timerStart(Timer *timer, unsigned int tickCount)
-{
-    if (timer->state == TMS_ALARM)
+    if (timer->state == TMS_ALARM || timer->state == TMS_RUN)
     {
         return TMR_ERROR;
     }
     timer->state = TMS_RUN;
-    timeKeeperReset(&(timer->durationKeeper), timer->duration, tickCount);
+    timeKeeperReset(&(timer->timeKeeper), duration, tickCount);
     return TMR_OK;
 }
 
 TimerResponse timerStop(Timer *timer)
 {
-    if (timer->state == TMS_ALARM)
-    {
-        return TMR_ERROR;
-    }
     timer->state = TMS_IDLE;
-    return TMR_OK;
-}
-
-TimerResponse timerResume(Timer *timer)
-{
-}
-
-TimerResponse timerStopAlarm(Timer *timer)
-{
     return TMR_OK;
 }
 
 static void tickRun(Timer *timer, unsigned int tickCount)
 {
-    timeKeeperTick(&(timer->durationKeeper), tickCount);
-    if (timer->durationKeeper.counter == 0)
+    timeKeeperTick(&(timer->timeKeeper), tickCount);
+    if (timer->timeKeeper.duration == 0)
     {
-        timeKeeperReset(&(timer->alarmKeeper), timer->alarmDuration, tickCount);
+        timeKeeperReset(&(timer->timeKeeper), timer->alarmDuration, tickCount);
         timer->lastBeep = tickCount;
         timer->state = TMS_ALARM;
+        (timer->soundApi->beep)();
     }
 }
 
 static void tickAlarm(Timer *timer, unsigned int tickCount)
 {
-    timeKeeperTick(&(timer->alarmKeeper), tickCount);
-    if (timer->durationKeeper.counter == 0)
+    timeKeeperTick(&(timer->timeKeeper), tickCount);
+    if (timer->timeKeeper.duration == 0)
     {
         timer->state = TMS_IDLE;
     }
@@ -86,12 +64,10 @@ void timerTick(Timer *timer, unsigned int tickCount)
 Timer timerCreate(SoundApi *soundApi)
 {
     return {
-        .duration = 0,
-        .durationKeeper = timeKeeperCreate(),
+        .timeKeeper = timeKeeperCreate(),
         .alarmDuration = ALARM_DURATION,
-        .alarmKeeper = timeKeeperCreate(),
         .lastBeep = 0,
-        .state = TMS_CREATED,
+        .state = TMS_IDLE,
         .soundApi = soundApi,
     };
 }

@@ -1,181 +1,122 @@
 #include <unity.h>
 
 #include "apps/timer/timer.cpp"
+#include "apps/timer/timeKeeper.cpp"
 
-const unsigned short PERIOD = 48;
-const unsigned short COUNTER = 24;
-const unsigned char DURATION = 10;
+const unsigned int DURATION = 2345;
+const unsigned int INITIAL_TICKS = 48;
 
 Timer timer;
-/*
+
+bool beepCalled;
+
+void beepStub()
+{
+    beepCalled = true;
+}
+
 void setUp(void)
 {
-    timer = {
-        .period = PERIOD,
-        .counter = COUNTER,
-        .alarmDuration = DURATION,
-        .state = TMS_IDLE,
+    beepCalled = false;
+    SoundApi soundApi = {
+        .beep = beepStub,
     };
+
+    timer = timerCreate(&soundApi);
 }
 
 //platformio test -v --environment native --filter "*_timer*"
 
-void whenSetPeriodInRunMode()
+void whenTimerCreated()
 {
-    timer.state = TMS_RUN;
+    TEST_ASSERT_EQUAL_UINT32(0, timer.timeKeeper.duration); // THEN all values set to default
+    TEST_ASSERT_EQUAL_UINT32(0, timer.timeKeeper.lastTick);
+    TEST_ASSERT_TRUE(timer.state == TMS_IDLE);
 
-    TEST_ASSERT_TRUE(setPeriod(&timer, 96) == TMR_ERROR); // THEN error returns
+    TEST_ASSERT_EQUAL_UINT32(ALARM_DURATION, timer.alarmDuration);
 
-    TEST_ASSERT_TRUE(timer.state == TMS_RUN); // THEN other values not changed
-    TEST_ASSERT_EQUAL_UINT16(PERIOD, timer.period); 
-    TEST_ASSERT_EQUAL_UINT16(COUNTER, timer.counter);
-    TEST_ASSERT_EQUAL_UINT8(DURATION, timer.alarmDuration);
+    TEST_ASSERT_EQUAL_UINT32(0, timer.lastBeep);
+    TEST_ASSERT_FALSE(beepCalled); // THEN no beeps
 }
 
-void whenSetPeriodInAlarmMode()
+void whenTimerStarted()
 {
-    timer.state = TMS_ALARM;
+    TimerResponse response = timerStart(&timer, DURATION, INITIAL_TICKS);
 
-    TEST_ASSERT_TRUE(setPeriod(&timer, 96) == TMR_ERROR); // THEN error returns
-
-    TEST_ASSERT_TRUE(timer.state == TMS_ALARM); // THEN other values not changed
-    TEST_ASSERT_EQUAL_UINT16(PERIOD, timer.period); 
-    TEST_ASSERT_EQUAL_UINT16(COUNTER, timer.counter);
-    TEST_ASSERT_EQUAL_UINT8(DURATION, timer.alarmDuration);
-}
-
-void whenSetPeriodInIdleMode()
-{
-    unsigned short newPeriod = 96;
+    TEST_ASSERT_TRUE(TMR_OK == response); // THEN response is OK
     
-    TEST_ASSERT_TRUE(setPeriod(&timer, newPeriod) == TMR_OK); // THEN ok returns
-    TEST_ASSERT_EQUAL_UINT16(newPeriod, timer.period); // THEN period updated
-    TEST_ASSERT_TRUE(timer.state == TMS_IDLE); // THEN other values not changed
-    TEST_ASSERT_EQUAL_UINT16(COUNTER, timer.counter);
-    TEST_ASSERT_EQUAL_UINT8(DURATION, timer.alarmDuration);
+    TEST_ASSERT_EQUAL_UINT32(DURATION, timer.timeKeeper.duration); // THEN time keeper initialized
+    TEST_ASSERT_EQUAL_UINT32(INITIAL_TICKS, timer.timeKeeper.lastTick);
+    TEST_ASSERT_TRUE(timer.state == TMS_RUN); // THEN timer state changed to RUN
+    
+    TEST_ASSERT_EQUAL_UINT32(ALARM_DURATION, timer.alarmDuration); // THEN other values - no change
+    
+    TEST_ASSERT_EQUAL_UINT32(0, timer.lastBeep);
+    TEST_ASSERT_FALSE(beepCalled); // THEN no beeps
 }
 
-void whenStartInIdleMode()
+void whenTimerStartedInRunMode()
 {
-    TEST_ASSERT_TRUE(start(&timer) == TMR_OK); // THEN ok returns
+    timerStart(&timer, DURATION, INITIAL_TICKS);
 
-    TEST_ASSERT_TRUE(timer.state == TMS_RUN); // THEN state set to run
-    TEST_ASSERT_EQUAL_UINT16(PERIOD, timer.period); // THEN other values not changed
-    TEST_ASSERT_EQUAL_UINT16(COUNTER, timer.counter);
-    TEST_ASSERT_EQUAL_UINT8(DURATION, timer.alarmDuration);
+    TimerResponse response = timerStart(&timer, DURATION + 34, INITIAL_TICKS + 8);
+    
+    TEST_ASSERT_TRUE(TMR_ERROR == response); // THEN response is ERROR
+    
+    TEST_ASSERT_EQUAL_UINT32(DURATION, timer.timeKeeper.duration); // THEN other values - no change
+    TEST_ASSERT_EQUAL_UINT32(INITIAL_TICKS, timer.timeKeeper.lastTick);
+    TEST_ASSERT_TRUE(timer.state == TMS_RUN);
+    
+    TEST_ASSERT_EQUAL_UINT32(ALARM_DURATION, timer.alarmDuration);
+    
+    TEST_ASSERT_EQUAL_UINT32(0, timer.lastBeep);
+    TEST_ASSERT_FALSE(beepCalled); // THEN no beeps
 }
 
-void whenStartInRunMode()
+void whenTickInRunMode()
 {
-    timer.state = TMS_RUN;
+    timerStart(&timer, DURATION, INITIAL_TICKS);
 
-    TEST_ASSERT_TRUE(start(&timer) == TMR_OK); // THEN ok returns
+    unsigned int delta = 216;
+    unsigned int currentTick = INITIAL_TICKS + delta;
+    timerTick(&timer, currentTick);
 
-    TEST_ASSERT_TRUE(timer.state == TMS_RUN); // THEN other values not changed
-    TEST_ASSERT_EQUAL_UINT16(PERIOD, timer.period); 
-    TEST_ASSERT_EQUAL_UINT16(COUNTER, timer.counter);
-    TEST_ASSERT_EQUAL_UINT8(DURATION, timer.alarmDuration);
+    TEST_ASSERT_EQUAL_UINT32(DURATION - delta, timer.timeKeeper.duration); // THEN duration decreased to delta
+    TEST_ASSERT_EQUAL_UINT32(currentTick, timer.timeKeeper.lastTick); // THEN last tick updated to current tick
+    TEST_ASSERT_TRUE(timer.state == TMS_RUN); // THEN other values - no change
+    
+    TEST_ASSERT_EQUAL_UINT32(ALARM_DURATION, timer.alarmDuration);
+    
+    TEST_ASSERT_EQUAL_UINT32(0, timer.lastBeep);
+    TEST_ASSERT_FALSE(beepCalled); // THEN no beeps
 }
 
-void whenStartInAlarmMode()
+void whenTickInRunModeButDurationPassed()
 {
-    timer.state = TMS_ALARM;
+    timerStart(&timer, DURATION, INITIAL_TICKS);
 
-    TEST_ASSERT_TRUE(start(&timer) == TMR_ERROR); // THEN error returns
+    unsigned int currentTick = INITIAL_TICKS + DURATION + 3;
+    timerTick(&timer, currentTick);
 
-    TEST_ASSERT_TRUE(timer.state == TMS_ALARM); // THEN other values not changed
-    TEST_ASSERT_EQUAL_UINT16(PERIOD, timer.period); 
-    TEST_ASSERT_EQUAL_UINT16(COUNTER, timer.counter);
-    TEST_ASSERT_EQUAL_UINT8(DURATION, timer.alarmDuration);
+    TEST_ASSERT_EQUAL_UINT32(ALARM_DURATION, timer.timeKeeper.duration); // THEN duration decreased to delta
+    TEST_ASSERT_EQUAL_UINT32(currentTick, timer.timeKeeper.lastTick); // THEN last tick updated to current tick
+    TEST_ASSERT_TRUE(timer.state == TMS_ALARM); // THEN state set to ALARM
+
+    TEST_ASSERT_EQUAL_UINT32(ALARM_DURATION, timer.alarmDuration); // THEN other values - no change   
+
+    TEST_ASSERT_TRUE(beepCalled); // THEN first beep
+    TEST_ASSERT_EQUAL_UINT32(currentTick, timer.lastBeep); // THEN last beep tick set to current
 }
 
-void whenStopInIdleMode()
-{
-    TEST_ASSERT_TRUE(stop(&timer) == TMR_OK); // THEN ok returns
-
-    TEST_ASSERT_TRUE(timer.state == TMS_IDLE); // THEN other values not changed
-    TEST_ASSERT_EQUAL_UINT16(PERIOD, timer.period); 
-    TEST_ASSERT_EQUAL_UINT16(COUNTER, timer.counter);
-    TEST_ASSERT_EQUAL_UINT8(DURATION, timer.alarmDuration);
-}
-
-void whenStopInRunMode()
-{
-    timer.state = TMS_RUN;
-
-    TEST_ASSERT_TRUE(stop(&timer) == TMR_OK); // THEN ok returns
-
-    TEST_ASSERT_TRUE(timer.state == TMS_IDLE); // THEN state set to idle
-    TEST_ASSERT_EQUAL_UINT16(PERIOD, timer.period); // THEN other values not changed
-    TEST_ASSERT_EQUAL_UINT16(COUNTER, timer.counter);
-    TEST_ASSERT_EQUAL_UINT8(DURATION, timer.alarmDuration);
-}
-
-void whenStopInAlarmMode()
-{
-    timer.state = TMS_ALARM;
-
-    TEST_ASSERT_TRUE(stop(&timer) == TMR_ERROR); // THEN error returns
-
-    TEST_ASSERT_TRUE(timer.state == TMS_ALARM); // THEN other values not changed
-    TEST_ASSERT_EQUAL_UINT16(PERIOD, timer.period); 
-    TEST_ASSERT_EQUAL_UINT16(COUNTER, timer.counter);
-    TEST_ASSERT_EQUAL_UINT8(DURATION, timer.alarmDuration);
-}
-
-void whenResetInIdleMode()
-{
-    TEST_ASSERT_TRUE(reset(&timer) == TMR_OK); // THEN ok returns
-
-    TEST_ASSERT_EQUAL_UINT16(timer.period, timer.counter); // THEN counter set to period 
-    TEST_ASSERT_TRUE(timer.state == TMS_IDLE); // THEN other values not changed
-    TEST_ASSERT_EQUAL_UINT16(PERIOD, timer.period); 
-    TEST_ASSERT_EQUAL_UINT8(DURATION, timer.alarmDuration);
-}
-
-void whenResetInRunMode()
-{
-    timer.state = TMS_RUN;
-
-    TEST_ASSERT_TRUE(reset(&timer) == TMR_ERROR); // THEN error returns
-
-    TEST_ASSERT_TRUE(timer.state == TMS_RUN); // THEN other values not changed
-    TEST_ASSERT_EQUAL_UINT16(PERIOD, timer.period); 
-    TEST_ASSERT_EQUAL_UINT16(COUNTER, timer.counter);
-    TEST_ASSERT_EQUAL_UINT8(DURATION, timer.alarmDuration);
-}
-
-void whenResetInAlarmMode()
-{
-    timer.state = TMS_ALARM;
-
-    TEST_ASSERT_TRUE(reset(&timer) == TMR_ERROR); // THEN error returns
-
-    TEST_ASSERT_TRUE(timer.state == TMS_ALARM); // THEN other values not changed
-    TEST_ASSERT_EQUAL_UINT16(PERIOD, timer.period); 
-    TEST_ASSERT_EQUAL_UINT16(COUNTER, timer.counter);
-    TEST_ASSERT_EQUAL_UINT8(DURATION, timer.alarmDuration);
-}
-*/
 int main()
 {
     UNITY_BEGIN();
 
-    // RUN_TEST(whenSetPeriodInIdleMode);
-    // RUN_TEST(whenSetPeriodInRunMode);
-    // RUN_TEST(whenSetPeriodInAlarmMode);
-    
-    // RUN_TEST(whenStartInIdleMode);
-    // RUN_TEST(whenStartInRunMode);
-    // RUN_TEST(whenStartInAlarmMode);
-    
-    // RUN_TEST(whenStopInIdleMode);
-    // RUN_TEST(whenStopInRunMode);
-    // RUN_TEST(whenStopInAlarmMode);
-    
-    // RUN_TEST(whenResetInIdleMode);
-    // RUN_TEST(whenResetInRunMode);
-    // RUN_TEST(whenResetInAlarmMode);
+    RUN_TEST(whenTimerCreated);
+    RUN_TEST(whenTimerStarted);
+    RUN_TEST(whenTimerStartedInRunMode);
+    RUN_TEST(whenTickInRunMode);
+    RUN_TEST(whenTickInRunModeButDurationPassed);
 
     UNITY_END();
 }
