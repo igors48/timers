@@ -170,8 +170,9 @@ void createTimerApplication()
         .systemApi = &systemApi,
     };
     xTaskCreate(tickerTask, "timerAppTickerTask", 2048, (void *)&timerAppTickerParameters, 1, &timerAppTickerTaskHandle);
+    vTaskSuspend(timerAppTickerTaskHandle);
 
-    timerApp = createTimerApp(timerAppTickerTaskHandle, &soundApi, &manager, &factory);
+    timerApp = createTimerApp(timerAppTickerTaskHandle, &systemApi, &soundApi, &manager, &factory);
 }
 
 void setup()

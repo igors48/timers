@@ -1,6 +1,8 @@
 #include "timerApp.hpp"
 #include "timer.hpp"
 
+static void *backgroundTask;
+static SystemApi *systemApi;
 static SoundApi *soundApi;
 static Manager *manager;
 
@@ -11,6 +13,7 @@ static TimerAppApi api;
 
 static void activate()
 {
+    (systemApi->resume)(backgroundTask);
 }
 
 static void deactivate()
@@ -32,8 +35,10 @@ void timerAppTick()
 
 }
 
-App createTimerApp(void *backgroundTaskHandleRef, SoundApi *soundApiRef, Manager *managerRef, Factory *factoryRef)
+App createTimerApp(void *backgroundTaskHandleRef, SystemApi *systemApiRef, SoundApi *soundApiRef, Manager *managerRef, Factory *factoryRef)
 {
+    backgroundTask = backgroundTaskHandleRef;
+    systemApi = systemApiRef;
     soundApi = soundApiRef;
     manager = managerRef;
 
