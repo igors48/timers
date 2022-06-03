@@ -11,4 +11,4 @@ typedef struct
 
 App createTimerApp(SoundApi *soundApiRef, Manager *managerRef, Factory *factoryRef);
 
-Component* createTimerAppTile(TimerAppApi *toolsAppApi, Factory *factory);
+Component* createTimerAppTile(TimerAppApi *timerAppApi, Factory *factory);

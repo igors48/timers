@@ -23,6 +23,7 @@
 #include "apps/clock/clockApp.hpp"
 #include "apps/step/stepApp.hpp"
 #include "apps/tools/toolsApp.hpp"
+#include "apps/timer/timerApp.hpp"
 
 TTGOClass *watch;
 
@@ -67,7 +68,9 @@ App stepApp;
 
 App toolsApp;
 
-const unsigned char APPS_COUNT = 3;
+App timerApp;
+
+const unsigned char APPS_COUNT = 4;
 void *apps[APPS_COUNT];
 
 Manager manager;
@@ -154,6 +157,11 @@ void createStepApplication()
 void createToolsApplication()
 {
     toolsApp = createToolsApp(&soundApi, &manager, &factory);
+}
+
+void createTimerApplication()
+{
+    timerApp = createTimerApp(&soundApi, &manager, &factory);
 }
 
 void setup()
@@ -250,10 +258,12 @@ void setup()
         createClockApplication();
         createStepApplication();
         createToolsApplication();
+        createTimerApplication();
 
         apps[0] = &clockApp;
         apps[1] = &stepApp;
         apps[2] = &toolsApp;
+        apps[3] = &timerApp;
 
         manager = createManager(APPS_COUNT, apps, &tiler);
         manager.activateApp(0);
