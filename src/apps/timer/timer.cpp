@@ -38,6 +38,7 @@ static void tickAlarm(Timer *timer, unsigned int tickCount)
     if (timer->timeKeeper.duration == 0)
     {
         timer->state = TMS_IDLE;
+        return;
     }
     if (tickCount - timer->lastBeep >= BEEP_PAUSE)
     {

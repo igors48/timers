@@ -98,7 +98,7 @@ void whenTickInRunModeButDurationPassed()
     unsigned int currentTick = INITIAL_TICKS + DURATION + 3;
     timerTick(&timer, currentTick);
 
-    TEST_ASSERT_EQUAL_UINT32(ALARM_DURATION, timer.timeKeeper.duration); // THEN duration decreased to delta
+    TEST_ASSERT_EQUAL_UINT32(ALARM_DURATION, timer.timeKeeper.duration); // THEN keeper duration set to alarm duration
     TEST_ASSERT_EQUAL_UINT32(currentTick, timer.timeKeeper.lastTick); // THEN last tick updated to current tick
     TEST_ASSERT_TRUE(timer.state == TMS_ALARM); // THEN state set to ALARM
 
@@ -108,6 +108,123 @@ void whenTickInRunModeButDurationPassed()
     TEST_ASSERT_EQUAL_UINT32(currentTick, timer.lastBeep); // THEN last beep tick set to current
 }
 
+void whenTickInRunModeButDurationPassedPrecisely()
+{
+    timerStart(&timer, DURATION, INITIAL_TICKS);
+
+    unsigned int currentTick = INITIAL_TICKS + DURATION;
+    timerTick(&timer, currentTick);
+
+    TEST_ASSERT_EQUAL_UINT32(ALARM_DURATION, timer.timeKeeper.duration); // THEN keeper duration set to alarm duration
+    TEST_ASSERT_EQUAL_UINT32(currentTick, timer.timeKeeper.lastTick); // THEN last tick updated to current tick
+    TEST_ASSERT_TRUE(timer.state == TMS_ALARM); // THEN state set to ALARM
+
+    TEST_ASSERT_EQUAL_UINT32(ALARM_DURATION, timer.alarmDuration); // THEN other values - no change   
+
+    TEST_ASSERT_TRUE(beepCalled); // THEN first beep
+    TEST_ASSERT_EQUAL_UINT32(currentTick, timer.lastBeep); // THEN last beep tick set to current
+}
+
+void gotoAlarmMode()
+{
+    timerStart(&timer, DURATION, INITIAL_TICKS);
+
+    unsigned int currentTick = INITIAL_TICKS + DURATION;
+    timerTick(&timer, currentTick);
+
+    beepCalled = false; // reset after first beep (when alarm mode starts)
+}
+
+void whenTickInAlarmModeButNoTimeToBeep()
+{
+    gotoAlarmMode();
+
+    unsigned int delta = BEEP_PAUSE - 125;
+    unsigned int currentTick = INITIAL_TICKS + DURATION + delta;
+    timerTick(&timer, currentTick);
+
+    TEST_ASSERT_EQUAL_UINT32(ALARM_DURATION - delta, timer.timeKeeper.duration); // THEN keeper duration set to alarm duration
+    TEST_ASSERT_EQUAL_UINT32(currentTick, timer.timeKeeper.lastTick); // THEN last tick updated to current tick
+    TEST_ASSERT_TRUE(timer.state == TMS_ALARM); // THEN state set to ALARM
+
+    TEST_ASSERT_EQUAL_UINT32(ALARM_DURATION, timer.alarmDuration); // THEN other values - no change   
+
+    TEST_ASSERT_FALSE(beepCalled); // THEN no beep
+    TEST_ASSERT_EQUAL_UINT32(INITIAL_TICKS + DURATION, timer.lastBeep); // THEN last beep tick not changed
+}
+
+void whenTickInAlarmModeAndTimeToBeep()
+{
+    gotoAlarmMode();
+
+    unsigned int delta = BEEP_PAUSE + 117;
+    unsigned int currentTick = INITIAL_TICKS + DURATION + delta;
+    timerTick(&timer, currentTick);
+
+    TEST_ASSERT_EQUAL_UINT32(ALARM_DURATION - delta, timer.timeKeeper.duration); // THEN keeper duration set to alarm duration
+    TEST_ASSERT_EQUAL_UINT32(currentTick, timer.timeKeeper.lastTick); // THEN last tick updated to current tick
+    TEST_ASSERT_TRUE(timer.state == TMS_ALARM); // THEN state set to ALARM
+
+    TEST_ASSERT_EQUAL_UINT32(ALARM_DURATION, timer.alarmDuration); // THEN other values - no change   
+
+    TEST_ASSERT_TRUE(beepCalled); // THEN beep
+    TEST_ASSERT_EQUAL_UINT32(currentTick, timer.lastBeep); // THEN last beep tick set to current tick
+}
+
+void whenTickInAlarmModeAndTimeToBeepPrecisely()
+{
+    gotoAlarmMode();
+
+    unsigned int delta = BEEP_PAUSE;
+    unsigned int currentTick = INITIAL_TICKS + DURATION + delta;
+    timerTick(&timer, currentTick);
+
+    TEST_ASSERT_EQUAL_UINT32(ALARM_DURATION - delta, timer.timeKeeper.duration); // THEN keeper duration set to alarm duration
+    TEST_ASSERT_EQUAL_UINT32(currentTick, timer.timeKeeper.lastTick); // THEN last tick updated to current tick
+    TEST_ASSERT_TRUE(timer.state == TMS_ALARM); // THEN state set to ALARM
+
+    TEST_ASSERT_EQUAL_UINT32(ALARM_DURATION, timer.alarmDuration); // THEN other values - no change   
+
+    TEST_ASSERT_TRUE(beepCalled); // THEN beep
+    TEST_ASSERT_EQUAL_UINT32(currentTick, timer.lastBeep); // THEN last beep tick set to current tick
+}
+
+void whenTickInAlarmModeAfterAlarmDuration()
+{
+    gotoAlarmMode();
+
+    unsigned int delta = ALARM_DURATION + 37;
+    unsigned int currentTick = INITIAL_TICKS + DURATION + delta;
+    timerTick(&timer, currentTick);
+
+    TEST_ASSERT_EQUAL_UINT32(0, timer.timeKeeper.duration); // THEN keeper duration set to alarm duration
+    TEST_ASSERT_EQUAL_UINT32(currentTick, timer.timeKeeper.lastTick); // THEN last tick updated to current tick
+    TEST_ASSERT_TRUE(timer.state == TMS_IDLE); // THEN state set to ALARM
+
+    TEST_ASSERT_EQUAL_UINT32(ALARM_DURATION, timer.alarmDuration); // THEN other values - no change   
+
+    TEST_ASSERT_FALSE(beepCalled); // THEN no beep
+    TEST_ASSERT_EQUAL_UINT32(INITIAL_TICKS + DURATION, timer.lastBeep); // THEN last beep tick no changed
+}
+
+void whenTimerStopInRunMode()
+{
+    timerStart(&timer, DURATION, INITIAL_TICKS);
+
+    TimerResponse response = timerStop(&timer);
+
+    TEST_ASSERT_TRUE(timer.state == TMS_IDLE); // THEN state set to IDLE
+}
+
+void whenTimerStopInAlarmMode()
+{
+    gotoAlarmMode();
+
+    TimerResponse response = timerStop(&timer);
+
+    TEST_ASSERT_TRUE(timer.state == TMS_IDLE); // THEN state set to IDLE
+}
+
 int main()
 {
     UNITY_BEGIN();
@@ -115,8 +232,18 @@ int main()
     RUN_TEST(whenTimerCreated);
     RUN_TEST(whenTimerStarted);
     RUN_TEST(whenTimerStartedInRunMode);
+
     RUN_TEST(whenTickInRunMode);
     RUN_TEST(whenTickInRunModeButDurationPassed);
+    RUN_TEST(whenTickInRunModeButDurationPassedPrecisely);
+
+    RUN_TEST(whenTickInAlarmModeButNoTimeToBeep);
+    RUN_TEST(whenTickInAlarmModeAndTimeToBeep);
+    RUN_TEST(whenTickInAlarmModeAndTimeToBeepPrecisely);
+    RUN_TEST(whenTickInAlarmModeAfterAlarmDuration);
+
+    RUN_TEST(whenTimerStopInRunMode);
+    RUN_TEST(whenTimerStopInAlarmMode);
 
     UNITY_END();
 }
