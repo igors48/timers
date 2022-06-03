@@ -40,22 +40,33 @@ static unsigned int getNextWakeUpPeriod()
 
 static unsigned int getTimerState()
 {
-
+    switch (timer.state)
+    {
+        case TMS_RUN:
+            return timer.timeKeeper.duration / 1000; // todo replace two dots access with function
+        default:
+            return 0;        
+    }
 }
 
 static void startTimer()
 {
-
+    const unsigned int tickCount = (systemApi->getTickCount)();
+    timerStart(&timer, 10000, tickCount);
 }
 
 static void stopTimer()
 {
-
+    timerStop(&timer);
 }
 
 static void onGesture(Gesture gesture)
 {
-
+    bool horizontal = (gesture == MOVE_LEFT) || (gesture == MOVE_RIGHT);
+    if (!horizontal)
+    {
+        (manager->switchApp)(gesture == MOVE_UP);
+    }
 }
 
 void timerAppTick()
