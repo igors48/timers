@@ -27,12 +27,41 @@ static Component *getActiveTile()
 
 static unsigned int getNextWakeUpPeriod()
 {
-    return NW_DONT_CARE;
+    switch (timer.state)
+    {
+        case TMS_RUN:
+            return timer.timeKeeper.duration; // todo replace two dots access with function
+        case TMS_ALARM:
+            return NW_NO_SLEEP;
+        default:
+            return NW_DONT_CARE;        
+    }
+}
+
+static unsigned int getTimerState()
+{
+
+}
+
+static void startTimer()
+{
+
+}
+
+static void stopTimer()
+{
+
+}
+
+static void onGesture(Gesture gesture)
+{
+
 }
 
 void timerAppTick()
 {
-
+    const unsigned int tickCount = (systemApi->getTickCount)();
+    timerTick(&timer, tickCount);
 }
 
 App createTimerApp(void *backgroundTaskHandleRef, SystemApi *systemApiRef, SoundApi *soundApiRef, Manager *managerRef, Factory *factoryRef)
@@ -44,7 +73,12 @@ App createTimerApp(void *backgroundTaskHandleRef, SystemApi *systemApiRef, Sound
 
     timer = timerCreate(soundApi);
 
-    api = {};
+    api = {
+        .getTimerState = getTimerState,
+        .startTimer = startTimer,
+        .stopTimer = stopTimer,
+        .onGesture = onGesture, 
+    };
     
     tile = createTimerAppTile(&api, factoryRef);
 

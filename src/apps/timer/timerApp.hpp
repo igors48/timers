@@ -7,6 +7,10 @@
 
 typedef struct 
 {
+    unsigned int (*getTimerState)();
+    void (*startTimer)();
+    void (*stopTimer)();
+    void (*onGesture)(Gesture gesture);
 } TimerAppApi;
 
 void timerAppTick();
