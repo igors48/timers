@@ -36,7 +36,7 @@ static void clockAppActivate()
 
 static void clockAppDeactivate()
 {
-    (systemApi->suspend)(backgroundTask);
+    (systemApi->suspend)(backgroundTask); // todo verify that the task really suspended
 }
 
 static Component *clockAppGetActiveTile()

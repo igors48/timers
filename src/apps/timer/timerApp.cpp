@@ -27,7 +27,12 @@ static unsigned int getNextWakeUpPeriod()
     return NW_DONT_CARE;
 }
 
-App createTimerApp(SoundApi *soundApiRef, Manager *managerRef, Factory *factoryRef)
+void timerAppTick()
+{
+
+}
+
+App createTimerApp(void *backgroundTaskHandleRef, SoundApi *soundApiRef, Manager *managerRef, Factory *factoryRef)
 {
     soundApi = soundApiRef;
     manager = managerRef;
@@ -44,9 +49,4 @@ App createTimerApp(SoundApi *soundApiRef, Manager *managerRef, Factory *factoryR
         .getActiveTile = getActiveTile,
         .getNextWakeUpPeriod = getNextWakeUpPeriod,
     };
-}
-
-Component* createTimerAppTile(TimerAppApi *toolsAppApi, Factory *factory)
-{
-
 }

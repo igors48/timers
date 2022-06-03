@@ -68,6 +68,8 @@ App stepApp;
 
 App toolsApp;
 
+TickerParameters timerAppTickerParameters;
+TaskHandle_t timerAppTickerTaskHandle;
 App timerApp;
 
 const unsigned char APPS_COUNT = 4;
@@ -161,7 +163,15 @@ void createToolsApplication()
 
 void createTimerApplication()
 {
-    timerApp = createTimerApp(&soundApi, &manager, &factory);
+    timerAppTickerParameters = { // todo create factory method for that
+        .watchMutex = &watchMutex,
+        .delayMs = 500,
+        .func = timerAppTick,
+        .systemApi = &systemApi,
+    };
+    xTaskCreate(tickerTask, "timerAppTickerTask", 2048, (void *)&timerAppTickerParameters, 1, &timerAppTickerTaskHandle);
+
+    timerApp = createTimerApp(timerAppTickerTaskHandle, &soundApi, &manager, &factory);
 }
 
 void setup()
