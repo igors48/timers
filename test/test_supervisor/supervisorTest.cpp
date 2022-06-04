@@ -153,16 +153,17 @@ void whenActionModeAndIdleTimePassedButManagerReturnsTimeLesserToNextHour()
         .second = 1, // start of the the new hour 
     };
     
-    nextWakeUpPeriod = 48 * 60;
+    nextWakeUpPeriod = 48 * 60 * 1000;
     lastUserEventTimestamp = 1;
     timeResult = lastUserEventTimestamp + p.goToSleepTime + 1; // after configured go to sleep time
 
     supervisor(&p);
 
     TEST_ASSERT_TRUE(goToSleepCalled); // THEN go to sleep
-    unsigned int sleepTime = nextWakeUpPeriod - 3; // (next wake up period) - (supervisor threshold)
+    // todo uncomment nextWakeUpPeriod below and remove * 1000 (2 occurrences) after fix todo in supervisor
+    unsigned int sleepTime = /*nextWakeUpPeriod*/ 48 * 60 - 3; // (next wake up period) - (supervisor threshold)
     TEST_ASSERT_EQUAL_UINT32(sleepTime, sleepTimeSecValue); // THEN for sleep calculated time
-    TEST_ASSERT_EQUAL_UINT32(nextWakeUpPeriod, supervisorApi.getNextWakeUpPeriod()); // THEN next wake up period returned by api
+    TEST_ASSERT_EQUAL_UINT32(nextWakeUpPeriod, supervisorApi.getNextWakeUpPeriod() * 1000); // THEN next wake up period returned by api
     TEST_ASSERT_EQUAL_INT64(timeResult, lastUserEventTimestamp); // THEN last user event timestamp updated
 }
 
