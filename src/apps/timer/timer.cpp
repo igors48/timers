@@ -1,7 +1,7 @@
 #include "timer.hpp"
 
 const unsigned short BEEP_PAUSE = 500;
-const unsigned int ALARM_DURATION = 15000;
+const unsigned int ALARM_DURATION = 3000;
 
 TimerResponse timerStart(Timer *timer, unsigned int duration, unsigned int tickCount)
 {

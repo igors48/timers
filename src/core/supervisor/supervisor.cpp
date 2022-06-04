@@ -27,7 +27,7 @@ static WakeUpReason getWakeUpReason()
 
 static unsigned long calcSleepTime(SupervisorParameters *p)
 {
-    unsigned int secondsToNextWakeUp = (p->manager->getNextWakeUpPeriod)();
+    unsigned int secondsToNextWakeUp = (p->manager->getNextWakeUpPeriod)() / 1000; // todo fix it by decision what it should be - secs or millis
     if (secondsToNextWakeUp == NW_NO_SLEEP)
     {
         return NW_NO_SLEEP;
@@ -44,7 +44,11 @@ static unsigned long calcSleepTime(SupervisorParameters *p)
 
 static void tryToSleep(SupervisorParameters *p, unsigned long sleepTime)
 {
-    if (sleepTime != NW_NO_SLEEP)
+    if (sleepTime == NW_NO_SLEEP)
+    {
+        (p->systemApi->log)(SUPERVISOR, "sleep prevented by application");
+    }
+    else
     {
         sleepTime = sleepTime - SLEEP_TIME_TRESHOLD; // todo consinder the new parameter
         if (sleepTime > 1)

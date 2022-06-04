@@ -5,6 +5,7 @@ static void *backgroundTask;
 static SystemApi *systemApi;
 static SoundApi *soundApi;
 static Manager *manager;
+static Tiler *tiler;
 
 static Timer timer;
 static Component *tile;
@@ -73,14 +74,16 @@ void timerAppTick()
 {
     const unsigned int tickCount = (systemApi->getTickCount)();
     timerTick(&timer, tickCount);
+    (tiler->renderApp)(false);
 }
 
-App createTimerApp(void *backgroundTaskHandleRef, SystemApi *systemApiRef, SoundApi *soundApiRef, Manager *managerRef, Factory *factoryRef)
+App createTimerApp(void *backgroundTaskHandleRef, SystemApi *systemApiRef, SoundApi *soundApiRef, Tiler *tilerRef, Manager *managerRef, Factory *factoryRef)
 {
     backgroundTask = backgroundTaskHandleRef;
     systemApi = systemApiRef;
     soundApi = soundApiRef;
     manager = managerRef;
+    tiler = tilerRef;
 
     timer = timerCreate(soundApi);
 

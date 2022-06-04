@@ -41,7 +41,7 @@ Component *createTimerAppTile(TimerAppApi *timerAppApi, Factory *factory)
 {
     api = timerAppApi;
 
-    timerDisplayState = (factory->createTextStateRef)(5, 5, COLOR_ATTENTION, provideTimerDisplayState);
+    timerDisplayState = (factory->createTextStateRef)(1, 3, COLOR_ATTENTION, provideTimerDisplayState);
 
     ButtonComponentState *startButtonState = (factory->createButtonStateRef)(START, EG_ONCE, start);
     ButtonComponentState *stopButtonState = (factory->createButtonStateRef)(STOP, EG_ONCE, stop);

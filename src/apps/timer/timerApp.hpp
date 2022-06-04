@@ -15,6 +15,6 @@ typedef struct
 
 void timerAppTick();
 
-App createTimerApp(void *backgroundTaskHandleRef, SystemApi *systemApiRef, SoundApi *soundApiRef, Manager *managerRef, Factory *factoryRef);
+App createTimerApp(void *backgroundTaskHandleRef, SystemApi *systemApiRef, SoundApi *soundApiRef, Tiler *tilerRef, Manager *managerRef, Factory *factoryRef);
 
 Component* createTimerAppTile(TimerAppApi *timerAppApi, Factory *factory);
