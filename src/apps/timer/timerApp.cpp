@@ -50,10 +50,16 @@ static unsigned int getTimerState()
     }
 }
 
+static unsigned int getSimulatedTickCount() // todo create time service with milliseconds simulation based on freertos ticks
+{
+    const long time = (systemApi->time)();
+    return time * 1000;
+}
+
 static void startTimer()
 {
-    const unsigned int tickCount = (systemApi->getTickCount)();
-    timerStart(&timer, 10000, tickCount);
+    const unsigned int tickCount = getSimulatedTickCount();
+    timerStart(&timer, 15000, tickCount);
 }
 
 static void stopTimer()
@@ -72,7 +78,7 @@ static void onGesture(Gesture gesture)
 
 void timerAppTick()
 {
-    const unsigned int tickCount = (systemApi->getTickCount)();
+    const unsigned int tickCount = getSimulatedTickCount();
     timerTick(&timer, tickCount);
     (tiler->renderApp)(false);
 }
