@@ -1,6 +1,6 @@
 /**
  * @file 
- * @author Igor Usenko
+ * @author Igor Usenko (github: igors48)
  * @brief functions and types which provides interface to the FreeRTOS functions
 */
 #pragma once

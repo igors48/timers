@@ -1,6 +1,6 @@
 /**
  * @file 
- * @author Igor Usenko
+ * @author Igor Usenko (github: igors48)
  * @brief time keeper implementation
 */
 #include "timeKeeper.hpp"

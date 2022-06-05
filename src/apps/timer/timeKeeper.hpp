@@ -1,6 +1,6 @@
 /**
  * @file 
- * @author Igor Usenko
+ * @author Igor Usenko (github: igors48)
  * @brief Structure and functions for handling time intervals based on regular ticks.
 */ 
 #pragma once
@@ -10,7 +10,7 @@
 */
 typedef struct {
     unsigned int duration; /**< count of ticks to the end of interval. zero means that interval is passed */
-    unsigned int lastTick; /**< value of latest hadled tick */
+    unsigned int lastTick; /**< value of latest handled tick */
 } TimeKeeper;
 
 /**
@@ -28,7 +28,7 @@ void timeKeeperTick(TimeKeeper *timeKeeper, unsigned int tickCount);
 /**
  * @brief resets time keeper to initial state
  * 
- * sets duration to value
+ * sets duration and tickCount to values of a corresponding parameters
  * 
  * @param timeKeeper pointer to time keeper
  * @param duration  duration value

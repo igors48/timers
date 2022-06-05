@@ -1,6 +1,18 @@
+/**
+ * @file 
+ * @author Igor Usenko (github: igors48) 
+ * @brief timer implementation
+*/
 #include "timer.hpp"
 
+/**
+ * @brief pause between beeps in milliseconds
+ */
 const unsigned short BEEP_PAUSE = 500;
+
+/**
+ * @brief total alarm duration in milliseconds
+ */
 const unsigned int ALARM_DURATION = 3000;
 
 TimerResponse timerStart(Timer *timer, unsigned int duration, unsigned int tickCount)

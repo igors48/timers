@@ -1,6 +1,6 @@
 /**
  * @file 
- * @author Igor Usenko
+ * @author Igor Usenko (github: igors48)
  * @brief implementation for the default system API
 */
 #include <Arduino.h>
