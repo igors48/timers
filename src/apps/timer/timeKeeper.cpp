@@ -1,3 +1,8 @@
+/**
+ * @file 
+ * @author Igor Usenko
+ * @brief time keeper implementation
+*/
 #include "timeKeeper.hpp"
 
 void timeKeeperTick(TimeKeeper *timeKeeper, unsigned int tickCount)
