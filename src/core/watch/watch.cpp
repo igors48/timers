@@ -1,3 +1,8 @@
+/**
+ * @file
+ * @author Igor Usenko (github: igors48)
+ * @brief default implementation of watch device related functions
+ */
 #include <WiFi.h>
 #include <Arduino.h>
 #include "driver/i2s.h"
@@ -5,7 +10,10 @@
 #include "ttgo.hpp"
 #include "watch.hpp"
 
-void watchInitBma()
+/**
+ * @brief init accelerometer chip
+ */
+static void initBma()
 {
     BMA *sensor = watch->bma;
     Acfg cfg;
@@ -23,7 +31,10 @@ void watchInitBma()
     sensor->enableWakeupInterrupt();
 }
 
-void watchInitI2S()
+/**
+ * @brief init sound I2S interface
+ */
+static void initI2S()
 {
     i2s_config_t i2s_config = {
         .mode = (i2s_mode_t)(I2S_MODE_MASTER | I2S_MODE_TX),
@@ -48,16 +59,16 @@ void watchInitI2S()
     Serial.printf("after i2s set pin %d \r\n", error);
 }
 
-void watchInit()
+/**
+ * @copydoc WatchApi.init
+ */
+static void initWatch()
 {
     watch = TTGOClass::getWatch();
     watch->begin();
 
-    // Serial.println(__DATE__);
-    Serial.println(__DATE__);
-    Serial.println(__TIME__);
-    RTC_Date compiled = RTC_Date(__DATE__, __TIME__); // seems __DATE__, __TIME__ set to compilation time for this file not the project
-    watch->rtc->setDateTime(compiled);
+    RTC_Date startYear = RTC_Date(2022, 1, 1, 0, 0, 0);
+    watch->rtc->setDateTime(startYear);
 
     watch->power->enableIRQ(AXP202_PEK_SHORTPRESS_IRQ | AXP202_VBUS_REMOVED_IRQ | AXP202_VBUS_CONNECT_IRQ | AXP202_CHARGING_IRQ, true);
     watch->power->adc1Enable(AXP202_VBUS_VOL_ADC1 | AXP202_VBUS_CUR_ADC1 | AXP202_BATT_CUR_ADC1 | AXP202_BATT_VOL_ADC1, true);
@@ -65,14 +76,17 @@ void watchInit()
 
     WiFi.mode(WIFI_OFF);
 
-    watchInitBma();
+    initBma();
 
     watch->motor_begin();
 
-    watchInitI2S();
+    initI2S();
 }
 
-void watchAfterWakeUp() // todo return wake up reason
+/**
+ * @copydoc WatchApi.afterWakeUp
+ */
+static void afterWakeUp()
 {
     watch->bma->readInterrupt();
     watch->openBL();
@@ -83,7 +97,10 @@ void watchAfterWakeUp() // todo return wake up reason
     watch->power->setPowerOutPut(AXP202_LDO4, true); // audio power
 }
 
-void watchBeforeGoToSleep()
+/**
+ * @copydoc WatchApi.beforeGoToSleep
+ */
+static void beforeGoToSleep()
 {
     watch->closeBL();
     watch->displaySleep();
@@ -91,7 +108,10 @@ void watchBeforeGoToSleep()
     watch->powerOff();
 }
 
-WakeUpReason watchGoToSleep(unsigned long sleepTimeMicros)
+/**
+ * @copydoc WatchApi.goToSleep
+ */
+static WakeUpReason goToSleep(unsigned long sleepTimeMicros)
 {
     esp_sleep_enable_ext0_wakeup((gpio_num_t)AXP202_INT, LOW);
     delay(100); // seen some false wake ups without those delays
@@ -140,7 +160,10 @@ WakeUpReason watchGoToSleep(unsigned long sleepTimeMicros)
     }
 }
 
-bool watchGetTouch(signed short &x, signed short &y)
+/**
+ * @copydoc WatchApi.getTouch
+ */
+static bool getTouch(signed short &x, signed short &y)
 {
     return watch->getTouch(x, y);
 }
@@ -148,9 +171,9 @@ bool watchGetTouch(signed short &x, signed short &y)
 WatchApi defaultWatchApi()
 {
     return {
-        .init = watchInit,
-        .afterWakeUp = watchAfterWakeUp,
-        .beforeGoToSleep = watchBeforeGoToSleep,
-        .goToSleep = watchGoToSleep,
-        .getTouch = watchGetTouch};
+        .init = initWatch,
+        .afterWakeUp = afterWakeUp,
+        .beforeGoToSleep = beforeGoToSleep,
+        .goToSleep = goToSleep,
+        .getTouch = getTouch};
 }
