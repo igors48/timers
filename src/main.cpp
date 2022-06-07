@@ -247,7 +247,7 @@ void setup()
             .i2sApi = &i2sApi,
             .systemApi = &systemApi,
         };
-        xTaskCreate(soundPlayerTask, "soundPlayerTask", 2048, (void *)&soundPlayerParameters, 1, NULL);
+        xTaskCreate(soundPlayerTask, "soundPlayerTask", 4096, (void *)&soundPlayerParameters, 1, NULL);
 
         supervisorParameters = {
             .watchMutex = &watchMutex,
