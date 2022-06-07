@@ -260,7 +260,7 @@ void setup()
             .manager = &manager,
         };
 
-        xTaskCreate(supervisorTask, "supervisorTask", 2048, (void *)&supervisorParameters, 1, NULL);
+        xTaskCreate(supervisorTask, "supervisorTask", 4096, (void *)&supervisorParameters, 1, NULL);
 
         factory = createFactory(&systemApi);
         
