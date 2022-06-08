@@ -287,9 +287,11 @@ void setup()
     {
         Serial.println("Could not take watch mutex");
     }
+    
+    vTaskDelete(NULL); // disable setup and loop
 }
 
 void loop()
 {
-    vTaskSuspend(NULL);
+    // never run
 }
