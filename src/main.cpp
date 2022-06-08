@@ -210,7 +210,7 @@ void setup()
             .powerApi = &powerApi,
             .systemApi = &systemApi,
         };
-        xTaskCreate(buttonListenerTask, "buttonListenerTask", 4096/*2048*/, (void *)&buttonListenerParameters, 1, &buttonListenerTaskHandle);
+        xTaskCreate(buttonListenerTask, "buttonListenerTask", 4096, (void *)&buttonListenerParameters, 1, &buttonListenerTaskHandle);
 
         pinMode(AXP202_INT, INPUT_PULLUP);
         attachInterrupt(AXP202_INT, buttonInterruptHandler, FALLING);
