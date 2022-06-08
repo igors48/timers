@@ -79,6 +79,21 @@ Manager manager;
 
 Factory factory;
 
+void serialEchoTask(void *p)
+{
+    while (true)
+    {
+        int available = Serial.available();
+        Serial.printf("### available %d\r\n", available);
+        if (available > 0)
+        {
+            String a = Serial.readString();
+            Serial.printf("### echo %s\r\n", a);
+        }
+        vTaskDelay(1000 / portTICK_PERIOD_MS);        
+    }
+}
+
 void buttonListenerTask(void *p)
 {
     while (true)
@@ -279,6 +294,8 @@ void setup()
         manager = createManager(APPS_COUNT, apps, &tiler);
         manager.activateApp(0);
 
+        //xTaskCreate(serialEchoTask, "serialEchoTask", 4096, (void *)NULL, 1, NULL);
+        
         xSemaphoreGive(watchMutex);
 
         Serial.println("tasks started");
