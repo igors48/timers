@@ -57,7 +57,6 @@ SystemApi systemApiMock()
         .log = logMock,
         .time = timeMock,
         .delay = delayMock,
-        .delayUntil = delayUntilMock,
         .suspend = suspendMock,
         .resume = resumeMock,
         .allocate = allocateMock,

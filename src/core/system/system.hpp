@@ -5,9 +5,6 @@
 */
 #pragma once
 
-typedef void (*Resume)(void *handle); // todo seems not needed anymore
-typedef void (*Suspend)(void *handle); // todo seems not needed anymore
-
 /**
  * @brief set of the system API functions
  */
@@ -41,9 +38,20 @@ typedef struct
      * @brief initiates FreeRTOS task delay
      */
     void (*delay)(unsigned int time);
-    void (*delayUntil)(unsigned int *prevoiusWakeTimeMillis, unsigned int timeIncrementMillis); // todo check usage
-    Suspend suspend; // todo seems not needed anymore
-    Resume resume; // todo seems not needed anymore
+
+    /**
+     * @brief suspends FreeRTOS task 
+     * 
+     * @param handle task handle
+     */
+    void (*suspend)(void *handle);
+
+    /**
+     * @brief resumes FreeRTOS task 
+     * 
+     * @param handle task handle
+     */
+    void (*resume)(void *handle);
     
     /**
      * @brief receives an item from FreeRTOS queue 

@@ -54,11 +54,6 @@ void systemDelay(unsigned int time)
     vTaskDelay(time / portTICK_PERIOD_MS);
 }
 
-void systemDelayUntil(unsigned int *prevoiusWakeTimeMillis, unsigned int timeIncrementMillis)
-{
-    vTaskDelayUntil(prevoiusWakeTimeMillis, timeIncrementMillis / portTICK_PERIOD_MS);
-}
-
 /**
  * @copydoc SystemApi.suspend
  */
@@ -115,7 +110,6 @@ SystemApi defaultSystemApi()
         .log = systemLog,
         .time = systemTime,
         .delay = systemDelay,
-        .delayUntil = systemDelayUntil,
         .suspend = systemSuspend,
         .resume = systemResume,
         .queueReceive = systemQueueReceive,
