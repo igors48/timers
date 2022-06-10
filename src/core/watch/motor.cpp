@@ -8,6 +8,10 @@
 
 /**
  * @brief default instance of Motor class
+ * 
+ * This is needed because TTGO library motor implementation conflicts with the backlight.
+ * Fix based on the PR - https://github.com/Xinyuan-LilyGO/TTGO_TWatch_Library/pull/146
+ * 
  */
 static Motor motor = Motor(MOTOR_PIN, 4, 100);
 
