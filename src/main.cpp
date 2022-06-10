@@ -87,7 +87,8 @@ void serialEchoTask(void *p)
         Serial.printf("### available %d\r\n", available);
         if (available > 0)
         {
-            String a = Serial.readString();
+            uint8_t buffer[2];
+            unsigned int a = Serial.readBytes((uint8_t *)&buffer, 2);
             Serial.printf("### echo %s\r\n", a);
         }
         vTaskDelay(1000 / portTICK_PERIOD_MS);        
