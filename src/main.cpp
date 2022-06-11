@@ -79,6 +79,8 @@ Manager manager;
 
 Factory factory;
 
+int incomingByte = 0;
+
 void serialEchoTask(void *p)
 {
     while (true)
@@ -87,9 +89,19 @@ void serialEchoTask(void *p)
         Serial.printf("### available %d\r\n", available);
         if (available > 0)
         {
-            uint8_t buffer[2];
-            unsigned int a = Serial.readBytes((uint8_t *)&buffer, 2);
-            Serial.printf("### echo %s\r\n", a);
+            uint8_t buffer[48];
+            buffer[0] = 1;
+            buffer[1] = 2;
+            Serial.printf("### before readbytes %d\r\n", available);
+            
+            //String stringBuf = Serial.readString();
+            //Serial.printf("### echo %s\r\n", stringBuf);
+            
+            int incomingByte = Serial.read();
+            Serial.printf("### echo %s\r\n", incomingByte);
+
+            unsigned int a = Serial.readBytes(buffer, 2);
+            //Serial.printf("### echo %s\r\n", incomingByte);
         }
         vTaskDelay(1000 / portTICK_PERIOD_MS);        
     }
@@ -296,7 +308,9 @@ void setup()
         manager.activateApp(0);
 
         //xTaskCreate(serialEchoTask, "serialEchoTask", 4096, (void *)NULL, 1, NULL);
-        
+        int incomingByte = Serial.read();
+        Serial.printf("### echo %s\r\n", incomingByte);
+
         xSemaphoreGive(watchMutex);
 
         Serial.println("tasks started");
