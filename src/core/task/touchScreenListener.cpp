@@ -8,7 +8,7 @@ static unsigned char GESTURE_TRESHOLD = 120;
 
 static void updateLastUserEventTimestamp(TouchScreenListenerParameters *p)
 {
-    long now = (p->systemApi->time)();
+    const long now = (p->systemApi->time)();
     *p->lastUserEventTimestamp = now;
 }
 
@@ -16,7 +16,7 @@ static void touched(TouchScreenListenerParameters *p, signed short x, signed sho
 {
     p->lastX = x;
     p->lastY = y;
-    bool firstTouch = (p->firstX == -1) && (p->firstY == -1);
+    const bool firstTouch = (p->firstX == -1) && (p->firstY == -1);
     Tiler *tiler = p->tiler;
     if (firstTouch)
     {
@@ -25,7 +25,7 @@ static void touched(TouchScreenListenerParameters *p, signed short x, signed sho
         p->target = (tiler->contains)(x, y);
         if (p->target != NULL) // todo move all null target handling to the tiler 
         {
-            unsigned int tickCount = (p->systemApi->getTickCount)();
+            const unsigned long tickCount = (p->systemApi->getTickCount)();
             (p->tiler->onTouch)(p->target, x, y, tickCount);
         }
     }
@@ -33,7 +33,7 @@ static void touched(TouchScreenListenerParameters *p, signed short x, signed sho
     {
         if (p->target != NULL) 
         {
-            unsigned int tickCount = (p->systemApi->getTickCount)();
+            const unsigned long tickCount = (p->systemApi->getTickCount)();
             (p->tiler->onMove)(p->target, x, y, tickCount);
         }
     }
@@ -66,10 +66,10 @@ static Gesture detectVerticalGesture(signed short dY)
 
 static Gesture detectGesture(signed short firstX, signed short firstY, signed short lastX, signed short lastY)
 {
-    signed short dX = lastX - firstX;
-    signed short dY = lastY - firstY;
-    unsigned short absDx = abs(dX);
-    unsigned short absDy = abs(dY);
+    const signed short dX = lastX - firstX;
+    const signed short dY = lastY - firstY;
+    const unsigned short absDx = abs(dX);
+    const unsigned short absDy = abs(dY);
     if ((absDx < GESTURE_TRESHOLD) && (absDy < GESTURE_TRESHOLD))
     {
         return NONE;
@@ -86,17 +86,17 @@ static Gesture detectGesture(signed short firstX, signed short firstY, signed sh
 
 static void notTouched(TouchScreenListenerParameters *p)
 {
-    bool touchedBefore = (p->firstX != -1) && (p->firstY != -1);;
+    const bool touchedBefore = (p->firstX != -1) && (p->firstY != -1);;
     if (touchedBefore)
     {
         Component *target = p->target;
         if (target != NULL)
         {
-            unsigned int tickCount = (p->systemApi->getTickCount)();
+            const unsigned long tickCount = (p->systemApi->getTickCount)();
             (p->tiler->onRelease)(target, p->lastX, p->lastY, tickCount);
             p->target = NULL;
         }
-        Gesture gesture = detectGesture(p->firstX, p->firstY, p->lastX, p->lastY);
+        const Gesture gesture = detectGesture(p->firstX, p->firstY, p->lastX, p->lastY);
         if (gesture != NONE)
         {
             (p->tiler->onGesture)(gesture);
