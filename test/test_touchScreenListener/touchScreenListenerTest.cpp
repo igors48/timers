@@ -87,7 +87,7 @@ void screenOnGestureSub(Gesture gesture)
     screenGesture = gesture;
 }
 
-unsigned int getTickCountStub()
+unsigned long getTickCountStub()
 {
     return 148;
 }

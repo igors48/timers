@@ -66,7 +66,7 @@ typedef struct
     /**
      * @brief returns FreeRTOS tick count
      */
-    unsigned int (*getTickCount)();
+    unsigned long (*getTickCount)();
 
     /**
      * @brief allocates a memory block

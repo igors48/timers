@@ -6,6 +6,7 @@
 #include <Arduino.h>
 #include <time.h>
 #include "system.hpp"
+#include "tickCounter.hpp"
 
 /**
  * @copydoc SystemApi.log
@@ -89,9 +90,10 @@ bool systemQueueSend(void *queue, void *item, unsigned int blockTimeMillis)
 /**
  * @copydoc SystemApi.getTickCount
  */
-unsigned int systemGetTickCount()
+unsigned long systemGetTickCount()
 {
-    return xTaskGetTickCount();
+    const unsigned int tick = xTaskGetTickCount();
+    return newTickCountValue(tick);
 }
 
 /**
@@ -104,6 +106,9 @@ void* systemAllocate(unsigned int size)
 
 SystemApi defaultSystemApi()
 {
+    const unsigned int startTick = xTaskGetTickCount(); 
+    resetTickCount(startTick);
+
     return {
         .take = systemTake,
         .give = systemGive,
