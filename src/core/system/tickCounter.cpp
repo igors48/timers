@@ -4,22 +4,17 @@
 
 static unsigned long tickCount;
 static unsigned int lastSystemTickCount;
+static unsigned char overflowCount;
 
 unsigned long newTickCountValue(unsigned int value)
 {
     bool counterResetByOverflow = value < lastSystemTickCount;
-    unsigned int delta;
     if (counterResetByOverflow)
     {
-        delta = UINT_MAX - lastSystemTickCount + value;
+        overflowCount++;
     }
-    else
-    {
-        delta = value - lastSystemTickCount;
-    }
-    tickCount += delta;
     lastSystemTickCount = value;
-
+    tickCount = (unsigned long)overflowCount * (unsigned long)UINT_MAX + value;
     return tickCount;
 }
 
@@ -27,4 +22,5 @@ void resetTickCount(unsigned int value)
 {
     tickCount = value;
     lastSystemTickCount = value;
+    overflowCount = 0;
 }

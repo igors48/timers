@@ -19,40 +19,36 @@ void whenReset()
 
 void whenNewSystemTickValueGreaterThenLast() 
 {
-    unsigned long systemTickValue = INITIAL_VALUE + 1275;
+    unsigned int systemTickValue = INITIAL_VALUE + 1275;
 
     unsigned long tick = newTickCountValue(systemTickValue);
-
     TEST_ASSERT_EQUAL_UINT64(systemTickValue, tick);
 }
 
 void whenNewSystemTickValueLesserThenLast() 
 {
-    unsigned long systemTickValue = 75;
+    unsigned int systemTickValue = INITIAL_VALUE - 310; // 75
 
     unsigned long beforeOverflow = UINT_MAX - INITIAL_VALUE;
-    unsigned long expectedTickValue = INITIAL_VALUE + beforeOverflow + systemTickValue;
+    unsigned long expectedTickValue = INITIAL_VALUE + beforeOverflow + systemTickValue; //4294967370
 
     unsigned long tick = newTickCountValue(systemTickValue);
 
+    TEST_ASSERT_EQUAL_UINT8(1, overflowCount);
     TEST_ASSERT_EQUAL_UINT64(expectedTickValue, tick);
 }
 
 void whenSeveralOverflows() 
 {
-    unsigned long firstSystemTickValue = 75;
-    unsigned long secondSystemTickValue = 47;
-
-    unsigned long beforeFirstOverflow = UINT_MAX - INITIAL_VALUE;
-    unsigned long expectedFirstTickValue = INITIAL_VALUE + beforeFirstOverflow + firstSystemTickValue;
-
-    unsigned long beforeSecondOverflow = UINT_MAX - expectedFirstTickValue;
-    unsigned long expectedSecondTickValue = INITIAL_VALUE + beforeSecondOverflow + secondSystemTickValue;
+    unsigned int firstSystemTickValue = 75;
+    unsigned int secondSystemTickValue = 47;
 
     newTickCountValue(firstSystemTickValue);
     unsigned long tick = newTickCountValue(secondSystemTickValue);
 
-    TEST_ASSERT_EQUAL_UINT64(expectedSecondTickValue, tick);
+    unsigned long expectedTickValue = (unsigned long)2 * (unsigned long)UINT_MAX + secondSystemTickValue;
+
+    TEST_ASSERT_EQUAL_UINT64(expectedTickValue, tick);
 }
 
 int main()
