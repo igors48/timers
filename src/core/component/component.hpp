@@ -1,3 +1,8 @@
+/**
+ * @file 
+ * @author Igor Usenko (github: igors48)
+ * @brief UI Component 
+*/
 #pragma once
 
 #include "../watch/tft.hpp"
@@ -22,12 +27,21 @@ const unsigned int COLOR_BUTTON_BACK_RELEASED = 0x8C50;
 const unsigned int COLOR_BUTTON_BACK_PRESSED = 0xD6B9;
 const unsigned int COLOR_BUTTON_BACK_DISABLED = 0xF800;
 
+/**
+ * @brief definition of a Component
+ * 
+ */
 struct Component_
 {
     signed short x; // TODO check why signed ? what is the reason?
     signed short y;
     signed short w;
     signed short h;
+
+    /**
+     * @brief checks that component contains given point
+     * 
+     */
     Component* (*contains)(Component *component, signed short x, signed short y);
     void (*mount)(Component *component, signed short x, signed short y);
     void (*onTouch)(Component *component, signed short x, signed short y, unsigned long tickCount); // todo consider interface EventListener 
