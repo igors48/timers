@@ -39,19 +39,19 @@ static Component *contains(signed short x, signed short y)
     return (activeTile->contains)(activeTile, x, y);
 }
 
-static void onTouch(Component *component, signed short x, signed short y, unsigned int tickCount)
+static void onTouch(Component *component, signed short x, signed short y, unsigned long tickCount)
 {
     (component->onTouch)(component, x, y, tickCount);
     renderApp(false);
 }
 
-static void onMove(Component *component, signed short x, signed short y, unsigned int tickCount)
+static void onMove(Component *component, signed short x, signed short y, unsigned long tickCount)
 {
     (component->onMove)(component, x, y, tickCount);
     renderApp(false);
 }
 
-static void onRelease(Component *component, signed short x, signed short y, unsigned int tickCount)
+static void onRelease(Component *component, signed short x, signed short y, unsigned long tickCount)
 {
     (component->onRelease)(component, x, y, tickCount);
     renderApp(false);

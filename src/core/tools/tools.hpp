@@ -4,4 +4,4 @@
 
 // todo rename to timeTools.hpp and timeTools.cpp
 
-unsigned int secondsToNextHourStart(Date now);
+unsigned int secondsToNextHourStart(Date now); // todo consider unsigned short 

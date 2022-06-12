@@ -35,13 +35,13 @@ typedef struct
     EventHandlingState _eventHandlingState;
     ButtonMode mode;
     ButtonMode _mode;
-    unsigned int firstTouchTick;
-    unsigned int lastRepeatTick;
+    unsigned long firstTouchTick;
+    unsigned long lastRepeatTick;
 } ButtonComponentState;
 
-void buttonOnTouch(Component *component, signed short x, signed short y, unsigned int tickCount);
-void buttonOnMove(Component *component, signed short x, signed short y, unsigned int tickCount);
-void buttonOnRelease(Component *component, signed short x, signed short y, unsigned int tickCount);
+void buttonOnTouch(Component *component, signed short x, signed short y, unsigned long tickCount);
+void buttonOnMove(Component *component, signed short x, signed short y, unsigned long tickCount);
+void buttonOnRelease(Component *component, signed short x, signed short y, unsigned long tickCount);
 void buttonRender(Component *component, bool forced, TftApi *tftApi);
 bool buttonIsStateModified(Component *component);
 void buttonUpdateState(Component *component);

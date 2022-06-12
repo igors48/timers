@@ -24,15 +24,15 @@ const unsigned int COLOR_BUTTON_BACK_DISABLED = 0xF800;
 
 struct Component_
 {
-    signed short x;
+    signed short x; // TODO check why signed ? what is the reason?
     signed short y;
     signed short w;
     signed short h;
     Component* (*contains)(Component *component, signed short x, signed short y);
     void (*mount)(Component *component, signed short x, signed short y);
-    void (*onTouch)(Component *component, signed short x, signed short y, unsigned int tickCount); // todo consider interface EventListener 
-    void (*onMove)(Component *component, signed short x, signed short y, unsigned int tickCount);  
-    void (*onRelease)(Component *component, signed short x, signed short y, unsigned int tickCount);  
+    void (*onTouch)(Component *component, signed short x, signed short y, unsigned long tickCount); // todo consider interface EventListener 
+    void (*onMove)(Component *component, signed short x, signed short y, unsigned long tickCount);  
+    void (*onRelease)(Component *component, signed short x, signed short y, unsigned long tickCount);  
     void (*onGesture)(Component *component, Gesture gesture); // todo gesture and button events are tile level events. consider remove handlers from component
     void (*onButton)(Component *component);
     void (*render)(Component *component, bool forced, TftApi *tftApi);  // todo consider interface Renderable
@@ -41,7 +41,7 @@ struct Component_
     void *state;    
 };
 
-void componentNoopHandler(Component *component, signed short x, signed short y, unsigned int tickCount);
+void componentNoopHandler(Component *component, signed short x, signed short y, unsigned long tickCount);
 
 void componentGestureNoopHandler(Component *component, Gesture gesture);
 

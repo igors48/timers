@@ -1,6 +1,6 @@
 #pragma once
 
-typedef unsigned int (*GetCounter)();
+typedef unsigned int (*GetCounter)(); // todo remove typedefs
 typedef bool (*ResetStepCounter)();
 
 typedef struct 

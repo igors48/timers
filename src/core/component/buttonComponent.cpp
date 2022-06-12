@@ -3,9 +3,9 @@
 #include "component.hpp"
 #include "buttonComponent.hpp"
 
-static void firstRepeat(ButtonComponentState *state, unsigned int tickCount)
+static void firstRepeat(ButtonComponentState *state, unsigned long tickCount)
 {
-    unsigned int pressedTick = tickCount - state->firstTouchTick;
+    const unsigned long pressedTick = tickCount - state->firstTouchTick;
     if (pressedTick > state->delayTick)
     {
         state->eventHandlingState = EHS_REPEAT;
@@ -14,9 +14,9 @@ static void firstRepeat(ButtonComponentState *state, unsigned int tickCount)
     }
 }
 
-static void notFirstRepeat(ButtonComponentState *state, unsigned int tickCount)
+static void notFirstRepeat(ButtonComponentState *state, unsigned long tickCount)
 {
-    unsigned int fromLastRepeatTick = tickCount - state->lastRepeatTick;
+    const unsigned long fromLastRepeatTick = tickCount - state->lastRepeatTick;
     if (fromLastRepeatTick > state->repeatTick)
     {
         state->lastRepeatTick = tickCount;
@@ -24,7 +24,7 @@ static void notFirstRepeat(ButtonComponentState *state, unsigned int tickCount)
     }
 }
 
-static void repeat(ButtonComponentState *state, unsigned int tickCount)
+static void repeat(ButtonComponentState *state, unsigned long tickCount)
 {
     if (state->eventHandlingState == EHS_PRESS)
     {
@@ -36,7 +36,7 @@ static void repeat(ButtonComponentState *state, unsigned int tickCount)
     }
 }
 
-static void press(ButtonComponentState *state, unsigned int tickCount)
+static void press(ButtonComponentState *state, unsigned long tickCount)
 {
     if (state->eventHandlingState == EHS_LEAVE)
     {
@@ -44,7 +44,7 @@ static void press(ButtonComponentState *state, unsigned int tickCount)
     }
 }
 
-static void onEnter(ButtonComponentState *state, unsigned int tickCount)
+static void onEnter(ButtonComponentState *state, unsigned long tickCount)
 {
     if (state->eventGenerate == EG_REPEAT)
     {
@@ -64,7 +64,7 @@ static void onLeave(ButtonComponentState *state)
     }
 }
 
-void buttonOnTouch(Component *component, signed short x, signed short y, unsigned int tickCount)
+void buttonOnTouch(Component *component, signed short x, signed short y, unsigned long tickCount)
 {
     ButtonComponentState *state = (ButtonComponentState *)(component->state);
     if (state->mode == BM_DISABLED)
@@ -76,7 +76,7 @@ void buttonOnTouch(Component *component, signed short x, signed short y, unsigne
     state->firstTouchTick = tickCount;
 }
 
-void buttonOnMove(Component *component, signed short x, signed short y, unsigned int tickCount)
+void buttonOnMove(Component *component, signed short x, signed short y, unsigned long tickCount)
 {
     ButtonComponentState *state = (ButtonComponentState *)(component->state);
     if (state->mode == BM_DISABLED)
@@ -84,7 +84,7 @@ void buttonOnMove(Component *component, signed short x, signed short y, unsigned
         state->eventHandlingState = EHS_IDLE;
         return;
     }
-    bool itsMe = (component->contains)(component, x, y) != NULL;
+    const bool itsMe = (component->contains)(component, x, y) != NULL;
     if (itsMe)
     {
         onEnter(state, tickCount);
@@ -95,7 +95,7 @@ void buttonOnMove(Component *component, signed short x, signed short y, unsigned
     }
 }
 
-void buttonOnRelease(Component *component, signed short x, signed short y, unsigned int tickCount)
+void buttonOnRelease(Component *component, signed short x, signed short y, unsigned long tickCount)
 {
     ButtonComponentState *state = (ButtonComponentState *)(component->state);
     if (state->mode == BM_DISABLED)
@@ -103,8 +103,8 @@ void buttonOnRelease(Component *component, signed short x, signed short y, unsig
         state->eventHandlingState = EHS_IDLE;
         return;
     }
-    bool itsMe = (component->contains)(component, x, y) != NULL;
-    bool noRepeat = state->eventHandlingState != EHS_REPEAT;
+    const bool itsMe = (component->contains)(component, x, y) != NULL;
+    const bool noRepeat = state->eventHandlingState != EHS_REPEAT;
     if (itsMe && noRepeat)
     {
         (state->handler)(state->context);

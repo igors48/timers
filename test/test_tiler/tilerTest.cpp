@@ -69,19 +69,19 @@ void onButton(Component *component)
     eventTarget = component;
 }
 
-void childOnTouchStub(Component *component, signed short x, signed short y, unsigned int tickCount)
+void childOnTouchStub(Component *component, signed short x, signed short y, unsigned long tickCount)
 {
     childOnTouchCalled = true;
     eventTarget = component;
 }
 
-void childOnMoveStub(Component *component, signed short x, signed short y, unsigned int tickCount)
+void childOnMoveStub(Component *component, signed short x, signed short y, unsigned long tickCount)
 {
     childOnMoveCalled = true;
     eventTarget = component;
 }
 
-void childOnReleaseStub(Component *component, signed short x, signed short y, unsigned int tickCount)
+void childOnReleaseStub(Component *component, signed short x, signed short y, unsigned long tickCount)
 {
     childOnReleaseCalled = true;
     eventTarget = component;

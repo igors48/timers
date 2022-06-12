@@ -17,15 +17,15 @@ Component component;
 bool onTouchHandlerCalled;
 signed short onTouchHandlerX;
 signed short onTouchHandlerY;
-unsigned int onTouchHandlerTick;
+unsigned long onTouchHandlerTick;
 bool onMoveHandlerCalled;
 signed short onMoveHandlerX;
 signed short onMoveHandlerY;
-unsigned int onMoveHandlerTick;
+unsigned long onMoveHandlerTick;
 bool onReleaseHandlerCalled;
 signed short onReleaseHandlerX;
 signed short onReleaseHandlerY;
-unsigned int onReleaseHandlerTick;
+unsigned long onReleaseHandlerTick;
 Tiler tiler;
 bool screenOnGestureCalled;
 Gesture screenGesture;
@@ -57,7 +57,7 @@ long timeStub()
     return timeResult;
 }
 
-void componentOnTouchStub(Component *component, signed short x, signed short y, unsigned int tickCount)
+void componentOnTouchStub(Component *component, signed short x, signed short y, unsigned long tickCount)
 {
     onTouchHandlerCalled = true;
     onTouchHandlerX = x;
@@ -65,7 +65,7 @@ void componentOnTouchStub(Component *component, signed short x, signed short y, 
     onTouchHandlerTick = tickCount;
 }
 
-void componentOnMoveStub(Component *component, signed short x, signed short y, unsigned int tickCount)
+void componentOnMoveStub(Component *component, signed short x, signed short y, unsigned long tickCount)
 {
     onMoveHandlerCalled = true;
     onMoveHandlerX = x;
@@ -73,7 +73,7 @@ void componentOnMoveStub(Component *component, signed short x, signed short y, u
     onMoveHandlerTick = tickCount;
 }
 
-void componentOnReleaseStub(Component *component, signed short x, signed short y, unsigned int tickCount)
+void componentOnReleaseStub(Component *component, signed short x, signed short y, unsigned long tickCount)
 {
     onReleaseHandlerCalled = true;
     onReleaseHandlerX = x;

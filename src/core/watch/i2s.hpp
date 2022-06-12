@@ -1,6 +1,6 @@
 #pragma once
 
-typedef signed int (*Write)(const void *src, signed int size, signed int *bytesWritten);
+typedef signed int (*Write)(const void *src, signed int size, signed int *bytesWritten); // todo remove typedef
 
 typedef struct 
 {
