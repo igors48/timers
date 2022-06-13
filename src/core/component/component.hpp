@@ -33,7 +33,7 @@ const unsigned int COLOR_BUTTON_BACK_DISABLED = 0xF800;
  */
 struct Component_
 {
-    signed short x; // TODO check why signed ? what is the reason?
+    signed short x; // TODO check why signed ? what is the reason? #94
     signed short y;
     signed short w;
     signed short h;
