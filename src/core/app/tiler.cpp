@@ -1,9 +1,28 @@
+/**
+ * @file 
+ * @author Igor Usenko (github: igors48)
+ * @brief Default implementation of the application's tile controller
+*/
 #include "tiler.hpp"
 
+/**
+ * @brief Pointer to the active Application
+ */
 static App *activeApp;
+
+/**
+ * @brief Pointer to the TFT API
+ */
 static TftApi *tilerTftApi;
+
+/**
+ * @brief Mode of rendering
+ */
 static bool developmentMode;
 
+/**
+ * @brief Draws background grid for development mode
+ */
 static void drawGrid()
 {
     for (int i = 0; i <= 240; i += 10)
@@ -13,6 +32,9 @@ static void drawGrid()
     }
 }
 
+/**
+ * @copydoc Tiler.renderApp
+ */
 static void renderApp(bool forced)
 {
     Component *activeTile = (activeApp->getActiveTile)();
@@ -28,35 +50,53 @@ static void renderApp(bool forced)
     (activeTile->updateState)(activeTile);
 }
 
+/**
+ * @copydoc Tiler.setApp
+ */
 static void setApp(App *app)
 {
     activeApp = app;
 }
 
+/**
+ * @copydoc Tiler.contains
+ */
 static Component *contains(signed short x, signed short y)
 {
     Component *activeTile = (activeApp->getActiveTile)();
     return (activeTile->contains)(activeTile, x, y);
 }
 
+/**
+ * @copydoc Tiler.onTouch
+ */
 static void onTouch(Component *component, signed short x, signed short y, unsigned long tickCount)
 {
     (component->onTouch)(component, x, y, tickCount);
     renderApp(false);
 }
 
+/**
+ * @copydoc Tiler.onMove
+ */
 static void onMove(Component *component, signed short x, signed short y, unsigned long tickCount)
 {
     (component->onMove)(component, x, y, tickCount);
     renderApp(false);
 }
 
+/**
+ * @copydoc Tiler.onRelease
+ */
 static void onRelease(Component *component, signed short x, signed short y, unsigned long tickCount)
 {
     (component->onRelease)(component, x, y, tickCount);
     renderApp(false);
 }
 
+/**
+ * @copydoc Tiler.onGesture
+ */
 static void onGesture(Gesture gesture)
 {
     Component *activeTile = (activeApp->getActiveTile)();
@@ -64,6 +104,9 @@ static void onGesture(Gesture gesture)
     renderApp(false);
 }
 
+/**
+ * @copydoc Tiler.onButton
+ */
 static void onButton()
 {
     developmentMode = !developmentMode;

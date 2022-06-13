@@ -1,7 +1,7 @@
 /**
  * @file 
  * @author Igor Usenko (github: igors48)
- * @brief application's tile controller
+ * @brief Application's tile controller
  * 
  * Render active Tile of the active Application  
  * Sends events received from the system to the active Tile   
@@ -31,13 +31,55 @@ typedef struct
     void (*renderApp)(bool forced);  
 
     /**
-    * @copydoc Component.contains !!! <- fix the description
+    * @brief Finds the first component which contains the point
+    * 
+    * @param x x coordinate of the point
+    * @param y y coordinate of the point
+    * @return pointer to the Component or NULL otherwise
     */
     Component* (*contains)(signed short x, signed short y); // todo rename to find
+
+    /**
+     * @brief Sends onTouch event to the given Component
+     * 
+     * @param component point to the Component
+     * @param x x coordinate of the event 
+     * @param y y coordinate of the event 
+     * @param tickCount system tick count value
+     */
     void (*onTouch)(Component *component, signed short x, signed short y, unsigned long tickCount); 
+
+    /**
+     * @brief Sends onMove event to the given Component
+     * 
+     * @param component point to the Component
+     * @param x x coordinate of the event 
+     * @param y y coordinate of the event 
+     * @param tickCount system tick count value
+     */    
     void (*onMove)(Component *component, signed short x, signed short y, unsigned long tickCount); 
+    
+    /**
+     * @brief Sends onRelease event to the given Component
+     * 
+     * @param component point to the Component
+     * @param x x coordinate of the event 
+     * @param y y coordinate of the event 
+     * @param tickCount system tick count value
+     */
     void (*onRelease)(Component *component, signed short x, signed short y, unsigned long tickCount); 
-    void (*onGesture)(Gesture gesture); 
+
+    /**
+     * @brief Sends onGesture event to the given Component
+     * 
+     * @param component point to the Component
+     * @param gesture gesture code
+     */
+    void (*onGesture)(Gesture gesture);
+
+    /**
+     * @brief Sends onButton event to the given Component      
+     */
     void (*onButton)();
 } Tiler;
 

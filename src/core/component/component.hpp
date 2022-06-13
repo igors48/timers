@@ -37,11 +37,6 @@ struct Component_
     signed short y;
     signed short w;
     signed short h;
-
-    /**
-     * @brief checks that component contains given point
-     * 
-     */
     Component* (*contains)(Component *component, signed short x, signed short y);
     void (*mount)(Component *component, signed short x, signed short y);
     void (*onTouch)(Component *component, signed short x, signed short y, unsigned long tickCount); // todo consider interface EventListener 
