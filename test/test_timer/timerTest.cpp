@@ -77,8 +77,8 @@ void whenTickInRunMode()
 {
     timerStart(&timer, DURATION, INITIAL_TICKS);
 
-    unsigned int delta = 216;
-    unsigned int currentTick = INITIAL_TICKS + delta;
+    const unsigned int delta = 216;
+    const unsigned int currentTick = INITIAL_TICKS + delta;
     timerTick(&timer, currentTick);
 
     TEST_ASSERT_EQUAL_UINT32(DURATION - delta, timer.timeKeeper.duration); // THEN duration decreased to delta
@@ -95,7 +95,7 @@ void whenTickInRunModeButDurationPassed()
 {
     timerStart(&timer, DURATION, INITIAL_TICKS);
 
-    unsigned int currentTick = INITIAL_TICKS + DURATION + 3;
+    const unsigned int currentTick = INITIAL_TICKS + DURATION + 3;
     timerTick(&timer, currentTick);
 
     TEST_ASSERT_EQUAL_UINT32(ALARM_DURATION, timer.timeKeeper.duration); // THEN keeper duration set to alarm duration
@@ -112,7 +112,7 @@ void whenTickInRunModeButDurationPassedPrecisely()
 {
     timerStart(&timer, DURATION, INITIAL_TICKS);
 
-    unsigned int currentTick = INITIAL_TICKS + DURATION;
+    const unsigned int currentTick = INITIAL_TICKS + DURATION;
     timerTick(&timer, currentTick);
 
     TEST_ASSERT_EQUAL_UINT32(ALARM_DURATION, timer.timeKeeper.duration); // THEN keeper duration set to alarm duration
@@ -129,7 +129,7 @@ void gotoAlarmMode()
 {
     timerStart(&timer, DURATION, INITIAL_TICKS);
 
-    unsigned int currentTick = INITIAL_TICKS + DURATION;
+    const unsigned int currentTick = INITIAL_TICKS + DURATION;
     timerTick(&timer, currentTick);
 
     beepCalled = false; // reset after first beep (when alarm mode starts)
@@ -139,8 +139,8 @@ void whenTickInAlarmModeButNoTimeToBeep()
 {
     gotoAlarmMode();
 
-    unsigned int delta = BEEP_PAUSE - 125;
-    unsigned int currentTick = INITIAL_TICKS + DURATION + delta;
+    const unsigned int delta = BEEP_PAUSE - 125;
+    const unsigned int currentTick = INITIAL_TICKS + DURATION + delta;
     timerTick(&timer, currentTick);
 
     TEST_ASSERT_EQUAL_UINT32(ALARM_DURATION - delta, timer.timeKeeper.duration); // THEN keeper duration set to alarm duration
@@ -157,8 +157,8 @@ void whenTickInAlarmModeAndTimeToBeep()
 {
     gotoAlarmMode();
 
-    unsigned int delta = BEEP_PAUSE + 117;
-    unsigned int currentTick = INITIAL_TICKS + DURATION + delta;
+    const unsigned int delta = BEEP_PAUSE + 117;
+    const unsigned int currentTick = INITIAL_TICKS + DURATION + delta;
     timerTick(&timer, currentTick);
 
     TEST_ASSERT_EQUAL_UINT32(ALARM_DURATION - delta, timer.timeKeeper.duration); // THEN keeper duration set to alarm duration
@@ -175,8 +175,8 @@ void whenTickInAlarmModeAndTimeToBeepPrecisely()
 {
     gotoAlarmMode();
 
-    unsigned int delta = BEEP_PAUSE;
-    unsigned int currentTick = INITIAL_TICKS + DURATION + delta;
+    const unsigned int delta = BEEP_PAUSE;
+    const unsigned int currentTick = INITIAL_TICKS + DURATION + delta;
     timerTick(&timer, currentTick);
 
     TEST_ASSERT_EQUAL_UINT32(ALARM_DURATION - delta, timer.timeKeeper.duration); // THEN keeper duration set to alarm duration
@@ -193,8 +193,8 @@ void whenTickInAlarmModeAfterAlarmDuration()
 {
     gotoAlarmMode();
 
-    unsigned int delta = ALARM_DURATION + 37;
-    unsigned int currentTick = INITIAL_TICKS + DURATION + delta;
+    const unsigned int delta = ALARM_DURATION + 37;
+    const unsigned int currentTick = INITIAL_TICKS + DURATION + delta;
     timerTick(&timer, currentTick);
 
     TEST_ASSERT_EQUAL_UINT32(0, timer.timeKeeper.duration); // THEN keeper duration set to alarm duration

@@ -39,7 +39,7 @@ static unsigned int getNextWakeUpPeriod()
     }
 }
 
-static unsigned int getTimerState()
+static unsigned long getTimerState()
 {
     switch (timer.state)
     {
@@ -50,15 +50,9 @@ static unsigned int getTimerState()
     }
 }
 
-static unsigned int getSimulatedTickCount() // todo create time service with milliseconds simulation based on freertos ticks
-{
-    const long time = (systemApi->time)();
-    return time * 1000;
-}
-
 static void startTimer()
 {
-    const unsigned int tickCount = getSimulatedTickCount();
+    const unsigned int tickCount = (systemApi->getTickCount)();
     timerStart(&timer, 15000, tickCount);
 }
 
@@ -69,7 +63,7 @@ static void stopTimer()
 
 static void onGesture(Gesture gesture)
 {
-    bool horizontal = (gesture == MOVE_LEFT) || (gesture == MOVE_RIGHT);
+    const bool horizontal = (gesture == MOVE_LEFT) || (gesture == MOVE_RIGHT);
     if (!horizontal)
     {
         (manager->switchApp)(gesture == MOVE_UP);
@@ -78,7 +72,7 @@ static void onGesture(Gesture gesture)
 
 void timerAppTick()
 {
-    const unsigned int tickCount = getSimulatedTickCount();
+    const unsigned int tickCount = (systemApi->getTickCount)();
     timerTick(&timer, tickCount);
     (tiler->renderApp)(false);
 }

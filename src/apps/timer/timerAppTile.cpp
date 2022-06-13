@@ -14,8 +14,8 @@ static TimerAppApi *api;
 
 static void provideTimerDisplayState(TextState *state)
 {
-    unsigned int timerState = (api->getTimerState)();
-    snprintf(state->content, sizeof(state->content), "%d", timerState);
+    const unsigned long timerState = (api->getTimerState)();
+    snprintf(state->content, sizeof(state->content), "%ul", timerState);
 }
 
 static void start(void *c)

@@ -15,7 +15,7 @@ const unsigned short BEEP_PAUSE = 500;
  */
 const unsigned int ALARM_DURATION = 3000;
 
-TimerResponse timerStart(Timer *timer, unsigned int duration, unsigned int tickCount)
+TimerResponse timerStart(Timer *timer, unsigned long duration, unsigned long tickCount)
 {
     if (timer->state == TMS_ALARM || timer->state == TMS_RUN)
     {
@@ -32,7 +32,7 @@ TimerResponse timerStop(Timer *timer)
     return TMR_OK;
 }
 
-static void tickRun(Timer *timer, unsigned int tickCount)
+static void tickRun(Timer *timer, unsigned long tickCount)
 {
     timeKeeperTick(&(timer->timeKeeper), tickCount);
     if (timer->timeKeeper.duration == 0)
@@ -44,7 +44,7 @@ static void tickRun(Timer *timer, unsigned int tickCount)
     }
 }
 
-static void tickAlarm(Timer *timer, unsigned int tickCount)
+static void tickAlarm(Timer *timer, unsigned long tickCount)
 {
     timeKeeperTick(&(timer->timeKeeper), tickCount);
     if (timer->timeKeeper.duration == 0)
@@ -59,7 +59,7 @@ static void tickAlarm(Timer *timer, unsigned int tickCount)
     }
 }
 
-void timerTick(Timer *timer, unsigned int tickCount)
+void timerTick(Timer *timer, unsigned long tickCount)
 {
     switch (timer->state)
     {

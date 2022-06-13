@@ -9,8 +9,8 @@
  * @brief defines parameters needed for handling time interval
 */
 typedef struct {
-    unsigned int duration; /**< count of ticks to the end of interval. zero means that interval is passed */
-    unsigned int lastTick; /**< value of latest handled tick */
+    unsigned long duration; /**< count of ticks to the end of interval. zero means that interval is passed */
+    unsigned long lastTick; /**< value of latest handled tick */
 } TimeKeeper;
 
 /**
@@ -23,7 +23,7 @@ typedef struct {
  * @param timeKeeper pointer to time keeper
  * @param tickCount tick count value
 */
-void timeKeeperTick(TimeKeeper *timeKeeper, unsigned int tickCount); 
+void timeKeeperTick(TimeKeeper *timeKeeper, unsigned long tickCount); 
 
 /**
  * @brief resets time keeper to initial state
@@ -34,7 +34,7 @@ void timeKeeperTick(TimeKeeper *timeKeeper, unsigned int tickCount);
  * @param duration  duration value
  * @param tickCount tick count value
 */
-void timeKeeperReset(TimeKeeper *timeKeeper, unsigned int duration, unsigned int tickCount);
+void timeKeeperReset(TimeKeeper *timeKeeper, unsigned long duration, unsigned long tickCount);
 
 /**
  * @brief factory method for time keeper creation

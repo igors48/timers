@@ -7,7 +7,7 @@
 
 typedef struct 
 {
-    unsigned int (*getTimerState)();
+    unsigned long (*getTimerState)();
     void (*startTimer)();
     void (*stopTimer)();
     void (*onGesture)(Gesture gesture);

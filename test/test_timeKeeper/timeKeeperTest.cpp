@@ -13,60 +13,60 @@ void setUp(void)
 
 void whenTimeKeeperReset()
 {
-    unsigned int duration = 2;
-    unsigned int tickCount = 3; 
+    const unsigned long duration = 2;
+    const unsigned long tickCount = 3; 
     
     timeKeeperReset(&keeper, duration, tickCount);
 
-    TEST_ASSERT_EQUAL_UINT32(duration, keeper.duration); // THEN ticker parameters set to corresponding values
-    TEST_ASSERT_EQUAL_UINT32(tickCount, keeper.lastTick);
+    TEST_ASSERT_EQUAL_UINT64(duration, keeper.duration); // THEN ticker parameters set to corresponding values
+    TEST_ASSERT_EQUAL_UINT64(tickCount, keeper.lastTick);
 }
 
 void whenTimeKeeperTickBeforeDurationEnd()
 {
-    unsigned int duration = 20;
-    unsigned int tickCount = 300; 
+    const unsigned long duration = 20;
+    const unsigned long tickCount = 300; 
 
     timeKeeperReset(&keeper, duration, tickCount);
 
-    unsigned int durationRest = 15;
-    unsigned int tickBeforeDurationEnd = tickCount + (duration - durationRest);
+    const unsigned long durationRest = 15;
+    const unsigned long tickBeforeDurationEnd = tickCount + (duration - durationRest);
 
     timeKeeperTick(&keeper, tickBeforeDurationEnd);
 
-    TEST_ASSERT_EQUAL_UINT32(durationRest, keeper.duration); // THEN duration set to rest
-    TEST_ASSERT_EQUAL_UINT32(tickBeforeDurationEnd, keeper.lastTick); // THEN last tick set to current tick
+    TEST_ASSERT_EQUAL_UINT64(durationRest, keeper.duration); // THEN duration set to rest
+    TEST_ASSERT_EQUAL_UINT64(tickBeforeDurationEnd, keeper.lastTick); // THEN last tick set to current tick
 }
 
 void whenTimeKeeperTickAfterDurationEnd()
 {
-    unsigned int duration = 20;
-    unsigned int tickCount = 300; 
+    const unsigned long duration = 20;
+    const unsigned long tickCount = 300; 
 
     timeKeeperReset(&keeper, duration, tickCount);
 
-    unsigned int sometimeAfter = 15;
-    unsigned int tickAfterDurationEnd = tickCount + duration + sometimeAfter;
+    const unsigned long sometimeAfter = 15;
+    const unsigned long tickAfterDurationEnd = tickCount + duration + sometimeAfter;
 
     timeKeeperTick(&keeper, tickAfterDurationEnd);
 
-    TEST_ASSERT_EQUAL_UINT32(0, keeper.duration); // THEN duration set to rest
-    TEST_ASSERT_EQUAL_UINT32(tickAfterDurationEnd, keeper.lastTick); // THEN last tick set to current tick
+    TEST_ASSERT_EQUAL_UINT64(0, keeper.duration); // THEN duration set to rest
+    TEST_ASSERT_EQUAL_UINT64(tickAfterDurationEnd, keeper.lastTick); // THEN last tick set to current tick
 }
 
 void whenTimeKeeperTickAtTheDurationEnd()
 {
-    unsigned int duration = 20;
-    unsigned int tickCount = 300; 
+    const unsigned long duration = 20;
+    const unsigned long tickCount = 300; 
 
     timeKeeperReset(&keeper, duration, tickCount);
 
-    unsigned int tickBeforeDurationEnd = tickCount + duration;
+    const unsigned long tickBeforeDurationEnd = tickCount + duration;
 
     timeKeeperTick(&keeper, tickBeforeDurationEnd);
 
-    TEST_ASSERT_EQUAL_UINT32(0, keeper.duration); // THEN duration set to rest
-    TEST_ASSERT_EQUAL_UINT32(tickBeforeDurationEnd, keeper.lastTick); // THEN last tick set to current tick
+    TEST_ASSERT_EQUAL_UINT64(0, keeper.duration); // THEN duration set to rest
+    TEST_ASSERT_EQUAL_UINT64(tickBeforeDurationEnd, keeper.lastTick); // THEN last tick set to current tick
 }
 
 int main()

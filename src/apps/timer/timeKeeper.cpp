@@ -5,9 +5,9 @@
 */
 #include "timeKeeper.hpp"
 
-void timeKeeperTick(TimeKeeper *timeKeeper, unsigned int tickCount)
+void timeKeeperTick(TimeKeeper *timeKeeper, unsigned long tickCount)
 {
-    unsigned int passed = tickCount - timeKeeper->lastTick;
+    const unsigned long passed = tickCount - timeKeeper->lastTick;
     if (passed >= timeKeeper->duration)
     {
         timeKeeper->duration = 0;
@@ -19,7 +19,7 @@ void timeKeeperTick(TimeKeeper *timeKeeper, unsigned int tickCount)
     timeKeeper->lastTick = tickCount;
 }
 
-void timeKeeperReset(TimeKeeper *timeKeeper, unsigned int duration, unsigned int tickCount)
+void timeKeeperReset(TimeKeeper *timeKeeper, unsigned long duration, unsigned long tickCount)
 {
     timeKeeper->duration = duration;
     timeKeeper->lastTick = tickCount;

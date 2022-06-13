@@ -75,7 +75,7 @@ typedef struct
  * @param tickCount start tick count value
  * @return TimerResponse TimerResponse.TMR_OK if no error TimerResponse.TMR_ERROR otherwise
  */
-TimerResponse timerStart(Timer *timer, unsigned int duration, unsigned int tickCount);
+TimerResponse timerStart(Timer *timer, unsigned long duration, unsigned long tickCount);
 
 /**
  * @brief stops the timer 
@@ -91,7 +91,7 @@ TimerResponse timerStop(Timer *timer);
  * @param timer pointer to timer  
  * @param tickCount tick count value
  */
-void timerTick(Timer *timer, unsigned int tickCount); 
+void timerTick(Timer *timer, unsigned long tickCount); 
 
 /**
  * @brief factory method for create timer
