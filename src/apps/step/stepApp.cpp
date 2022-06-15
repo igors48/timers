@@ -58,7 +58,7 @@ static void onGesture(Gesture gesture)
     }
 }
 
-static unsigned int getNextWakeUpPeriod()
+static unsigned long getNextWakeUpPeriod()
 {
     return NW_DONT_CARE;
 }

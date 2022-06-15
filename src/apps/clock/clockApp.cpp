@@ -140,7 +140,7 @@ static unsigned int getStepCounter()
     return (bmaApi->getCounter)();
 }
 
-static unsigned int getNextWakeUpPeriod()
+static unsigned long getNextWakeUpPeriod()
 {
     return NW_DONT_CARE;
 }

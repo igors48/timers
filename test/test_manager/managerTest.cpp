@@ -51,17 +51,17 @@ void deactivateThird()
     thirdAppActive = false;
 }
 
-unsigned int getNextWakeUpPeriodFirst()
+unsigned long getNextWakeUpPeriodFirst()
 {
     return nextWakeUpPeriodFirst;
 }
 
-unsigned int getNextWakeUpPeriodSecond()
+unsigned long getNextWakeUpPeriodSecond()
 {
     return nextWakeUpPeriodSecond;
 }
 
-unsigned int getNextWakeUpPeriodThird()
+unsigned long getNextWakeUpPeriodThird()
 {
     return nextWakeUpPeriodThird;
 }

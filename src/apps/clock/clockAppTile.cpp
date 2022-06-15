@@ -28,51 +28,51 @@ static ClockAppApi *api;
 
 static void provideWakeUpReason(TextState *state)
 {
-    WakeUpReason wakeUpReason = (api->getWakeUpReason)();
+    const WakeUpReason wakeUpReason = (api->getWakeUpReason)();
     snprintf(state->content, sizeof(state->content), WAKE_UP_REASON, wakeUpReason);
 }
 
 static void provideTimeToSleep(TextState *state)
 {
-    unsigned short timeToSleep = (api->getTimeToSleep)();
+    const unsigned long timeToSleep = (api->getTimeToSleep)();
     snprintf(state->content, sizeof(state->content), TIME_TO_SLEEP, timeToSleep);
 }
 
 static void provideNextWakeUp(TextState *state)
 {
-    unsigned int nextWakeUpPeriod = (api->getNextWakeUpPeriod)();
-    unsigned int minutes = nextWakeUpPeriod / 60;
-    unsigned int seconds = nextWakeUpPeriod - minutes * 60;
+    const unsigned int nextWakeUpPeriod = (api->getNextWakeUpPeriod)() / 1000;
+    const unsigned int minutes = nextWakeUpPeriod / 60;
+    const unsigned int seconds = nextWakeUpPeriod - minutes * 60;
     snprintf(state->content, sizeof(state->content), NEXT_WAKE_UP, minutes, seconds);
 }
 
 static void provideHourMinuteState(TextState *state)
 {
-    Date date = api->getDate();
+    const Date date = api->getDate();
     snprintf(state->content, sizeof(state->content), "%02d:%02d", date.hour, date.minute);
 }
 
 static void provideSecondState(TextState *state)
 {
-    Date date = api->getDate();
+    const Date date = api->getDate();
     snprintf(state->content, sizeof(state->content), ":%02d", date.second);
 }
 
 static void provideBatteryState(TextState *state)
 {
-    int percent = api->getBattery();
+    const int percent = api->getBattery();
     snprintf(state->content, sizeof(state->content), "B:%03d%%", percent);
 }
 
 static void provideDateState(TextState *state)
 {
-    Date date = api->getDate();
+    const Date date = api->getDate();
     snprintf(state->content, sizeof(state->content), "%02d/%02d/%04d", date.day, date.month, date.year);
 }
 
 static void provideStepCounterState(TextState *state)
 {
-    unsigned int stepCount = api->getStepCounter();
+    const unsigned int stepCount = api->getStepCounter();
     snprintf(state->content, sizeof(state->content), "S:%05d", stepCount);
 }
 

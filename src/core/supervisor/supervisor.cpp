@@ -2,20 +2,20 @@
 #include "core/tools/tools.hpp"
 
 #define uS_TO_S_FACTOR 1000000 // Conversion factor for micro seconds to seconds
-#define SLEEP_TIME_TRESHOLD 3
+#define SLEEP_TIME_TRESHOLD 3000
 
 static const char SUPERVISOR[] = "supervisor";
 
-static unsigned int cachedNextWakeUpPeriod = 0;
-static unsigned short cachedTimeToSleep = 0;
+static unsigned long cachedNextWakeUpPeriod = 0;
+static unsigned long cachedTimeToSleep = 0;
 static WakeUpReason cachedWakeUpReason = WUR_UNKNOWN;
 
-static unsigned int getNextWakeUpPeriod()
+static unsigned long getNextWakeUpPeriod()
 {
     return cachedNextWakeUpPeriod;
 }
 
-static unsigned short getTimeToSleep()
+static unsigned long getTimeToSleep()
 {
     return cachedTimeToSleep;
 }
@@ -27,17 +27,17 @@ static WakeUpReason getWakeUpReason()
 
 static unsigned long calcSleepTime(SupervisorParameters *p)
 {
-    unsigned int secondsToNextWakeUp = (p->manager->getNextWakeUpPeriod)() / 1000; // todo fix it by decision what it should be - secs or millis
-    if (secondsToNextWakeUp == NW_NO_SLEEP)
+    const unsigned long millisToNextWakeUp = (p->manager->getNextWakeUpPeriod)();
+    if (millisToNextWakeUp == NW_NO_SLEEP)
     {
         return NW_NO_SLEEP;
     }
-    Date now = (p->rtcApi->getDate)();
-    unsigned int secondsToNextHour = secondsToNextHourStart(now);
-    unsigned int minimum = secondsToNextHour;
-    if (secondsToNextWakeUp < secondsToNextHour)
+    const Date now = (p->rtcApi->getDate)();
+    const unsigned long millisToNextHour = secondsToNextHourStart(now) * 1000;
+    unsigned long minimum = millisToNextHour;
+    if (millisToNextWakeUp < millisToNextHour)
     {
-        minimum = secondsToNextWakeUp;
+        minimum = millisToNextWakeUp;
     }
     return minimum;
 }
@@ -50,8 +50,8 @@ static void tryToSleep(SupervisorParameters *p, unsigned long sleepTime)
     }
     else
     {
-        sleepTime = sleepTime - SLEEP_TIME_TRESHOLD; // todo consinder the new parameter
-        if (sleepTime > 1)
+        sleepTime = sleepTime - SLEEP_TIME_TRESHOLD; // todo consider the new parameter
+        if (sleepTime > 1000)
         {
             cachedWakeUpReason = (p->supervisorSleep)(p, sleepTime);
         }
@@ -69,12 +69,12 @@ static bool timeToSleep(SupervisorParameters *p)
     return diff >= p->goToSleepTime;
 }
 
-WakeUpReason supervisorSleep(void *v, unsigned int sleepTimeSec)
+WakeUpReason supervisorSleep(void *v, unsigned long sleepTimeMillis)
 {
     SupervisorParameters *p = (SupervisorParameters *)v;
-    (p->systemApi->log)(SUPERVISOR, "sleep for %d sec", sleepTimeSec);
+    (p->systemApi->log)(SUPERVISOR, "sleep for %d millis", sleepTimeMillis);
     (p->watchApi->beforeGoToSleep)();
-    WakeUpReason wakeUpReason = (p->watchApi->goToSleep)(sleepTimeSec * uS_TO_S_FACTOR); // here it stops
+    WakeUpReason wakeUpReason = (p->watchApi->goToSleep)(sleepTimeMillis * 1000/*uS_TO_S_FACTOR*/); // here it stops
     (p->watchApi->afterWakeUp)();
     (p->systemApi->log)(SUPERVISOR, "after wake up");
     return wakeUpReason;

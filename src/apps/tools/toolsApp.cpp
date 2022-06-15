@@ -20,7 +20,7 @@ static Component *getActiveTile()
     return tile;
 }
 
-static unsigned int getNextWakeUpPeriod()
+static unsigned long getNextWakeUpPeriod()
 {
     return NW_DONT_CARE;
 }

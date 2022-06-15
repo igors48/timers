@@ -17,8 +17,8 @@ typedef struct {
     void (*setDate)(unsigned char day, unsigned char month);
     int (*getBattery)();
     unsigned int (*getStepCounter)();
-    unsigned short (*getTimeToSleep)();
-    unsigned int (*getNextWakeUpPeriod)();
+    unsigned long (*getTimeToSleep)();
+    unsigned long (*getNextWakeUpPeriod)();
     WakeUpReason (*getWakeUpReason)();
     void (*onGesture)(Gesture gesture);
 } ClockAppApi;

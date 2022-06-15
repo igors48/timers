@@ -26,7 +26,7 @@ static Component *getActiveTile()
     return tile;
 }
 
-static unsigned int getNextWakeUpPeriod()
+static unsigned long getNextWakeUpPeriod()
 {
     switch (timer.state)
     {
@@ -50,9 +50,16 @@ static unsigned long getTimerState()
     }
 }
 
+static unsigned long getSimulatedTickCount() // todo create time service with milliseconds simulation based on freertos ticks
+{
+    const long time = (systemApi->time)();
+    return time * 1000;
+}
+
+
 static void startTimer()
 {
-    const unsigned int tickCount = (systemApi->getTickCount)();
+    const unsigned long tickCount = getSimulatedTickCount();
     timerStart(&timer, 15000, tickCount);
 }
 
@@ -72,7 +79,7 @@ static void onGesture(Gesture gesture)
 
 void timerAppTick()
 {
-    const unsigned int tickCount = (systemApi->getTickCount)();
+    const unsigned long tickCount = getSimulatedTickCount();
     timerTick(&timer, tickCount);
     (tiler->renderApp)(false);
 }

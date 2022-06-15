@@ -33,17 +33,17 @@ long time() // todo name convention for common and local mock funcs
     return timeResult;
 }
 
-WakeUpReason supervisorSleepStub(void *p, unsigned int sleepTimeSec)
+WakeUpReason supervisorSleepStub(void *p, unsigned long sleepTimeMillis)
 {
     goToSleepCalled = true;
-    sleepTimeSecValue = sleepTimeSec;
+    sleepTimeSecValue = sleepTimeMillis;
     return wakeUpReason;
 }
 
-WakeUpReason supervisorSleepSomeTimeStub(void *p, unsigned int sleepTimeSec)
+WakeUpReason supervisorSleepSomeTimeStub(void *p, unsigned long sleepTimeMillis)
 {
     goToSleepCalled = true;
-    sleepTimeSecValue = sleepTimeSec;
+    sleepTimeSecValue = sleepTimeMillis;
     timeResult = 48; // to simulate time pass
     return wakeUpReason;
 }
@@ -112,7 +112,7 @@ void whenActionModeAndIdleTimePassed()
     supervisor(&p);
 
     TEST_ASSERT_TRUE(goToSleepCalled); // THEN go to sleep
-    unsigned int sleepTime = 3600 - 1 - 3; // (hour in sec) - (1sec from dateResult.second) - (supervisor threshold)
+    unsigned int sleepTime = (3600 - 1 - 3) * 1000; // ((hour in sec) - (1sec from dateResult.second) - (supervisor threshold)) => millis
     TEST_ASSERT_EQUAL_UINT32(sleepTime, sleepTimeSecValue); // THEN for sleep calculated time
     TEST_ASSERT_EQUAL_INT64(timeResult, lastUserEventTimestamp); // THEN last user event timestamp updated
 }
@@ -160,10 +160,9 @@ void whenActionModeAndIdleTimePassedButManagerReturnsTimeLesserToNextHour()
     supervisor(&p);
 
     TEST_ASSERT_TRUE(goToSleepCalled); // THEN go to sleep
-    // todo uncomment nextWakeUpPeriod below and remove * 1000 (2 occurrences) after fix todo in supervisor
-    unsigned int sleepTime = /*nextWakeUpPeriod*/ 48 * 60 - 3; // (next wake up period) - (supervisor threshold)
+    unsigned int sleepTime = nextWakeUpPeriod - 3 * 1000; // (next wake up period) - (supervisor threshold)
     TEST_ASSERT_EQUAL_UINT32(sleepTime, sleepTimeSecValue); // THEN for sleep calculated time
-    TEST_ASSERT_EQUAL_UINT32(nextWakeUpPeriod, supervisorApi.getNextWakeUpPeriod() * 1000); // THEN next wake up period returned by api
+    TEST_ASSERT_EQUAL_UINT32(nextWakeUpPeriod, supervisorApi.getNextWakeUpPeriod()); // THEN next wake up period returned by api
     TEST_ASSERT_EQUAL_INT64(timeResult, lastUserEventTimestamp); // THEN last user event timestamp updated
 }
 
@@ -239,7 +238,7 @@ void whenSleepTimeGreaterThanGotoSleepPeriod()
     supervisor(&p);
 
     TEST_ASSERT_TRUE(goToSleepCalled); // THEN sleep
-    TEST_ASSERT_EQUAL_UINT32(7, sleepTimeSecValue); // THEN for 7 second
+    TEST_ASSERT_EQUAL_UINT32(7000, sleepTimeSecValue); // THEN for 7000 milliseconds
     TEST_ASSERT_EQUAL_INT64(timeResult, lastUserEventTimestamp); // THEN last user event timestamp updated
 }
 

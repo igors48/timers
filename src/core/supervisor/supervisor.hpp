@@ -11,7 +11,7 @@ typedef struct
     void *watchMutex;
     long *lastUserEventTimestamp;
     unsigned short goToSleepTime;
-    WakeUpReason (*supervisorSleep)(void *v, unsigned int sleepTimeSec);
+    WakeUpReason (*supervisorSleep)(void *v, unsigned long sleepTimeSec);
     SystemApi *systemApi;
     WatchApi *watchApi;
     RtcApi *rtcApi;
@@ -20,12 +20,12 @@ typedef struct
 
 typedef struct 
 {
-    unsigned int (*getNextWakeUpPeriod)();
-    unsigned short (*getTimeToSleep)();
+    unsigned long (*getNextWakeUpPeriod)();
+    unsigned long (*getTimeToSleep)();
     WakeUpReason (*getWakeUpReason)();
 } SupervisorApi;
 
 void supervisor(SupervisorParameters *p);
-WakeUpReason supervisorSleep(void *p, unsigned int sleepTimeSec);
+WakeUpReason supervisorSleep(void *p, unsigned long sleepTimeMillis);
 
 SupervisorApi watchSupervisorApi();
