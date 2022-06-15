@@ -44,13 +44,13 @@ static unsigned long getTimerState()
     switch (timer.state)
     {
         case TMS_RUN:
-            return timer.timeKeeper.duration / 1000; // todo replace two dots access with function
+            return timer.timeKeeper.duration / 1000; // todo replace two dots access with function #81
         default:
             return 0;        
     }
 }
 
-static unsigned long getSimulatedTickCount() // todo create time service with milliseconds simulation based on freertos ticks
+static unsigned long getSimulatedTickCount() // todo create time service with milliseconds simulation based on freertos ticks #82
 {
     const long time = (systemApi->time)();
     return time * 1000;
