@@ -190,6 +190,8 @@ void createTimerApplication()
     timerApp = createTimerApp(timerAppTickerTaskHandle, &systemApi, &soundApi, &tiler, &manager, &factory);
 }
 
+TFT_eSprite *screen;
+
 void setup()
 {
     Serial.begin(115200);
@@ -206,13 +208,16 @@ void setup()
         watchApi.afterWakeUp();
         delay(500);
 
+        screen = new TFT_eSprite(watch->tft);
+
         powerApi = watchPowerApi();
         systemApi = defaultSystemApi();
         rtcApi = watchRtcApi();
-        tftApi = watchTftApi();
+        tftApi = watchTftApi(screen);
         bmaApi = watchBmaApi();
         motorApi = watchMotorApi();
         i2sApi = watchI2sApi();
+
 
         soundApi = watchSoundApi(&soundQueue, &systemApi);
 

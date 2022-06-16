@@ -5,7 +5,6 @@
 */
 #include "tiler.hpp"
 
-#include "libraries/TFT_eSPI/TFT_eSPI.h"
 #include "core/watch/ttgo.hpp"
 
 /**
@@ -40,9 +39,8 @@ static void drawGrid()
  */
 static void renderApp(bool forced)
 {
-    TFT_eSprite screen = TFT_eSprite(watch->tft);
     Component *activeTile = (activeApp->getActiveTile)();
-    if (forced)
+    if (true/*forced*/)
     {
         (tilerTftApi->fillRect)(0, 0, 240, 240, COLOR_BLACK);
         if (developmentMode)
@@ -50,7 +48,8 @@ static void renderApp(bool forced)
             drawGrid();
         }
     }
-    (activeTile->render)(activeTile, forced, tilerTftApi);
+    (activeTile->render)(activeTile, true/*forced*/, tilerTftApi);
+    (tilerTftApi->pushSprite)();
     (activeTile->updateState)(activeTile);
 }
 

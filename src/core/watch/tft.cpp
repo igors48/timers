@@ -1,58 +1,66 @@
 #include "tft.hpp"
-#include "ttgo.hpp"
+
+static TFT_eSprite *screeny;
 
 static void setCursor(signed short x, signed short y)
 {
-    watch->tft->setCursor(x, y);
+    screeny->setCursor(x, y);
 }
 
 static void setTextSize(unsigned char s)
 {
-    watch->tft->setTextSize(s);
+    screeny->setTextSize(s);
 }
 
 static void setTextFont(unsigned char f)
 {
-    watch->tft->setTextFont(f);
+    screeny->setTextFont(f);
 }
 
 static void setTextColor(unsigned short f, unsigned short b)
 {
-    watch->tft->setTextColor(f, b);
+    screeny->setTextColor(f, b);
 }
 
 static void print(const char str[])
 {
-    watch->tft->print(str);
+    screeny->print(str);
 }
 
 static void drawRect(signed int x, signed int y, signed int w, signed int h, unsigned int color)
 {
-    watch->tft->drawRect(x, y, w, h, color);
+    screeny->drawRect(x, y, w, h, color);
 }
 
 static void fillRect(signed int x, signed int y, signed int w, signed int h, unsigned int color)
 {
-    watch->tft->fillRect(x, y, w, h, color);
+    screeny->fillRect(x, y, w, h, color);
 }
 
 static void fillRoundRect(signed int x, signed int y, signed int w, signed int h, signed int r, unsigned int color)
 {
-    watch->tft->fillRoundRect(x, y, w, h, r, color);
+    screeny->fillRoundRect(x, y, w, h, r, color);
 }
 
 static void drawFastVLine(signed int x, signed int y, signed int h, unsigned int color)
 {
-    watch->tft->drawFastVLine(x, y, h, color);
+    screeny->drawFastVLine(x, y, h, color);
 }
 
 static void drawFastHLine(signed int x, signed int y, signed int w, unsigned int color)
 {
-    watch->tft->drawFastHLine(x, y, w, color);
+    screeny->drawFastHLine(x, y, w, color);
 }
 
-TftApi watchTftApi()
+static void pushSprite()
 {
+    screeny->pushSprite(0, 0);
+}
+
+TftApi watchTftApi(TFT_eSprite *screen)
+{    
+    screeny = screen;
+    
     return {
         .setCursor = setCursor,
         .setTextSize = setTextSize,
@@ -64,5 +72,6 @@ TftApi watchTftApi()
         .fillRoundRect = fillRoundRect,
         .drawFastVLine = drawFastVLine,
         .drawFastHLine = drawFastHLine,
+        .pushSprite = pushSprite,
     };
 }

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "ttgo.hpp"
+
 typedef struct
 {
         void (*setCursor)(signed short x, signed short y);
@@ -12,6 +14,7 @@ typedef struct
         void (*fillRoundRect)(signed int x, signed int y, signed int w, signed int h, signed int r, unsigned int color);
         void (*drawFastVLine)(signed int x, signed int y, signed int h, unsigned int color);
         void (*drawFastHLine)(signed int x, signed int y, signed int w, unsigned int color);
+        void (*pushSprite)();
 } TftApi;
 
-TftApi watchTftApi();
+TftApi watchTftApi(TFT_eSprite *screen);
