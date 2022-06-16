@@ -5,6 +5,9 @@
 */
 #include "tiler.hpp"
 
+#include "libraries/TFT_eSPI/TFT_eSPI.h"
+#include "core/watch/ttgo.hpp"
+
 /**
  * @brief Pointer to the active Application
  */
@@ -37,6 +40,7 @@ static void drawGrid()
  */
 static void renderApp(bool forced)
 {
+    TFT_eSprite screen = TFT_eSprite(watch->tft);
     Component *activeTile = (activeApp->getActiveTile)();
     if (forced)
     {
