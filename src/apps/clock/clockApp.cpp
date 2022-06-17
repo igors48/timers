@@ -14,6 +14,7 @@ static SupervisorApi *supervisorApi;
 
 static Date date;
 static int batteryPercent;
+static unsigned int stepCounter;
 
 static int tileNo;
 static Component *clockTile;
@@ -26,6 +27,7 @@ static void update()
 {
     date = (rtcApi->getDate)();
     batteryPercent = (powerApi->getBattPercentage)();
+    stepCounter = (bmaApi->getCounter)();
 }
 
 static void clockAppActivate()
@@ -137,7 +139,7 @@ static int getBattery()
 
 static unsigned int getStepCounter()
 {
-    return (bmaApi->getCounter)();
+    return stepCounter;
 }
 
 static unsigned long getNextWakeUpPeriod()

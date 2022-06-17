@@ -42,8 +42,8 @@ static void renderApp(bool forced)
     Component *activeTile = (activeApp->getActiveTile)();
     if (!forced)
     {
-        bool modified = (activeTile->isStateModified)(activeTile);
-        Serial.printf("state modified: %d\r\n", modified);
+        const bool modified = (activeTile->isStateModified)(activeTile);
+        //Serial.printf("state modified: %d\r\n", modified);
         if (!modified) 
         {
             return;        
