@@ -1,8 +1,8 @@
 /**
- * @file 
+ * @file
  * @author Igor Usenko (github: igors48)
  * @brief Default implementation of the application's tile controller
-*/
+ */
 #include "tiler.hpp"
 
 #include "core/watch/ttgo.hpp"
@@ -40,21 +40,15 @@ static void drawGrid()
 static void renderApp(bool forced)
 {
     Component *activeTile = (activeApp->getActiveTile)();
-    if (!forced)
+    if (forced)
     {
-        const bool modified = (activeTile->isStateModified)(activeTile);
-        //Serial.printf("state modified: %d\r\n", modified);
-        if (!modified) 
+        (tilerTftApi->fillRect)(0, 0, 240, 240, COLOR_BLACK);
+        if (developmentMode)
         {
-            return;        
+            drawGrid();
         }
     }
-    (tilerTftApi->fillRect)(0, 0, 240, 240, COLOR_BLACK);
-    if (developmentMode)
-    {
-        drawGrid();
-    }
-    (activeTile->render)(activeTile, /*forced*/true, tilerTftApi);
+    (activeTile->render)(activeTile, forced, tilerTftApi);
     (tilerTftApi->pushSprite)();
     (activeTile->updateState)(activeTile);
 }

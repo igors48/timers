@@ -1,77 +1,67 @@
 #include "tft.hpp"
 
-static TFT_eSprite *screeny;
-static signed short cursorX; 
-static signed short cursorY;
-
-static void setCursor(signed short x, signed short y)
-{
-    //screeny->setCursor(x, y);
-    cursorX = x;
-    cursorY = y;
-}
+static TFT_eSprite *sprite;
 
 static void setTextSize(unsigned char s)
 {
-    screeny->setTextSize(s);
+    sprite->setTextSize(s);
 }
 
 static void setTextFont(unsigned char f)
 {
-    screeny->setTextFont(f);
+    sprite->setTextFont(f);
 }
 
 static void setTextColor(unsigned short f, unsigned short b)
 {
-    screeny->setTextColor(f);//, b);
+    sprite->setTextColor(f, b);
 }
 
-static void print(const char str[])
+static void drawString(const char str[], signed int x, signed int y)
 {
-    //screeny->print(str);
-    screeny->drawString(str, cursorX, cursorY);
+    sprite->drawString(str, x, y);
 }
 
 static void drawRect(signed int x, signed int y, signed int w, signed int h, unsigned int color)
 {
-    screeny->drawRect(x, y, w, h, color);
+    sprite->drawRect(x, y, w, h, color);
 }
 
 static void fillRect(signed int x, signed int y, signed int w, signed int h, unsigned int color)
 {
-    screeny->fillRect(x, y, w, h, color);
+    sprite->fillRect(x, y, w, h, color);
 }
 
 static void fillRoundRect(signed int x, signed int y, signed int w, signed int h, signed int r, unsigned int color)
 {
-    screeny->fillRoundRect(x, y, w, h, r, color);
+    sprite->fillRoundRect(x, y, w, h, r, color);
 }
 
 static void drawFastVLine(signed int x, signed int y, signed int h, unsigned int color)
 {
-    screeny->drawFastVLine(x, y, h, color);
+    sprite->drawFastVLine(x, y, h, color);
 }
 
 static void drawFastHLine(signed int x, signed int y, signed int w, unsigned int color)
 {
-    screeny->drawFastHLine(x, y, w, color);
+    sprite->drawFastHLine(x, y, w, color);
 }
 
 static void pushSprite()
 {
-    screeny->pushSprite(0, 0);
+    sprite->pushSprite(0, 0);
 }
 
-TftApi watchTftApi(TFT_eSprite *screen)
-{    
-    screeny = screen;
-    
+TftApi watchTftApi()
+{
+    sprite = new TFT_eSprite(watch->tft);
+    sprite->createSprite(240, 240);
+
     return {
-        .setCursor = setCursor,
         .setTextSize = setTextSize,
         .setTextFont = setTextFont,
         .setTextColor = setTextColor,
-        .print = print,
+        .drawString = drawString,
         .drawRect = drawRect,
         .fillRect = fillRect,
         .fillRoundRect = fillRoundRect,

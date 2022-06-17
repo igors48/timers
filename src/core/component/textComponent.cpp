@@ -5,11 +5,10 @@
 void textComponentRender(Component *component, bool forced, TftApi *tftApi)
 {
     TextState *state = (TextState *)component->state;
-    (tftApi->setCursor)(component->x, component->y);
     (tftApi->setTextSize)(state->size);
     (tftApi->setTextFont)(state->font);
     (tftApi->setTextColor)(state->fontColor, state->backColor);
-    (tftApi->print)(state->content);
+    (tftApi->drawString)(state->content, component->x, component->y);
 }
 
 bool textComponentIsStateModified(Component *component)
