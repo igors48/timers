@@ -48,6 +48,14 @@ static void renderApp(bool forced)
             drawGrid();
         }
     }
+    else
+    {
+        const bool modified = (activeTile->isStateModified)(activeTile);
+        if (!modified) 
+        {
+            return;        
+        }
+    }
     (activeTile->render)(activeTile, forced, tilerTftApi);
     (tilerTftApi->pushSprite)();
     (activeTile->updateState)(activeTile);
