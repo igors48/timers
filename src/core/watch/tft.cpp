@@ -23,7 +23,7 @@ static void setTextFont(unsigned char f)
 
 static void setTextColor(unsigned short f, unsigned short b)
 {
-    screeny->setTextColor(f, b);
+    screeny->setTextColor(f);//, b);
 }
 
 static void print(const char str[])

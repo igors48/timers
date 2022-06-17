@@ -209,6 +209,7 @@ void setup()
         delay(500);
 
         screen = new TFT_eSprite(watch->tft);
+        screen->createSprite(240, 240);
 
         powerApi = watchPowerApi();
         systemApi = defaultSystemApi();
@@ -249,7 +250,7 @@ void setup()
             .watchApi = &watchApi,
             .systemApi = &systemApi,
         };
-        xTaskCreate(touchScreenListenerTask, "touchScreenListenerTask", 2048, (void *)&touchScreenListenerParameters, 1, &touchScreenListenerTaskHandle);
+        xTaskCreate(touchScreenListenerTask, "touchScreenListenerTask", 4096, (void *)&touchScreenListenerParameters, 1, &touchScreenListenerTaskHandle);
 
         serviceProcedureParameters = {
             .watchMutex = &watchMutex,

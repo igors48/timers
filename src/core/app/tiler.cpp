@@ -40,15 +40,21 @@ static void drawGrid()
 static void renderApp(bool forced)
 {
     Component *activeTile = (activeApp->getActiveTile)();
-    if (true/*forced*/)
+    if (!forced)
     {
-        (tilerTftApi->fillRect)(0, 0, 240, 240, COLOR_BLACK);
-        if (developmentMode)
+        bool modified = (activeTile->isStateModified)(activeTile);
+        Serial.printf("state modified: %d\r\n", modified);
+        if (!modified) 
         {
-            drawGrid();
+            return;        
         }
     }
-    (activeTile->render)(activeTile, true/*forced*/, tilerTftApi);
+    (tilerTftApi->fillRect)(0, 0, 240, 240, COLOR_BLACK);
+    if (developmentMode)
+    {
+        drawGrid();
+    }
+    (activeTile->render)(activeTile, /*forced*/true, tilerTftApi);
     (tilerTftApi->pushSprite)();
     (activeTile->updateState)(activeTile);
 }
