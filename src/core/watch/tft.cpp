@@ -1,10 +1,14 @@
 #include "tft.hpp"
 
 static TFT_eSprite *screeny;
+static signed short cursorX; 
+static signed short cursorY;
 
 static void setCursor(signed short x, signed short y)
 {
-    screeny->setCursor(x, y);
+    //screeny->setCursor(x, y);
+    cursorX = x;
+    cursorY = y;
 }
 
 static void setTextSize(unsigned char s)
@@ -24,7 +28,8 @@ static void setTextColor(unsigned short f, unsigned short b)
 
 static void print(const char str[])
 {
-    screeny->print(str);
+    //screeny->print(str);
+    screeny->drawString(str, cursorX, cursorY);
 }
 
 static void drawRect(signed int x, signed int y, signed int w, signed int h, unsigned int color)
