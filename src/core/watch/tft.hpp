@@ -1,3 +1,10 @@
+/**
+ * @file 
+ * @author Igor Usenko (github: igors48)
+ * @brief TFT API definition
+ * 
+ * List of available functions for work with TFT   
+*/
 #pragma once
 
 typedef struct

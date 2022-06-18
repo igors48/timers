@@ -1,3 +1,13 @@
+/**
+ * @file 
+ * @author Igor Usenko (github: igors48)
+ * @brief TFT API implementation based on sprite
+ * 
+ * Holds in memory full-screen sprite    
+ * All drawings are performed on that sprite    
+ * When all is drawn - sprite is pushed to video memory    
+ * Also maintains the dirty flag to prevent not needed pushes        
+*/
 #include "tft.hpp"
 #include "ttgo.hpp"
 

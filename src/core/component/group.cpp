@@ -1,3 +1,8 @@
+/**
+ * @file 
+ * @author Igor Usenko (github: igors48)
+ * @brief Group of components implementation
+*/
 #include <stddef.h>
 
 #include "group.hpp"
@@ -16,14 +21,14 @@ void groupRender(Component *group, bool forced, TftApi *tftApi)
     }
 }
 
-bool groupIsStateModified(Component *component)
+bool groupIsStateModified(Component *group)
 {
     return true;
 }
 
-void groupUpdateState(Component *component)
+void groupUpdateState(Component *group)
 {
-    GroupState *state = (GroupState *)(component->state);
+    GroupState *state = (GroupState *)(group->state);
     bool result = false;
     for (int i = 0; i < state->childrenCount; i++)
     {
@@ -32,9 +37,9 @@ void groupUpdateState(Component *component)
     }
 }
 
-Component *groupContains(Component *component, signed short x, signed short y)
+Component *groupContains(Component *group, signed short x, signed short y)
 {
-    GroupState *state = (GroupState *)(component->state);
+    GroupState *state = (GroupState *)(group->state);
     for (int i = 0; i < state->childrenCount; i++)
     {
         Component *current = (Component *)(state->children[i]);
@@ -47,14 +52,14 @@ Component *groupContains(Component *component, signed short x, signed short y)
     return NULL;
 }
 
-void groupMount(Component *component, signed short x, signed short y)
+void groupMount(Component *group, signed short x, signed short y)
 {
-    component->x += x;
-    component->y += y;
-    GroupState *state = (GroupState *)(component->state);
+    group->x += x;
+    group->y += y;
+    GroupState *state = (GroupState *)(group->state);
     for (int i = 0; i < state->childrenCount; i++)
     {
         Component *current = (Component *)(state->children[i]);
-        (current->mount)(current, component->x, component->y);
+        (current->mount)(current, group->x, group->y);
     }
 }

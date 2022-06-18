@@ -40,7 +40,7 @@ typedef struct
     Component* (*contains)(signed short x, signed short y); // todo rename to find #93
 
     /**
-     * @brief Sends onTouch event to the given Component
+     * @brief Sends onTouch event to the given Component and renders application after 
      * 
      * @param component point to the Component
      * @param x x coordinate of the event 
@@ -50,7 +50,7 @@ typedef struct
     void (*onTouch)(Component *component, signed short x, signed short y, unsigned long tickCount); 
 
     /**
-     * @brief Sends onMove event to the given Component
+     * @brief Sends onMove event to the given Component and renders application after 
      * 
      * @param component point to the Component
      * @param x x coordinate of the event 
@@ -60,7 +60,7 @@ typedef struct
     void (*onMove)(Component *component, signed short x, signed short y, unsigned long tickCount); 
     
     /**
-     * @brief Sends onRelease event to the given Component
+     * @brief Sends onRelease event to the given Component and renders application after 
      * 
      * @param component point to the Component
      * @param x x coordinate of the event 
@@ -70,7 +70,7 @@ typedef struct
     void (*onRelease)(Component *component, signed short x, signed short y, unsigned long tickCount); 
 
     /**
-     * @brief Sends onGesture event to the given Component
+     * @brief Sends onGesture event to the given Component and renders application after 
      * 
      * @param component point to the Component
      * @param gesture gesture code
@@ -78,13 +78,13 @@ typedef struct
     void (*onGesture)(Gesture gesture);
 
     /**
-     * @brief Sends onButton event to the given Component      
+     * @brief Sends onButton event to the given Component and renders application after     
      */
     void (*onButton)();
 } Tiler;
 
 /**
- * @brief Create a default implementation of Tiler
+ * @brief Create a default implementation of Tiler and renders application after 
  * 
  * @param tftApi pointer to TFT API
  * @return Tiler new instance
