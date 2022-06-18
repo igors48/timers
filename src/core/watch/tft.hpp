@@ -1,7 +1,5 @@
 #pragma once
 
-#include "ttgo.hpp"
-
 typedef struct
 {
         void (*setTextSize)(unsigned char s);

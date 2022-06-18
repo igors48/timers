@@ -203,7 +203,7 @@ void whenNewState()
 {
     bool newState = groupIsStateModified(group);
 
-    TEST_ASSERT_TRUE(newState); // THEN true as a result
+    TEST_ASSERT_TRUE(newState); // THEN true as group always return true
 }
 
 void whenAllChildrenNewStateReturnedFalse()
@@ -214,7 +214,7 @@ void whenAllChildrenNewStateReturnedFalse()
 
     bool newState = groupIsStateModified(group);
 
-    TEST_ASSERT_FALSE(newState); // THEN false as a result
+    TEST_ASSERT_TRUE(newState); // THEN true as group always return true
 }
 
 void whenNotAllChildrenNewStateReturnedFalse()
@@ -224,7 +224,7 @@ void whenNotAllChildrenNewStateReturnedFalse()
 
     bool newState = groupIsStateModified(group);
 
-    TEST_ASSERT_TRUE(newState); // THEN true as a result
+    TEST_ASSERT_TRUE(newState); // THEN true as group always return true
 }
 
 void whenGroupUpdatingState()

@@ -5,8 +5,6 @@
  */
 #include "tiler.hpp"
 
-#include "core/watch/ttgo.hpp"
-
 /**
  * @brief Pointer to the active Application
  */

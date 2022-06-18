@@ -16,6 +16,7 @@ bool activeTileStateUpdated;
 bool childOnTouchCalled;
 bool childOnMoveCalled;
 bool childOnReleaseCalled;
+bool spritePushed;
 Component *eventTarget;
 
 Tiler tiler;
@@ -38,6 +39,11 @@ void drawFastVLine(signed int x, signed int y, signed int h, unsigned int color)
 void drawFastHLine(signed int x, signed int y, signed int w, unsigned int color)
 {
     // empty
+}
+
+void pushSprite()
+{
+    spritePushed = true;
 }
 
 void render(Component *component, bool forced, TftApi *tftApi)
@@ -126,30 +132,37 @@ void setUp(void)
         .fillRect = fillRect,
         .drawFastVLine = drawFastVLine,
         .drawFastHLine = drawFastHLine,
+        .pushSprite = pushSprite,
     };
 
+    spritePushed = false;
+    
     tiler = createTiler(&tftApiStub);
     tiler.setApp(&appStub);
 }
+
+//platformio test --environment native --filter "*_tiler*"
 
 void whenRenderInForcedMode()
 {
     tiler.renderApp(true);
 
-    TEST_ASSERT_TRUE(fillRectCalled);         // THEN screen cleared
-    TEST_ASSERT_TRUE(activeTileRendered);     // THEN active tile rendered
-    TEST_ASSERT_TRUE(activeTileRenderMode);   // THEN active tile rendered in the forced mode
-    TEST_ASSERT_TRUE(activeTileStateUpdated); // THEN active tile state updated
+    TEST_ASSERT_TRUE(fillRectCalled);           // THEN screen cleared
+    TEST_ASSERT_TRUE(activeTileRendered);       // THEN active tile rendered
+    TEST_ASSERT_TRUE(activeTileRenderMode);     // THEN active tile rendered in the forced mode
+    TEST_ASSERT_TRUE(activeTileStateUpdated);   // THEN active tile state updated
+    TEST_ASSERT_TRUE(spritePushed);             // THEN sprite pushed 
 }
 
 void whenRenderInNotForcedMode()
 {
     tiler.renderApp(false);
 
-    TEST_ASSERT_FALSE(fillRectCalled);        // THEN screen not cleared
-    TEST_ASSERT_TRUE(activeTileRendered);     // THEN active tile rendered
-    TEST_ASSERT_FALSE(activeTileRenderMode);  // THEN active tile rendered in the not forced mode
-    TEST_ASSERT_TRUE(activeTileStateUpdated); // THEN active tile state updated
+    TEST_ASSERT_FALSE(fillRectCalled);          // THEN screen not cleared
+    TEST_ASSERT_TRUE(activeTileRendered);       // THEN active tile rendered
+    TEST_ASSERT_FALSE(activeTileRenderMode);    // THEN active tile rendered in the not forced mode
+    TEST_ASSERT_TRUE(activeTileStateUpdated);   // THEN active tile state updated
+    TEST_ASSERT_TRUE(spritePushed);             // THEN sprite pushed 
 }
 
 void whenContainsCalled()
@@ -168,6 +181,7 @@ void whenOnGestureCalled()
     TEST_ASSERT_FALSE(activeTileRenderMode);                // THEN active tile rendered in the not forced mode
     TEST_ASSERT_TRUE(activeTileStateUpdated);               // THEN active tile state updated
     TEST_ASSERT_EQUAL_UINT64(eventTarget, &activeTileStub); // THEN event target is active tile
+    TEST_ASSERT_TRUE(spritePushed);                         // THEN sprite pushed 
 }
 
 void whenOnButtonCalled()
@@ -176,42 +190,46 @@ void whenOnButtonCalled()
 
     TEST_ASSERT_TRUE(activeTileOnButtonCalled);             // THEN active tile button handler called
     TEST_ASSERT_TRUE(activeTileRendered);                   // THEN active tile rendered
-    TEST_ASSERT_TRUE(activeTileRenderMode);                // THEN active tile rendered in the not forced mode
+    TEST_ASSERT_TRUE(activeTileRenderMode);                 // THEN active tile rendered in the not forced mode
     TEST_ASSERT_TRUE(activeTileStateUpdated);               // THEN active tile state updated
     TEST_ASSERT_EQUAL_UINT64(eventTarget, &activeTileStub); // THEN event target is active tile
+    TEST_ASSERT_TRUE(spritePushed);                         // THEN sprite pushed 
 }
 
 void whenOnTouchCalled()
 {
     tiler.onTouch(&child, 0, 0, 0);
 
-    TEST_ASSERT_TRUE(childOnTouchCalled);          // THEN child component on touch handler called
-    TEST_ASSERT_TRUE(activeTileRendered);          // THEN active tile rendered
-    TEST_ASSERT_FALSE(activeTileRenderMode);       // THEN active tile rendered in the not forced mode
-    TEST_ASSERT_TRUE(activeTileStateUpdated);      // THEN active tile state updated
-    TEST_ASSERT_EQUAL_UINT64(eventTarget, &child); // THEN event target is child component
+    TEST_ASSERT_TRUE(childOnTouchCalled);           // THEN child component on touch handler called
+    TEST_ASSERT_TRUE(activeTileRendered);           // THEN active tile rendered
+    TEST_ASSERT_FALSE(activeTileRenderMode);        // THEN active tile rendered in the not forced mode
+    TEST_ASSERT_TRUE(activeTileStateUpdated);       // THEN active tile state updated
+    TEST_ASSERT_EQUAL_UINT64(eventTarget, &child);  // THEN event target is child component
+    TEST_ASSERT_TRUE(spritePushed);                 // THEN sprite pushed 
 }
 
 void whenOnMoveCalled()
 {
     tiler.onMove(&child, 0, 0, 0);
 
-    TEST_ASSERT_TRUE(childOnMoveCalled);           // THEN child component on move handler called
-    TEST_ASSERT_TRUE(activeTileRendered);          // THEN active tile rendered
-    TEST_ASSERT_FALSE(activeTileRenderMode);       // THEN active tile rendered in the not forced mode
-    TEST_ASSERT_TRUE(activeTileStateUpdated);      // THEN active tile state updated
-    TEST_ASSERT_EQUAL_UINT64(eventTarget, &child); // THEN event target is child component
+    TEST_ASSERT_TRUE(childOnMoveCalled);            // THEN child component on move handler called
+    TEST_ASSERT_TRUE(activeTileRendered);           // THEN active tile rendered
+    TEST_ASSERT_FALSE(activeTileRenderMode);        // THEN active tile rendered in the not forced mode
+    TEST_ASSERT_TRUE(activeTileStateUpdated);       // THEN active tile state updated
+    TEST_ASSERT_EQUAL_UINT64(eventTarget, &child);  // THEN event target is child component
+    TEST_ASSERT_TRUE(spritePushed);                 // THEN sprite pushed 
 }
 
 void whenOnReleaseCalled()
 {
     tiler.onRelease(&child, 0, 0, 0);
 
-    TEST_ASSERT_TRUE(childOnReleaseCalled);        // THEN child component on release handler called
-    TEST_ASSERT_TRUE(activeTileRendered);          // THEN active tile rendered
-    TEST_ASSERT_FALSE(activeTileRenderMode);       // THEN active tile rendered in the not forced mode
-    TEST_ASSERT_TRUE(activeTileStateUpdated);      // THEN active tile state updated
-    TEST_ASSERT_EQUAL_UINT64(eventTarget, &child); // THEN event target is child component
+    TEST_ASSERT_TRUE(childOnReleaseCalled);         // THEN child component on release handler called
+    TEST_ASSERT_TRUE(activeTileRendered);           // THEN active tile rendered
+    TEST_ASSERT_FALSE(activeTileRenderMode);        // THEN active tile rendered in the not forced mode
+    TEST_ASSERT_TRUE(activeTileStateUpdated);       // THEN active tile state updated
+    TEST_ASSERT_EQUAL_UINT64(eventTarget, &child);  // THEN event target is child component
+    TEST_ASSERT_TRUE(spritePushed);                 // THEN sprite pushed 
 }
 
 int main()

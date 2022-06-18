@@ -1,4 +1,5 @@
 #include "tft.hpp"
+#include "ttgo.hpp"
 
 static TFT_eSprite *sprite;
 static bool dirty;
