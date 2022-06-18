@@ -28,6 +28,8 @@ static Component* group;
 
 static ClockAppApi *api;
 
+unsigned char secondValue;
+
 static void provideWakeUpReason(TextState *state)
 {
     const WakeUpReason wakeUpReason = (api->getWakeUpReason)();
@@ -57,6 +59,11 @@ static void provideHourMinuteState(TextState *state)
 static void provideSecondState(TextState *state)
 {
     const Date date = api->getDate();
+    if (date.second != secondValue)
+    {
+        secondValue = date.second;
+        Serial.println("second changed");
+    }
     snprintf(state->content, sizeof(state->content), ":%02d", date.second);
 }
 
@@ -112,6 +119,8 @@ static void tick()
 Component* createClockAppTile(ClockAppApi *clockAppApi, Factory *factory)
 {
     api = clockAppApi;
+
+    secondValue = 255;
 
     hourMinute = (factory->createTextStateRef)(7, 1, COLOR_INFORMATION, provideHourMinuteState);
     second = (factory->createTextStateRef)(7, 1, COLOR_INFORMATION, provideSecondState);
