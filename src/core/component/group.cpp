@@ -18,17 +18,7 @@ void groupRender(Component *group, bool forced, TftApi *tftApi)
 
 bool groupIsStateModified(Component *component)
 {
-    GroupState *state = (GroupState *)(component->state);
-    bool result = false;
-    for (int i = 0; i < state->childrenCount; i++)
-    {
-        Component *current = (Component *)(state->children[i]);
-        if ((current->isStateModified)(current))
-        {
-            result = true;
-        }
-    }
-    return result;
+    return true;
 }
 
 void groupUpdateState(Component *component)
