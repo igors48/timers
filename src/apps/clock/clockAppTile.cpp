@@ -1,5 +1,7 @@
 #include <stdio.h>
 
+#include <Arduino.h>
+
 #include "clockApp.hpp"
 
 #include "core/component/textComponent.hpp"
@@ -102,6 +104,11 @@ static void hourMinuteComponentRender(Component *component, bool forced, TftApi 
     renderWithInactiveSegments(component, forced, tftApi, "88:88");
 }
 
+static void tick()
+{
+    Serial.println("tick");
+}
+
 Component* createClockAppTile(ClockAppApi *clockAppApi, Factory *factory)
 {
     api = clockAppApi;
@@ -131,6 +138,8 @@ Component* createClockAppTile(ClockAppApi *clockAppApi, Factory *factory)
     components[7] = (factory->createTextComponentRef)(10, 220, 50, 50, nextWakeUp);
  
     state = (factory->createGroupStateRef)(COMPONENTS_COUNT, components);
+    state->tick = tick;
+    
     group = (factory->createGroupComponentRef)(0, 0, state);
     group->onGesture = onGesture; 
 

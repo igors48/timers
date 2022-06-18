@@ -63,3 +63,8 @@ void groupMount(Component *group, signed short x, signed short y)
         (current->mount)(current, group->x, group->y);
     }
 }
+
+void groupNoopTick()
+{
+    // empty
+}

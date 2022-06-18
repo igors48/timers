@@ -150,6 +150,11 @@ static unsigned long getNextWakeUpPeriod()
 void clockAppTick()
 {
     update();
+    if (tileNo == 0)
+    {
+        GroupState *s = (GroupState *)(clockTile->state);
+        s->tick();
+    }
     renderApp(false);
 }
 

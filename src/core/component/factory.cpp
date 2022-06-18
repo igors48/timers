@@ -10,6 +10,7 @@ static GroupState* createGroupStateRef(unsigned char childrenCount, void **child
 
     state->childrenCount = childrenCount;
     state->children = children;
+    state->tick = groupNoopTick;
 
     return state;
 }
