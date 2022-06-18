@@ -8,27 +8,28 @@
 #include "core/component/group.hpp"
 
 static const unsigned char COMPONENTS_COUNT = 8;
-static void* components[COMPONENTS_COUNT];
+static void *components[COMPONENTS_COUNT];
 
 static char WAKE_UP_REASON[] = "WUR: %d";
 static char TIME_TO_SLEEP[] = "TTS: %ds";
 static char NEXT_WAKE_UP[] = "NWU: %dm %ds";
 
-static TextState* hourMinute;
-static TextState* second;
-static TextState* battery;
-static TextState* dateState;
-static TextState* stepCounter;
-static TextState* wakeUpReason;
-static TextState* timeToSleep;
-static TextState* nextWakeUp;
+static TextState *hourMinute;
+static TextState *second;
+static TextState *battery;
+static TextState *dateState;
+static TextState *stepCounter;
+static TextState *wakeUpReason;
+static TextState *timeToSleep;
+static TextState *nextWakeUp;
 
-static GroupState* state;
-static Component* group;
+static GroupState *state;
+static Component *group;
 
 static ClockAppApi *api;
 
 unsigned char secondValue;
+unsigned char fontColor = 255;
 
 static void provideWakeUpReason(TextState *state)
 {
@@ -62,6 +63,7 @@ static void provideSecondState(TextState *state)
     if (date.second != secondValue)
     {
         secondValue = date.second;
+        fontColor = 255;
         Serial.println("second changed");
     }
     snprintf(state->content, sizeof(state->content), ":%02d", date.second);
@@ -114,9 +116,20 @@ static void hourMinuteComponentRender(Component *component, bool forced, TftApi 
 static void tick()
 {
     Serial.println("tick");
+    if (fontColor > 70)
+    {
+        fontColor = fontColor - 40;
+    }
+    else
+    {
+        fontColor = 255;
+    }
+    Serial.printf("second color %d\r\n", fontColor);
+    unsigned short color565 = ((fontColor & 0xF8) << 8) | ((fontColor & 0xFC) << 3) | (fontColor >> 3);
+    second->fontColor = color565;
 }
 
-Component* createClockAppTile(ClockAppApi *clockAppApi, Factory *factory)
+Component *createClockAppTile(ClockAppApi *clockAppApi, Factory *factory)
 {
     api = clockAppApi;
 
@@ -145,12 +158,12 @@ Component* createClockAppTile(ClockAppApi *clockAppApi, Factory *factory)
     components[5] = (factory->createTextComponentRef)(10, 180, 50, 50, wakeUpReason);
     components[6] = (factory->createTextComponentRef)(10, 200, 50, 50, timeToSleep);
     components[7] = (factory->createTextComponentRef)(10, 220, 50, 50, nextWakeUp);
- 
+
     state = (factory->createGroupStateRef)(COMPONENTS_COUNT, components);
     state->tick = tick;
-    
+
     group = (factory->createGroupComponentRef)(0, 0, state);
-    group->onGesture = onGesture; 
+    group->onGesture = onGesture;
 
     group->mount(group, 0, 0);
 

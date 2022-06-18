@@ -147,7 +147,7 @@ void createClockApplication()
 {
     clockAppTickerParameters = {
         .watchMutex = &watchMutex,
-        .delayMs = 250,
+        .delayMs = 50,
         .func = clockAppTick,
         .systemApi = &systemApi,
     };
