@@ -12,6 +12,7 @@ typedef struct
         void (*setTextSize)(unsigned char s);
         void (*setTextFont)(unsigned char f);
         void (*setTextColor)(unsigned short f, unsigned short b);
+        void (*setTextColorOnly)(unsigned short f);
         void (*drawString)(const char str[], signed int x, signed int y);
         void (*drawRect)(signed int x, signed int y, signed int w, signed int h, unsigned int color);
         void (*fillRect)(signed int x, signed int y, signed int w, signed int h, unsigned int color);

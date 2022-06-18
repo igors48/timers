@@ -81,6 +81,27 @@ static void onGesture(Component *component, Gesture gesture)
     api->onGesture(gesture);
 }
 
+static void renderWithInactiveSegments(Component *component, bool forced, TftApi *tftApi, const char inactiveText[])
+{
+    TextState *state = (TextState *)component->state;
+    (tftApi->setTextSize)(state->size);
+    (tftApi->setTextFont)(state->font);
+    (tftApi->setTextColor)(0x10A2, state->backColor); // 20, 20, 20
+    (tftApi->drawString)(inactiveText, component->x, component->y);
+    (tftApi->setTextColorOnly)(state->fontColor);
+    (tftApi->drawString)(state->content, component->x, component->y);
+}
+
+static void secondComponentRender(Component *component, bool forced, TftApi *tftApi)
+{
+    renderWithInactiveSegments(component, forced, tftApi, ":88");
+}
+
+static void hourMinuteComponentRender(Component *component, bool forced, TftApi *tftApi)
+{
+    renderWithInactiveSegments(component, forced, tftApi, "88:88");
+}
+
 Component* createClockAppTile(ClockAppApi *clockAppApi, Factory *factory)
 {
     api = clockAppApi;
@@ -94,8 +115,14 @@ Component* createClockAppTile(ClockAppApi *clockAppApi, Factory *factory)
     timeToSleep = (factory->createTextStateRef)(1, 2, COLOR_INTERACTION, provideTimeToSleep);
     nextWakeUp = (factory->createTextStateRef)(1, 2, COLOR_INTERACTION, provideNextWakeUp);
 
-    components[0] = (factory->createTextComponentRef)(10, 50, 140, 48, hourMinute);
-    components[1] = (factory->createTextComponentRef)(150, 50, 75, 48, second);
+    Component *hourMinuteText = (factory->createTextComponentRef)(12, 50, 140, 48, hourMinute);
+    hourMinuteText->render = hourMinuteComponentRender;
+
+    Component *secondText = (factory->createTextComponentRef)(152, 50, 75, 48, second);
+    secondText->render = secondComponentRender;
+
+    components[0] = hourMinuteText;
+    components[1] = secondText;
     components[2] = (factory->createTextComponentRef)(125, 110, 50, 50, battery);
     components[3] = (factory->createTextComponentRef)(50, 135, 50, 50, dateState);
     components[4] = (factory->createTextComponentRef)(25, 110, 50, 50, stepCounter);

@@ -32,6 +32,12 @@ static void setTextColor(unsigned short f, unsigned short b)
     sprite->setTextColor(f, b);
 }
 
+static void setTextColorOnly(unsigned short f)
+{
+    dirty = true;
+    sprite->setTextColor(f);
+}
+
 static void drawString(const char str[], signed int x, signed int y)
 {
     dirty = true;
@@ -88,6 +94,7 @@ TftApi watchTftApi()
         .setTextSize = setTextSize,
         .setTextFont = setTextFont,
         .setTextColor = setTextColor,
+        .setTextColorOnly = setTextColorOnly,
         .drawString = drawString,
         .drawRect = drawRect,
         .fillRect = fillRect,
