@@ -129,7 +129,7 @@ static void fadeAwayEffect(unsigned long start, unsigned long current, unsigned 
     second->fontColor = color565;
 }
 
-static void tick()
+static void onTick()
 {
     const unsigned long current = (api->getTickCount)();
     fadeAwayEffect(startEffectTick, current, 900, second);
@@ -166,7 +166,7 @@ Component *createClockAppTile(ClockAppApi *clockAppApi, Factory *factory)
     components[7] = (factory->createTextComponentRef)(10, 220, 50, 50, nextWakeUp);
 
     state = (factory->createGroupStateRef)(COMPONENTS_COUNT, components);
-    state->tick = tick;
+    state->onTick = onTick;
 
     group = (factory->createGroupComponentRef)(0, 0, state);
     group->onGesture = onGesture;

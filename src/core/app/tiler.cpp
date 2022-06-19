@@ -116,6 +116,14 @@ static void onButton()
     renderApp(true /*false*/);
 }
 
+static void onTick()
+{
+   Component *activeTile = (activeApp->getActiveTile)();
+   GroupState *groupState = (GroupState *)(activeTile->state);
+   (groupState->onTick)(); 
+   renderApp(false);
+}
+
 Tiler createTiler(TftApi *tftApi)
 {
     tilerTftApi = tftApi;
@@ -131,5 +139,6 @@ Tiler createTiler(TftApi *tftApi)
         .onRelease = onRelease,
         .onGesture = onGesture,
         .onButton = onButton,
+        .onTick = onTick,
     };
 }

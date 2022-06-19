@@ -110,7 +110,7 @@ static void notTouched(TouchScreenListenerParameters *p)
 void touchScreenListener(void *v)
 {
     TouchScreenListenerParameters *p = (TouchScreenListenerParameters *)v;
-    if ((p->systemApi->take)(p->watchMutex, 40))
+    if ((p->systemApi->take)(p->watchMutex, 50))
     {
         signed short x;
         signed short y;

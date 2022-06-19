@@ -17,7 +17,7 @@ typedef struct
 {
     unsigned char childrenCount;
     void **children; 
-    void (*tick)();
+    void (*onTick)();
 } GroupState;
 
 /**

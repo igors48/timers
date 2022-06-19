@@ -1,6 +1,6 @@
 #include "ticker.hpp"
 
-static const char TICKER[] = "ticker";
+static const char TICKER[] = "ticker"; // todo pass it as a parameter
 
 void ticker(void *v) 
 {

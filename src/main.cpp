@@ -72,6 +72,9 @@ TickerParameters timerAppTickerParameters;
 TaskHandle_t timerAppTickerTaskHandle;
 App timerApp;
 
+TickerParameters tilerTickerParameters;
+TaskHandle_t tilerTickerTaskHandle;
+
 const unsigned char APPS_COUNT = 4;
 void *apps[APPS_COUNT];
 
@@ -147,7 +150,7 @@ void createClockApplication()
 {
     clockAppTickerParameters = {
         .watchMutex = &watchMutex,
-        .delayMs = 30, // todo make it dynamic depends on app requriments
+        .delayMs = 250, // todo make it dynamic depends on app requriments
         .func = clockAppTick,
         .systemApi = &systemApi,
     };
@@ -233,6 +236,14 @@ void setup()
 
         tiler = createTiler(&tftApi);
 
+        tilerTickerParameters = {
+            .watchMutex = &watchMutex,
+            .delayMs = 30,
+            .func = tiler.onTick,
+            .systemApi = &systemApi,
+        };
+        xTaskCreate(tickerTask, "tilerTickerTask", 4096, (void *)&tilerTickerParameters, 1, &tilerTickerTaskHandle);
+        
         touchScreenListenerParameters = {
             .target = NULL,
             .firstX = -1,

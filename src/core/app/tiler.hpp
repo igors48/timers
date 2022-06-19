@@ -81,6 +81,8 @@ typedef struct
      * @brief Sends onButton event to the given Component and renders application after     
      */
     void (*onButton)();
+
+    void (*onTick)();
 } Tiler;
 
 /**

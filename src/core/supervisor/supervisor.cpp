@@ -82,7 +82,7 @@ WakeUpReason supervisorSleep(void *v, unsigned long sleepTimeMillis)
 
 void supervisor(SupervisorParameters *p)
 {
-    if ((p->systemApi->take)(p->watchMutex, 20)) // todo there was missprint lastEventTimestamp vs lastEventTimestampMutex - tests dont see it
+    if ((p->systemApi->take)(p->watchMutex, 30)) // todo there was missprint lastEventTimestamp vs lastEventTimestampMutex - tests dont see it
     {
         cachedNextWakeUpPeriod = calcSleepTime(p);
         if (timeToSleep(p))
