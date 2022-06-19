@@ -150,7 +150,7 @@ static unsigned long getNextWakeUpPeriod()
 void clockAppTick()
 {
     update();
-    if (tileNo == 0)
+    if (tileNo == 0) // todo move this to tiler, also create task dedicated to handling effects ticks
     {
         GroupState *s = (GroupState *)(clockTile->state);
         s->tick();
