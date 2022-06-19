@@ -1,7 +1,5 @@
 #include <stdio.h>
 
-#include <Arduino.h>
-
 #include "clockApp.hpp"
 
 #include "core/component/textComponent.hpp"
@@ -29,7 +27,7 @@ static Component *group;
 static ClockAppApi *api;
 
 unsigned char secondValue;
-unsigned char fontColor = 255;
+unsigned long startEffectTick = 0;
 
 static void provideWakeUpReason(TextState *state)
 {
@@ -63,8 +61,7 @@ static void provideSecondState(TextState *state)
     if (date.second != secondValue)
     {
         secondValue = date.second;
-        fontColor = 255;
-        Serial.println("second changed");
+        startEffectTick = (api->getTickCount)();
     }
     snprintf(state->content, sizeof(state->content), ":%02d", date.second);
 }
@@ -113,20 +110,29 @@ static void hourMinuteComponentRender(Component *component, bool forced, TftApi 
     renderWithInactiveSegments(component, forced, tftApi, "88:88");
 }
 
+static void fadeAwayEffect(unsigned long start, unsigned long current, unsigned long duration, TextState* state)
+{
+    if (start == 0)
+    {
+        return;
+    }
+    const unsigned long passed = current - start;
+    if (passed > duration)
+    {
+        return;
+    }
+    const unsigned long rest = duration - passed;
+    const unsigned char colorRange = 255 - 20;
+    const float ratio = ((float)colorRange) / ((float)duration);
+    const unsigned char color = 20 + rest * ratio;
+    const unsigned short color565 = ((color & 0xF8) << 8) | ((color & 0xFC) << 3) | (color >> 3);
+    second->fontColor = color565;
+}
+
 static void tick()
 {
-    Serial.println("tick");
-    if (fontColor > 70)
-    {
-        fontColor = fontColor - 40;
-    }
-    else
-    {
-        fontColor = 255;
-    }
-    Serial.printf("second color %d\r\n", fontColor);
-    unsigned short color565 = ((fontColor & 0xF8) << 8) | ((fontColor & 0xFC) << 3) | (fontColor >> 3);
-    second->fontColor = color565;
+    const unsigned long current = (api->getTickCount)();
+    fadeAwayEffect(startEffectTick, current, 900, second);
 }
 
 Component *createClockAppTile(ClockAppApi *clockAppApi, Factory *factory)

@@ -147,11 +147,11 @@ void createClockApplication()
 {
     clockAppTickerParameters = {
         .watchMutex = &watchMutex,
-        .delayMs = 50,
+        .delayMs = 30, // todo make it dynamic depends on app requriments
         .func = clockAppTick,
         .systemApi = &systemApi,
     };
-    xTaskCreate(tickerTask, "clockAppTickerTask", 2048, (void *)&clockAppTickerParameters, 1, &clockAppTickerTaskHandle);
+    xTaskCreate(tickerTask, "clockAppTickerTask", 4096, (void *)&clockAppTickerParameters, 1, &clockAppTickerTaskHandle);
     vTaskSuspend(clockAppTickerTaskHandle);
 
     clockApp = createClockApp(clockAppTickerTaskHandle, &systemApi, &rtcApi, &powerApi, &bmaApi, &supervisorApi, &tiler, &manager, &factory);

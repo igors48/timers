@@ -193,6 +193,7 @@ App createClockApp(void *backgroundTaskHandleRef, SystemApi *systemApiRef, RtcAp
         .getNextWakeUpPeriod = supervisorApi->getNextWakeUpPeriod,
         .getWakeUpReason = supervisorApi->getWakeUpReason,
         .onGesture = onGesture,
+        .getTickCount = systemApi->getTickCount,
     };
 
     clockTile = createClockAppTile(&api, factory);

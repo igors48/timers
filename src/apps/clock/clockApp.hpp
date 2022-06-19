@@ -21,6 +21,7 @@ typedef struct {
     unsigned long (*getNextWakeUpPeriod)();
     WakeUpReason (*getWakeUpReason)();
     void (*onGesture)(Gesture gesture);
+    unsigned long (*getTickCount)();
 } ClockAppApi;
 
 void clockAppTick();
