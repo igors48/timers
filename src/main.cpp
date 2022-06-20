@@ -150,7 +150,7 @@ void createClockApplication()
 {
     clockAppTickerParameters = {
         .watchMutex = &watchMutex,
-        .delayMs = 250, // todo make it dynamic depends on app requriments
+        .delayMs = 250, // todo make it dynamic depends on app requriments #103
         .func = clockAppTick,
         .systemApi = &systemApi,
     };

@@ -79,7 +79,7 @@ void onButton(Component *component)
 
 void onTickStub()
 {
-    activeTileOnButtonCalled = true;
+    activeTileOnTickCalled = true;
 }
 
 void childOnTouchStub(Component *component, signed short x, signed short y, unsigned long tickCount)
