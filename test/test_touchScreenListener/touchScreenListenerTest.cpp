@@ -123,7 +123,7 @@ void setUp(void)
     component = {};
 
     tiler = {};
-    tiler.contains = noTargetStub;
+    tiler.find = noTargetStub;
     tiler.onGesture = screenOnGestureSub;
     tiler.onTouch = componentOnTouchStub;
     tiler.onMove = componentOnMoveStub; 
@@ -169,7 +169,7 @@ void whenFirstTouchInsideComponent()
     xResult = 48;
     yResult = 49;
     getTouchResult = true;
-    tiler.contains = findTargetStub;
+    tiler.find = findTargetStub;
 
     touchScreenListener(&p);
 
@@ -193,7 +193,7 @@ void whenNotFirstTouch()
     xResult = 48;
     yResult = 49;
     getTouchResult = true;
-    tiler.contains = findTargetStub;
+    tiler.find= findTargetStub;
 
     touchScreenListener(&p);
 
@@ -260,7 +260,7 @@ void whenReleasedWithTouchComponentBefore()
     xResult = 48;
     yResult = 49;
     getTouchResult = true;
-    tiler.contains = findTargetStub;
+    tiler.find = findTargetStub;
 
     touchScreenListener(&p);
 
@@ -326,7 +326,7 @@ void whenReleasedWithTouchComponentBeforeButWithGesture()
     xResult = 48;
     yResult = 9;
     getTouchResult = true;
-    tiler.contains = findTargetStub;
+    tiler.find = findTargetStub;
 
     touchScreenListener(&p);
 

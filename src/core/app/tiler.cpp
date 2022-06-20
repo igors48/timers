@@ -62,7 +62,7 @@ static void setApp(App *app)
 /**
  * @copydoc Tiler.contains
  */
-static Component *contains(signed short x, signed short y)
+static Component *find(signed short x, signed short y)
 {
     Component *activeTile = (activeApp->getActiveTile)();
     return (activeTile->contains)(activeTile, x, y);
@@ -136,7 +136,7 @@ Tiler createTiler(TftApi *tftApi)
     return {
         .setApp = setApp,
         .renderApp = renderApp,
-        .contains = contains,
+        .find = find,
         .onTouch = onTouch,
         .onMove = onMove,
         .onRelease = onRelease,

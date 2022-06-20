@@ -22,7 +22,7 @@ static void touched(TouchScreenListenerParameters *p, signed short x, signed sho
     {
         p->firstX = x;
         p->firstY = y;
-        p->target = (tiler->contains)(x, y);
+        p->target = (tiler->find)(x, y);
         if (p->target != NULL)
         {
             const unsigned long tickCount = (p->systemApi->getTickCount)();

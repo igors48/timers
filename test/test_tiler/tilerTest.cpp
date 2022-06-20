@@ -178,9 +178,9 @@ void whenRenderInNotForcedMode()
     TEST_ASSERT_TRUE(spritePushed);             // THEN sprite pushed 
 }
 
-void whenContainsCalled()
+void whenFindCalled()
 {
-    tiler.contains(0, 0);
+    tiler.find(0, 0);
 
     TEST_ASSERT_TRUE(activeTileContainsCalled); // THEN active tile contains called
 }
@@ -261,7 +261,7 @@ int main()
     UNITY_BEGIN();
     RUN_TEST(whenRenderInForcedMode);
     RUN_TEST(whenRenderInNotForcedMode);
-    RUN_TEST(whenContainsCalled);
+    RUN_TEST(whenFindCalled);
     RUN_TEST(whenOnGestureCalled);
     RUN_TEST(whenOnButtonCalled);
     RUN_TEST(whenOnTickCalled);

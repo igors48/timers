@@ -37,7 +37,7 @@ typedef struct
     * @param y y coordinate of the point
     * @return pointer to the Component or NULL otherwise
     */
-    Component* (*contains)(signed short x, signed short y); // todo rename to find #93
+    Component* (*find)(signed short x, signed short y); // todo rename to find #93
 
     /**
      * @brief Sends onTouch event to the given Component and renders application after 
