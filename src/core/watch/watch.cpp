@@ -55,6 +55,7 @@ static void initI2S()
     i2s_cfg.ws_io_num = TWATCH_DAC_IIS_WS;
     i2s_cfg.data_out_num = TWATCH_DAC_IIS_DOUT;
     i2s_cfg.data_in_num = I2S_PIN_NO_CHANGE;
+    delay(50);
     error = i2s_set_pin(I2S_NUM_0, &i2s_cfg);
     Serial.printf("after i2s set pin %d \r\n", error);
 }
