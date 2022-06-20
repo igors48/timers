@@ -116,6 +116,9 @@ static void onButton()
     renderApp(true /*false*/);
 }
 
+/**
+ * @copydoc Tiler.onTick
+ */
 static void onTick()
 {
    Component *activeTile = (activeApp->getActiveTile)();

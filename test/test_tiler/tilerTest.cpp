@@ -5,6 +5,7 @@
 TftApi tftApiStub;
 App appStub;
 Component activeTileStub;
+GroupState activeTileState;
 Component child;
 bool fillRectCalled;
 bool activeTileRendered;
@@ -12,6 +13,7 @@ bool activeTileRenderMode;
 bool activeTileContainsCalled;
 bool activeTileOnGestureCalled;
 bool activeTileOnButtonCalled;
+bool activeTileOnTickCalled;
 bool activeTileStateUpdated;
 bool childOnTouchCalled;
 bool childOnMoveCalled;
@@ -75,6 +77,11 @@ void onButton(Component *component)
     eventTarget = component;
 }
 
+void onTickStub()
+{
+    activeTileOnButtonCalled = true;
+}
+
 void childOnTouchStub(Component *component, signed short x, signed short y, unsigned long tickCount)
 {
     childOnTouchCalled = true;
@@ -101,6 +108,7 @@ void setUp(void)
     activeTileOnGestureCalled = false;
     activeTileStateUpdated = false;
     activeTileOnButtonCalled = false;
+    activeTileOnTickCalled = false;
 
     childOnTouchCalled = false;
     childOnMoveCalled = false;
@@ -114,12 +122,17 @@ void setUp(void)
         .onRelease = childOnReleaseStub,
     };
 
+    activeTileState = {
+        .onTick = onTickStub,
+    };
+
     activeTileStub = {
         .contains = contains,
         .onGesture = onGesture,
         .onButton = onButton,
         .render = render,
         .updateState = updateState,
+        .state = &activeTileState,
     };
 
     appStub = {
@@ -190,9 +203,20 @@ void whenOnButtonCalled()
 
     TEST_ASSERT_TRUE(activeTileOnButtonCalled);             // THEN active tile button handler called
     TEST_ASSERT_TRUE(activeTileRendered);                   // THEN active tile rendered
-    TEST_ASSERT_TRUE(activeTileRenderMode);                 // THEN active tile rendered in the not forced mode
+    TEST_ASSERT_TRUE(activeTileRenderMode);                 // THEN active tile rendered in the forced mode
     TEST_ASSERT_TRUE(activeTileStateUpdated);               // THEN active tile state updated
     TEST_ASSERT_EQUAL_UINT64(eventTarget, &activeTileStub); // THEN event target is active tile
+    TEST_ASSERT_TRUE(spritePushed);                         // THEN sprite pushed 
+}
+
+void whenOnTickCalled()
+{
+    tiler.onTick();
+
+    TEST_ASSERT_TRUE(activeTileOnTickCalled);               // THEN active tile tick handler called
+    TEST_ASSERT_TRUE(activeTileRendered);                   // THEN active tile rendered
+    TEST_ASSERT_FALSE(activeTileRenderMode);                 // THEN active tile rendered in the not forced mode
+    TEST_ASSERT_TRUE(activeTileStateUpdated);               // THEN active tile state updated
     TEST_ASSERT_TRUE(spritePushed);                         // THEN sprite pushed 
 }
 
@@ -240,6 +264,7 @@ int main()
     RUN_TEST(whenContainsCalled);
     RUN_TEST(whenOnGestureCalled);
     RUN_TEST(whenOnButtonCalled);
+    RUN_TEST(whenOnTickCalled);
     RUN_TEST(whenOnTouchCalled);
     RUN_TEST(whenOnMoveCalled);
     RUN_TEST(whenOnReleaseCalled);

@@ -70,7 +70,7 @@ typedef struct
     void (*onRelease)(Component *component, signed short x, signed short y, unsigned long tickCount); 
 
     /**
-     * @brief Sends onGesture event to the given Component and renders application after 
+     * @brief Sends onGesture event to the active Tile and renders application after 
      * 
      * @param component point to the Component
      * @param gesture gesture code
@@ -78,10 +78,14 @@ typedef struct
     void (*onGesture)(Gesture gesture);
 
     /**
-     * @brief Sends onButton event to the given Component and renders application after     
+     * @brief Sends onButton event to the active Tile and renders application after     
      */
     void (*onButton)();
 
+    /**
+     * @brief Sends tick event to the active Tile and renders application after
+     * 
+     */
     void (*onTick)();
 } Tiler;
 
