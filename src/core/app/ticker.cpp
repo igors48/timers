@@ -1,7 +1,5 @@
 #include "ticker.hpp"
 
-static const char TICKER[] = "ticker"; // todo pass it as a parameter #102
-
 void ticker(void *v) 
 {
     TickerParameters *p = (TickerParameters *)v;
@@ -12,7 +10,7 @@ void ticker(void *v)
     } 
     else 
     {
-        (p->systemApi->log)(TICKER, "failed to take watch mutex");
+        (p->systemApi->log)(p->name, "failed to take watch mutex");
     }
     (p->systemApi->delay)(p->delayMs);
 }

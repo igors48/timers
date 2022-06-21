@@ -149,6 +149,7 @@ void buttonInterruptHandler(void)
 void createClockApplication()
 {
     clockAppTickerParameters = {
+        .name = (char*)"clockAppTicker",
         .watchMutex = &watchMutex,
         .delayMs = 250, // todo make it dynamic depends on app requriments #103
         .func = clockAppTick,
@@ -163,6 +164,7 @@ void createClockApplication()
 void createStepApplication()
 {
     stepAppTickerParameters = {
+        .name = (char*)"stepAppTicker",
         .watchMutex = &watchMutex,
         .delayMs = 500,
         .func = stepAppTick,
@@ -182,6 +184,7 @@ void createToolsApplication()
 void createTimerApplication()
 {
     timerAppTickerParameters = { // todo create factory method for that
+        .name = (char*)"timerAppTicker",
         .watchMutex = &watchMutex,
         .delayMs = 500,
         .func = timerAppTick,
@@ -237,6 +240,7 @@ void setup()
         tiler = createTiler(&tftApi);
 
         tilerTickerParameters = {
+            .name = (char*)"tilerTicker",
             .watchMutex = &watchMutex,
             .delayMs = 30,
             .func = tiler.onTick,
