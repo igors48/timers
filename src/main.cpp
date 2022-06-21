@@ -146,15 +146,20 @@ void buttonInterruptHandler(void)
     vTaskResume(buttonListenerTaskHandle);
 }
 
-void createClockApplication()
+TickerParameters createTickerParameters(char *name, unsigned int delayMs, void (*func)())
 {
-    clockAppTickerParameters = {
-        .name = (char*)"clockAppTicker",
+    return {
+        .name = name,
         .watchMutex = &watchMutex,
-        .delayMs = 250, // todo make it dynamic depends on app requriments #103
-        .func = clockAppTick,
+        .delayMs = delayMs,  // todo make it dynamic depends on app requirements #103
+        .func = func,
         .systemApi = &systemApi,
     };
+}
+
+void createClockApplication()
+{
+    clockAppTickerParameters = createTickerParameters((char*)"clockAppTicker", 250, clockAppTick);
     xTaskCreate(tickerTask, "clockAppTickerTask", 4096, (void *)&clockAppTickerParameters, 1, &clockAppTickerTaskHandle);
     vTaskSuspend(clockAppTickerTaskHandle);
 
@@ -163,13 +168,7 @@ void createClockApplication()
 
 void createStepApplication()
 {
-    stepAppTickerParameters = {
-        .name = (char*)"stepAppTicker",
-        .watchMutex = &watchMutex,
-        .delayMs = 500,
-        .func = stepAppTick,
-        .systemApi = &systemApi,
-    };
+    stepAppTickerParameters = createTickerParameters((char*)"stepAppTicker", 500, stepAppTick);
     xTaskCreate(tickerTask, "stepAppTickerTask", 2048, (void *)&stepAppTickerParameters, 1, &stepAppTickerTaskHandle);
     vTaskSuspend(stepAppTickerTaskHandle);
 
@@ -183,13 +182,7 @@ void createToolsApplication()
 
 void createTimerApplication()
 {
-    timerAppTickerParameters = { // todo create factory method for that
-        .name = (char*)"timerAppTicker",
-        .watchMutex = &watchMutex,
-        .delayMs = 500,
-        .func = timerAppTick,
-        .systemApi = &systemApi,
-    };
+    timerAppTickerParameters = createTickerParameters((char*)"timerAppTicker", 500, timerAppTick);
     xTaskCreate(tickerTask, "timerAppTickerTask", 2048, (void *)&timerAppTickerParameters, 1, &timerAppTickerTaskHandle);
     vTaskSuspend(timerAppTickerTaskHandle);
 
@@ -239,13 +232,7 @@ void setup()
 
         tiler = createTiler(&tftApi);
 
-        tilerTickerParameters = {
-            .name = (char*)"tilerTicker",
-            .watchMutex = &watchMutex,
-            .delayMs = 30,
-            .func = tiler.onTick,
-            .systemApi = &systemApi,
-        };
+        tilerTickerParameters = createTickerParameters((char*)"tilerTicker", 30, tiler.onTick);
         xTaskCreate(tickerTask, "tilerTickerTask", 4096, (void *)&tilerTickerParameters, 1, &tilerTickerTaskHandle);
         
         touchScreenListenerParameters = {
