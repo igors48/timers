@@ -1,6 +1,8 @@
 #include <stddef.h>
 #include <stdlib.h>
 
+#include <Arduino.h>
+
 #include "touchScreenListener.hpp"
 
 static const char TOUCH_SCREEN_LISTENER[] = "touchScreenListener";
@@ -10,6 +12,23 @@ static void updateLastUserEventTimestamp(TouchScreenListenerParameters *p)
 {
     const long now = (p->systemApi->time)();
     *p->lastUserEventTimestamp = now;
+}
+
+static void gestureLike(short firstX, short firstY, short lastX, short lastY)
+{
+    const short dX = lastX - firstX;
+    const short dY = lastY - firstY;
+    const unsigned short absDx = abs(dX);
+    const unsigned short absDy = abs(dY);
+    const unsigned short preDetectTreshold = GESTURE_TRESHOLD * 0.75;
+    if (absDx > preDetectTreshold || (absDy > preDetectTreshold))
+    {
+        Serial.println("gesture pre detected");
+    }
+    else
+    {
+        Serial.println("no gesture pre detected");
+    }
 }
 
 static void touched(TouchScreenListenerParameters *p, signed short x, signed short y)
@@ -31,6 +50,7 @@ static void touched(TouchScreenListenerParameters *p, signed short x, signed sho
     }
     else
     {
+        gestureLike(p->firstX, p->firstY, p->lastX, p->lastY);
         if (p->target != NULL) 
         {
             const unsigned long tickCount = (p->systemApi->getTickCount)();

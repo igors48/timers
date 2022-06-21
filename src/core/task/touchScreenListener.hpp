@@ -6,7 +6,7 @@
 #include "core/app/tiler.hpp"
 
 typedef struct {
-    Component *target;
+    Component *target; // todo listener is a singleton - state var can be moved to cpp file
     signed short firstX;
     signed short firstY;
     signed short lastX;
