@@ -1,6 +1,16 @@
+/**
+ * @file 
+ * @author Igor Usenko (github: igors48)
+ * @brief Ticker task implementation
+*/
 #include "ticker.hpp"
 
-void ticker(void *v) 
+/**
+ * @brief Calls configured function in a thread safe manner
+ * 
+ * @param v Pointer to the ticker parameters
+ */
+static void ticker(void *v) 
 {
     TickerParameters *p = (TickerParameters *)v;
     if (p->systemApi->take(p->watchMutex, p->delayMs))

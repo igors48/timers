@@ -146,6 +146,14 @@ void buttonInterruptHandler(void)
     vTaskResume(buttonListenerTaskHandle);
 }
 
+/**
+ * @brief Create a Ticker Parameters struct
+ * 
+ * @param name Name of the ticker
+ * @param delayMs Delay between function calls
+ * @param func Pointer to the function
+ * @return TickerParameters 
+ */
 TickerParameters createTickerParameters(char *name, unsigned int delayMs, void (*func)())
 {
     return {
