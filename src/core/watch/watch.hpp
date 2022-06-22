@@ -59,6 +59,8 @@ typedef struct {
      * @param y y coordinate
      */
     bool (*getTouch)(signed short &x, signed short &y);
+
+    void (*setBrightness)(unsigned char level);
 } WatchApi;
 
 /**

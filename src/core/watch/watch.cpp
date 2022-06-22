@@ -169,6 +169,11 @@ static bool getTouch(signed short &x, signed short &y)
     return watch->getTouch(x, y);
 }
 
+void setBrightness(unsigned char level)
+{
+    watch->setBrightness(level);
+}
+
 WatchApi defaultWatchApi()
 {
     return {
@@ -176,5 +181,7 @@ WatchApi defaultWatchApi()
         .afterWakeUp = afterWakeUp,
         .beforeGoToSleep = beforeGoToSleep,
         .goToSleep = goToSleep,
-        .getTouch = getTouch};
+        .getTouch = getTouch,
+        .setBrightness = setBrightness,
+    };
 }

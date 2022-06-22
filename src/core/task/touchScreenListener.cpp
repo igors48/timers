@@ -14,21 +14,51 @@ static void updateLastUserEventTimestamp(TouchScreenListenerParameters *p)
     *p->lastUserEventTimestamp = now;
 }
 
-static void gestureLike(short firstX, short firstY, short lastX, short lastY)
+static short gestureLike(short firstX, short firstY, short lastX, short lastY)
 {
     const short dX = lastX - firstX;
     const short dY = lastY - firstY;
     const unsigned short absDx = abs(dX);
     const unsigned short absDy = abs(dY);
-    const unsigned short preDetectTreshold = GESTURE_TRESHOLD * 0.75;
-    if (absDx > preDetectTreshold || (absDy > preDetectTreshold))
+    const unsigned short maxD = absDx > absDy ? absDx : absDy;
+    if (maxD > GESTURE_TRESHOLD)
     {
-        Serial.println("gesture pre detected");
+        return maxD - GESTURE_TRESHOLD;
     }
     else
     {
-        Serial.println("no gesture pre detected");
+        return -1;
     }
+}
+
+static void fadeBackLight(TouchScreenListenerParameters *p, short diff)
+{
+    if (diff < 0)
+    {
+        p->watchApi->setBrightness(255);
+        return;
+    }
+    if (diff < 25)
+    {
+        p->watchApi->setBrightness(128);
+        return;
+    }
+    if (diff < 50)
+    {
+        p->watchApi->setBrightness(96);
+        return;
+    }
+    if (diff < 75)
+    {
+        p->watchApi->setBrightness(64);
+        return;
+    }
+    if (diff < 100)
+    {
+        p->watchApi->setBrightness(32);
+        return;
+    }
+    p->watchApi->setBrightness(16);
 }
 
 static void touched(TouchScreenListenerParameters *p, signed short x, signed short y)
@@ -50,7 +80,8 @@ static void touched(TouchScreenListenerParameters *p, signed short x, signed sho
     }
     else
     {
-        gestureLike(p->firstX, p->firstY, p->lastX, p->lastY);
+        const short diff = gestureLike(p->firstX, p->firstY, p->lastX, p->lastY);
+        fadeBackLight(p, diff);
         if (p->target != NULL) 
         {
             const unsigned long tickCount = (p->systemApi->getTickCount)();
@@ -123,6 +154,7 @@ static void notTouched(TouchScreenListenerParameters *p)
         }
         p->firstX = -1;
         p->firstY = -1;
+        p->watchApi->setBrightness(255);
         updateLastUserEventTimestamp(p);
     }
 }
