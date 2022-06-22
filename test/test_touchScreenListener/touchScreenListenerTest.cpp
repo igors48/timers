@@ -146,6 +146,8 @@ void setUp(void)
     };
 }
 
+//platformio test --environment native --filter "test_touchScreenListener"
+
 void whenFirstTouchOutsideComponent()
 {
     xResult = 48;

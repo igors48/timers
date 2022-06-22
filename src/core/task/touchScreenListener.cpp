@@ -1,8 +1,6 @@
 #include <stddef.h>
 #include <stdlib.h>
 
-#include <Arduino.h>
-
 #include "touchScreenListener.hpp"
 
 static const char TOUCH_SCREEN_LISTENER[] = "touchScreenListener";
@@ -14,51 +12,46 @@ static void updateLastUserEventTimestamp(TouchScreenListenerParameters *p)
     *p->lastUserEventTimestamp = now;
 }
 
-static short gestureLike(short firstX, short firstY, short lastX, short lastY)
+static short gestureDelta(short firstX, short firstY, short lastX, short lastY)
 {
     const short dX = lastX - firstX;
     const short dY = lastY - firstY;
     const unsigned short absDx = abs(dX);
     const unsigned short absDy = abs(dY);
     const unsigned short maxD = absDx > absDy ? absDx : absDy;
-    if (maxD > GESTURE_TRESHOLD)
-    {
-        return maxD - GESTURE_TRESHOLD;
-    }
-    else
-    {
-        return -1;
-    }
+    return maxD - GESTURE_TRESHOLD;
 }
 
-static void fadeBackLight(TouchScreenListenerParameters *p, short diff)
+static unsigned short calcBrightness(short gestureDelta)
 {
-    if (diff < 0)
+    if (gestureDelta < 0)
     {
-        p->watchApi->setBrightness(255);
-        return;
+        return 255;
     }
-    if (diff < 25)
+    if (gestureDelta < 25)
     {
-        p->watchApi->setBrightness(128);
-        return;
+        return 128;
     }
-    if (diff < 50)
+    if (gestureDelta < 50)
     {
-        p->watchApi->setBrightness(96);
-        return;
+        return 96;
     }
-    if (diff < 75)
+    if (gestureDelta < 75)
     {
-        p->watchApi->setBrightness(64);
-        return;
+        return 64;
     }
-    if (diff < 100)
+    if (gestureDelta < 100)
     {
-        p->watchApi->setBrightness(32);
-        return;
+        return 32;
     }
-    p->watchApi->setBrightness(16);
+    return 16;
+}
+
+static void fadeBackLight(TouchScreenListenerParameters *p)
+{
+    const short delta = gestureDelta(p->firstX, p->firstY, p->lastX, p->lastY);
+    const unsigned short brightness = calcBrightness(delta);
+    p->watchApi->setBrightness(brightness);
 }
 
 static void touched(TouchScreenListenerParameters *p, signed short x, signed short y)
@@ -80,8 +73,7 @@ static void touched(TouchScreenListenerParameters *p, signed short x, signed sho
     }
     else
     {
-        const short diff = gestureLike(p->firstX, p->firstY, p->lastX, p->lastY);
-        fadeBackLight(p, diff);
+        fadeBackLight(p);
         if (p->target != NULL) 
         {
             const unsigned long tickCount = (p->systemApi->getTickCount)();
