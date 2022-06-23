@@ -28,6 +28,7 @@ signed short onReleaseHandlerY;
 unsigned long onReleaseHandlerTick;
 Tiler tiler;
 bool screenOnGestureCalled;
+unsigned char brightnessLevel;
 Gesture screenGesture;
 
 WatchApi watchApi;
@@ -40,6 +41,11 @@ bool getTouchStub(signed short &x, signed short &y)
     x = xResult;
     y = yResult;
     return getTouchResult;
+}
+
+void setBrightnessStub(unsigned char level)
+{
+    brightnessLevel = level;
 }
 
 Component *noTargetStub(signed short x, signed short y)
@@ -107,6 +113,7 @@ void setUp(void)
 
     watchApi = watchApiMock();
     watchApi.getTouch = getTouchStub;
+    watchApi.setBrightness = setBrightnessStub;
 
     onTouchHandlerCalled = false;
     onTouchHandlerX = 0;
@@ -131,6 +138,8 @@ void setUp(void)
 
     screenOnGestureCalled = false;
     screenGesture = NONE;
+
+    brightnessLevel = 0;
 
     p = {
         .target = NULL,
@@ -355,6 +364,78 @@ void whenReleasedWithTouchComponentBeforeButWithGesture()
     TEST_ASSERT_TRUE(screenGesture == MOVE_DOWN); // THEN gesture detected
 }
 
+void whenDraggedDeltaLesserThenGestureThreshold()
+{
+    getTouchResult = true;
+
+    xResult = 48;
+    yResult = 9;
+
+    touchScreenListener(&p);
+
+    xResult = xResult + GESTURE_TRESHOLD - 20;
+
+    touchScreenListener(&p);
+
+    TEST_ASSERT_EQUAL_UINT8(255, brightnessLevel); // THEN brightness not changed
+}
+
+void whenDraggedDeltaGreaterThenGestureThreshold()
+{
+    getTouchResult = true;
+
+    xResult = 48;
+    yResult = 9;
+
+    touchScreenListener(&p);
+
+    xResult = xResult + GESTURE_TRESHOLD + 20;
+
+    touchScreenListener(&p);
+
+    TEST_ASSERT_EQUAL_UINT8(128, brightnessLevel); // THEN brightness decreased depending on delta value
+
+    xResult = xResult + 20;
+
+    touchScreenListener(&p);
+
+    TEST_ASSERT_EQUAL_UINT8(96, brightnessLevel); // THEN brightness decreased depending on delta value
+    
+    xResult = xResult + 20;
+
+    touchScreenListener(&p);
+
+    TEST_ASSERT_EQUAL_UINT8(64, brightnessLevel); // THEN brightness decreased depending on delta value
+    
+    xResult = xResult + 20;
+
+    touchScreenListener(&p);
+
+    TEST_ASSERT_EQUAL_UINT8(32, brightnessLevel); // THEN brightness decreased depending on delta value
+}
+
+void whenReleasedAfterBrightnessDecrease()
+{
+    getTouchResult = true;
+
+    xResult = 48;
+    yResult = 9;
+
+    touchScreenListener(&p);
+
+    xResult = xResult + GESTURE_TRESHOLD + 20;
+
+    touchScreenListener(&p);
+
+    TEST_ASSERT_EQUAL_UINT8(128, brightnessLevel); // just to be sure
+
+    getTouchResult = false;
+
+    touchScreenListener(&p);
+
+    TEST_ASSERT_EQUAL_UINT8(255, brightnessLevel); // THEN brightness value set to maximum
+}
+
 int main()
 {
     UNITY_BEGIN();
@@ -367,5 +448,8 @@ int main()
     RUN_TEST(testGestureDetection);
     RUN_TEST(whenReleasedWithoutTouchComponentBeforeButWithGesture);
     RUN_TEST(whenReleasedWithTouchComponentBeforeButWithGesture);
+    RUN_TEST(whenDraggedDeltaLesserThenGestureThreshold);
+    RUN_TEST(whenDraggedDeltaGreaterThenGestureThreshold);
+    RUN_TEST(whenReleasedAfterBrightnessDecrease);
     UNITY_END();
 }
