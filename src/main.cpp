@@ -224,7 +224,7 @@ void setup()
 
         soundApi = watchSoundApi(&soundQueue, &systemApi);
 
-        lastUserEventTimestamp = systemApi.time(); // todo move it before give watch mutex
+        lastUserEventTimestamp = systemApi.time(); // todo move it before give watch mutex #105
 
         buttonListenerParameters = {
             .watchMutex = &watchMutex,

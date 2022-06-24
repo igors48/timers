@@ -169,7 +169,10 @@ static bool getTouch(signed short &x, signed short &y)
     return watch->getTouch(x, y);
 }
 
-void setBrightness(unsigned char level)
+/**
+ * @copydoc WatchApi.setBrightness
+ */
+static void setBrightness(unsigned char level)
 {
     watch->setBrightness(level);
 }

@@ -60,6 +60,12 @@ typedef struct {
      */
     bool (*getTouch)(signed short &x, signed short &y);
 
+    /**
+     * @brief Set back light intensity value to given level
+     * 
+     * @param level intensity level
+     * 
+     */
     void (*setBrightness)(unsigned char level);
 } WatchApi;
 

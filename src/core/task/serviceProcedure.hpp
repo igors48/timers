@@ -8,7 +8,7 @@
 typedef struct 
 {
     void *watchMutex;
-    unsigned char lastBuzzHour;  // todo service procedure is a singleton - state var can be moved to cpp file
+    unsigned char lastBuzzHour;  // todo service procedure is a singleton - state var can be moved to cpp file #107
     unsigned char lastStepCounterResetDay;
     RtcApi *rtcApi;
     BmaApi *bmaApi;
