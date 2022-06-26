@@ -143,9 +143,9 @@ Component *createClockAppTile(ClockAppApi *clockAppApi, Factory *factory)
 
     hourMinute = (factory->createTextStateRef)(7, 1, COLOR_INFORMATION, provideHourMinuteState);
     second = (factory->createTextStateRef)(7, 1, COLOR_INFORMATION, provideSecondState);
-    battery = (factory->createTextStateRef)(4, 1, COLOR_INFORMATION, provideBatteryState);
-    dateState = (factory->createTextStateRef)(4, 1, COLOR_ATTENTION, provideDateState);
-    stepCounter = (factory->createTextStateRef)(4, 1, COLOR_INFORMATION, provideStepCounterState);
+    battery = (factory->createTextStateRef)(MIDDLE_FONT, 0, COLOR_INFORMATION, provideBatteryState);
+    dateState = (factory->createTextStateRef)(MIDDLE_FONT, 0, COLOR_ATTENTION, provideDateState);
+    stepCounter = (factory->createTextStateRef)(MIDDLE_FONT, 0, COLOR_INFORMATION, provideStepCounterState);
     wakeUpReason = (factory->createTextStateRef)(1, 2, COLOR_INTERACTION, provideWakeUpReason);
     timeToSleep = (factory->createTextStateRef)(1, 2, COLOR_INTERACTION, provideTimeToSleep);
     nextWakeUp = (factory->createTextStateRef)(1, 2, COLOR_INTERACTION, provideNextWakeUp);
@@ -158,9 +158,9 @@ Component *createClockAppTile(ClockAppApi *clockAppApi, Factory *factory)
 
     components[0] = hourMinuteText;
     components[1] = secondText;
-    components[2] = (factory->createTextComponentRef)(125, 110, 50, 50, battery);
-    components[3] = (factory->createTextComponentRef)(50, 135, 50, 50, dateState);
-    components[4] = (factory->createTextComponentRef)(25, 110, 50, 50, stepCounter);
+    components[2] = (factory->createTextComponentRef)(135, 110, 50, 50, battery);
+    components[3] = (factory->createTextComponentRef)(60, 135, 50, 50, dateState);
+    components[4] = (factory->createTextComponentRef)(35, 110, 50, 50, stepCounter);
     components[5] = (factory->createTextComponentRef)(10, 180, 50, 50, wakeUpReason);
     components[6] = (factory->createTextComponentRef)(10, 200, 50, 50, timeToSleep);
     components[7] = (factory->createTextComponentRef)(10, 220, 50, 50, nextWakeUp);

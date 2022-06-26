@@ -1,15 +1,16 @@
 /**
- * @file 
+ * @file
  * @author Igor Usenko (github: igors48)
  * @brief TFT API implementation based on sprite
- * 
- * Holds in memory full-screen sprite    
- * All drawings are performed on that sprite    
- * When all is drawn - sprite is pushed to video memory    
- * Also maintains the dirty flag to prevent not needed pushes        
-*/
+ *
+ * Holds in memory full-screen sprite
+ * All drawings are performed on that sprite
+ * When all is drawn - sprite is pushed to video memory
+ * Also maintains the dirty flag to prevent not needed pushes
+ */
 #include "tft.hpp"
 #include "ttgo.hpp"
+#include "fonts.hpp"
 
 static TFT_eSprite *sprite;
 static bool dirty;
@@ -23,7 +24,14 @@ static void setTextSize(unsigned char s)
 static void setTextFont(unsigned char f)
 {
     dirty = true;
-    sprite->setTextFont(f);
+    if (f == MIDDLE_FONT)
+    {
+        sprite->setFreeFont(&Roboto_Condensed_Bold_24);
+    }
+    else
+    {
+        sprite->setTextFont(f);
+    }
 }
 
 static void setTextColor(unsigned short f, unsigned short b)
@@ -89,7 +97,7 @@ TftApi watchTftApi()
     sprite->createSprite(240, 240);
 
     dirty = false;
-    
+
     return {
         .setTextSize = setTextSize,
         .setTextFont = setTextFont,

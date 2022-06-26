@@ -7,6 +7,8 @@
 */
 #pragma once
 
+const unsigned char MIDDLE_FONT = 128;
+
 typedef struct
 {
         void (*setTextSize)(unsigned char s);

@@ -16,10 +16,10 @@ bool textComponentIsStateModified(Component *component)
     TextState *state = (TextState *)component->state;
     (state->provide)(state);
     return (strcmp(state->content, state->_content) != 0) ||
-    (state->size != state->_size) ||
+    //(state->size != state->_size) || todo is these checks needed
     (state->fontColor != state->_fontColor) ||
-    (state->backColor != state->_backColor) ||
-    (state->font != state->_font);
+    (state->backColor != state->_backColor); //||
+    //(state->font != state->_font);
 }
 
 void textComponentUpdateState(Component *component)
