@@ -41,7 +41,7 @@ MotorApi motorApi;
 I2sApi i2sApi;
 SupervisorApi supervisorApi;
 
-time_t lastUserEventTimestamp; // todo consider rename. this value is updated by timer wakeup also
+time_t lastUserEventTimestamp; // todo consider rename. this value is updated by timer wakeup also #128
 
 ButtonListenerParameters buttonListenerParameters;
 TaskHandle_t buttonListenerTaskHandle;
@@ -120,7 +120,7 @@ void supervisorTask(void *p)
     while (true)
     {
         supervisor((SupervisorParameters *)p);
-        vTaskDelay(1000 / portTICK_PERIOD_MS); // todo supervisor task delay -> const
+        vTaskDelay(1000 / portTICK_PERIOD_MS); // todo supervisor task delay -> const #127
     }
 }
 

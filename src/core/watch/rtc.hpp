@@ -10,7 +10,7 @@ typedef struct
     unsigned char second;
 } Date;
 
-typedef Date (*DateFunc)(); // todo rename to GetDate
+typedef Date (*DateFunc)(); // todo rename to GetDate #110
 typedef void (*SetDate)(Date date);
 
 typedef struct 

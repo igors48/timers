@@ -31,7 +31,7 @@ static unsigned long getNextWakeUpPeriod()
     switch (timer.state)
     {
         case TMS_RUN:
-            return timer.timeKeeper.duration; // todo replace two dots access with function
+            return timer.timeKeeper.duration; // todo replace two dots access with function #81
         case TMS_ALARM:
             return NW_NO_SLEEP;
         default:

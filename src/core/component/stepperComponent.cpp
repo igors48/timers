@@ -4,7 +4,7 @@
 
 static void updateButtonsMode(StepperComponentState *state)
 {
-    ButtonComponentState *plusButtonState = (ButtonComponentState *)(state->plusButton->state); // todo fix this long way
+    ButtonComponentState *plusButtonState = (ButtonComponentState *)(state->plusButton->state); // todo fix this long way #117
     ButtonComponentState *minusButtonState = (ButtonComponentState *)(state->minusButton->state);
     plusButtonState->mode = BM_ENABLED;
     minusButtonState->mode = BM_ENABLED;
