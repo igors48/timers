@@ -7,7 +7,13 @@
 */
 #pragma once
 
+/**
+ * @brief Code of small size custom font
+ */
 const unsigned char SMALL_FONT = 128;
+/**
+ * @brief Code of medium size custom font
+ */
 const unsigned char MEDIUM_FONT = 129;
 
 typedef struct
