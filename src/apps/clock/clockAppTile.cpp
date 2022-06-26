@@ -5,7 +5,9 @@
 #include "core/component/textComponent.hpp"
 #include "core/component/group.hpp"
 
-static const unsigned char COMPONENTS_COUNT = 8;
+#include "lineCalendar.hpp"
+
+static const unsigned char COMPONENTS_COUNT = 9;
 static void *components[COMPONENTS_COUNT];
 
 static char WAKE_UP_REASON[] = "WUR: %d";
@@ -21,6 +23,9 @@ static TextState *wakeUpReason;
 static TextState *timeToSleep;
 static TextState *nextWakeUp;
 
+static LineCalendarContext lineCalendarContext;
+static Component lineCalendar;
+
 static GroupState *state;
 static Component *group;
 
@@ -28,6 +33,12 @@ static ClockAppApi *api;
 
 unsigned char secondValue;
 unsigned long startEffectTick = 0;
+
+static void provideContext(LineCalendarContext *state)
+{
+    const Date date = api->getDate();
+    state->dayOfWeek = date.dayOfWeek;
+}
 
 static void provideWakeUpReason(TextState *state)
 {
@@ -149,6 +160,9 @@ Component *createClockAppTile(ClockAppApi *clockAppApi, Factory *factory)
     wakeUpReason = (factory->createTextStateRef)(SMALL_FONT, 0, COLOR_INTERACTION, provideWakeUpReason);
     timeToSleep = (factory->createTextStateRef)(SMALL_FONT, 0, COLOR_INTERACTION, provideTimeToSleep);
     nextWakeUp = (factory->createTextStateRef)(SMALL_FONT, 0, COLOR_INTERACTION, provideNextWakeUp);
+    
+    lineCalendarContext = createLineCalendarContext(provideContext);
+    lineCalendar = createLineCalendarComponent(0, 115, &lineCalendarContext);
 
     Component *hourMinuteText = (factory->createTextComponentRef)(12, 50, 140, 48, hourMinute);
     hourMinuteText->render = hourMinuteComponentRender;
@@ -159,11 +173,12 @@ Component *createClockAppTile(ClockAppApi *clockAppApi, Factory *factory)
     components[0] = hourMinuteText;
     components[1] = secondText;
     components[2] = (factory->createTextComponentRef)(165, 5, 50, 50, battery);
-    components[3] = (factory->createTextComponentRef)(60, 155, 50, 50, dateState);
+    components[3] = (factory->createTextComponentRef)(60, 150, 50, 50, dateState);
     components[4] = (factory->createTextComponentRef)(5, 5, 50, 50, stepCounter);
     components[5] = (factory->createTextComponentRef)(10, 180, 50, 50, wakeUpReason);
     components[6] = (factory->createTextComponentRef)(10, 200, 50, 50, timeToSleep);
     components[7] = (factory->createTextComponentRef)(10, 220, 50, 50, nextWakeUp);
+    components[8] = &lineCalendar;
 
     state = (factory->createGroupStateRef)(COMPONENTS_COUNT, components);
     state->onTick = onTick;

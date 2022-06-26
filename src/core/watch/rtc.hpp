@@ -8,6 +8,7 @@ typedef struct
     unsigned char hour;
     unsigned char minute;
     unsigned char second;
+    unsigned int dayOfWeek;
 } Date;
 
 typedef Date (*DateFunc)(); // todo rename to GetDate

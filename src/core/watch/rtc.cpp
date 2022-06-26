@@ -11,6 +11,7 @@ static Date rtcGetDate()
     unsigned char hour = rtcDate.hour;
     unsigned char minute = rtcDate.minute;
     unsigned char second = rtcDate.second;
+    unsigned int dayOfWeek = watch->rtc->getDayOfWeek(day, month, year);
 
     return
     {
@@ -19,7 +20,8 @@ static Date rtcGetDate()
         .day = day,
         .hour = hour,
         .minute = minute,
-        .second = second
+        .second = second,
+        .dayOfWeek = dayOfWeek,
     };
 }
 
