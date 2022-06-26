@@ -10,7 +10,8 @@
  */
 #include "tft.hpp"
 #include "ttgo.hpp"
-#include "fonts.hpp"
+#include "smallFont.hpp"
+#include "mediumFont.hpp"
 
 static TFT_eSprite *sprite;
 static bool dirty;
@@ -24,14 +25,17 @@ static void setTextSize(unsigned char s)
 static void setTextFont(unsigned char f)
 {
     dirty = true;
-    if (f == MIDDLE_FONT)
+    if (f == SMALL_FONT)
     {
-        sprite->setFreeFont(&Roboto_Condensed_Bold_24);
+        sprite->setFreeFont(&Roboto_Condensed_Bold_16);
+        return;
     }
-    else
+    if (f == MEDIUM_FONT)
     {
-        sprite->setTextFont(f);
+       sprite->setFreeFont(&Roboto_Condensed_Bold_24);
+       return;
     }
+    sprite->setTextFont(f);
 }
 
 static void setTextColor(unsigned short f, unsigned short b)

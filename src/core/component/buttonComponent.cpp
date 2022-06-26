@@ -125,8 +125,8 @@ void buttonRender(Component *component, bool forced, TftApi *tftApi)
         rectColor = COLOR_BUTTON_BACK_DISABLED;
     }
     (tftApi->fillRoundRect)(component->x, component->y, component->w, component->h, 4, rectColor); // todo make radius a parameter or const
-    (tftApi->setTextSize)(2);
-    (tftApi->setTextFont)(1);
+    (tftApi->setTextSize)(0);
+    (tftApi->setTextFont)(SMALL_FONT);
     (tftApi->setTextColor)(COLOR_BUTTON_TEXT, rectColor);
     (tftApi->drawString)(state->title, component->x + 4, component->y + 4);
 }

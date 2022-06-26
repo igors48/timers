@@ -7,7 +7,8 @@
 */
 #pragma once
 
-const unsigned char MIDDLE_FONT = 128;
+const unsigned char SMALL_FONT = 128;
+const unsigned char MEDIUM_FONT = 129;
 
 typedef struct
 {

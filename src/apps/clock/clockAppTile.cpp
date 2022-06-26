@@ -143,12 +143,12 @@ Component *createClockAppTile(ClockAppApi *clockAppApi, Factory *factory)
 
     hourMinute = (factory->createTextStateRef)(7, 1, COLOR_INFORMATION, provideHourMinuteState);
     second = (factory->createTextStateRef)(7, 1, COLOR_INFORMATION, provideSecondState);
-    battery = (factory->createTextStateRef)(MIDDLE_FONT, 0, COLOR_INFORMATION, provideBatteryState);
-    dateState = (factory->createTextStateRef)(MIDDLE_FONT, 0, COLOR_ATTENTION, provideDateState);
-    stepCounter = (factory->createTextStateRef)(MIDDLE_FONT, 0, COLOR_INFORMATION, provideStepCounterState);
-    wakeUpReason = (factory->createTextStateRef)(1, 2, COLOR_INTERACTION, provideWakeUpReason);
-    timeToSleep = (factory->createTextStateRef)(1, 2, COLOR_INTERACTION, provideTimeToSleep);
-    nextWakeUp = (factory->createTextStateRef)(1, 2, COLOR_INTERACTION, provideNextWakeUp);
+    battery = (factory->createTextStateRef)(MEDIUM_FONT, 0, COLOR_INFORMATION, provideBatteryState);
+    dateState = (factory->createTextStateRef)(MEDIUM_FONT, 0, COLOR_ATTENTION, provideDateState);
+    stepCounter = (factory->createTextStateRef)(MEDIUM_FONT, 0, COLOR_INFORMATION, provideStepCounterState);
+    wakeUpReason = (factory->createTextStateRef)(SMALL_FONT, 0, COLOR_INTERACTION, provideWakeUpReason);
+    timeToSleep = (factory->createTextStateRef)(SMALL_FONT, 0, COLOR_INTERACTION, provideTimeToSleep);
+    nextWakeUp = (factory->createTextStateRef)(SMALL_FONT, 0, COLOR_INTERACTION, provideNextWakeUp);
 
     Component *hourMinuteText = (factory->createTextComponentRef)(12, 50, 140, 48, hourMinute);
     hourMinuteText->render = hourMinuteComponentRender;

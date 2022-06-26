@@ -66,7 +66,7 @@ Component* createStepAppTile(StepAppApi* stepAppApi, Factory *factory)
 {
     api = stepAppApi;
     
-    stepCounter = (factory->createTextStateRef)(MIDDLE_FONT, 0, COLOR_ATTENTION, provideStepCounterState);
+    stepCounter = (factory->createTextStateRef)(MEDIUM_FONT, 0, COLOR_ATTENTION, provideStepCounterState);
     resetButtonState = (factory->createButtonStateRef)(RESET, EG_ONCE, reset);
 
     stepCounterComponent = (factory->createTextComponentRef)(55, 120, 50, 50, stepCounter);

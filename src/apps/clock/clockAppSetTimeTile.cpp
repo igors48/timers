@@ -66,7 +66,7 @@ Component* createClockAppSetTimeTile(ClockAppApi *clockAppApi, Factory *factory)
     hour = 12;
     minute = 30;
 
-    TextState* title = (factory->createTextStateRef)(2, 1, COLOR_INFORMATION, provideTitle);
+    TextState* title = (factory->createTextStateRef)(SMALL_FONT, 0, COLOR_INFORMATION, provideTitle);
     TextState* hourMinute = (factory->createTextStateRef)(7, 1, COLOR_INTERACTION, provideHourMinuteState);
     ButtonComponentState* setButtonState = (factory->createButtonStateRef)(SET, EG_ONCE, setTime);
     ButtonComponentState* resetButtonState = (factory->createButtonStateRef)(RESET, EG_ONCE, resetTime);

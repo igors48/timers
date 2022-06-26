@@ -66,7 +66,7 @@ Component* createClockAppSetDateTile(ClockAppApi *clockAppApi, Factory *factory)
     day = 15;
     month = 6;
 
-    TextState* title = (factory->createTextStateRef)(2, 1, COLOR_INFORMATION, provideTitle);
+    TextState* title = (factory->createTextStateRef)(SMALL_FONT, 0, COLOR_INFORMATION, provideTitle);
     TextState* dayMonth = (factory->createTextStateRef)(7, 1, COLOR_INTERACTION, provideDayMonthState);
     ButtonComponentState* setButtonState = (factory->createButtonStateRef)(SET, EG_ONCE, setDate);
     ButtonComponentState* resetButtonState = (factory->createButtonStateRef)(RESET, EG_ONCE, resetDate);
