@@ -1,77 +1,65 @@
 
 #include "lineCalendar.hpp"
 
+typedef struct
+{
+    unsigned short offset;
+    char *text;
+} WeekDayIcon;
+
+static const unsigned char WEEK_DAY_COUNT = 7;
+static const unsigned short X_DIFF = 34;
+static const unsigned short X_SHIFT = 5;
+static const WeekDayIcon ICONS[] = {
+    {
+        .offset = X_SHIFT + X_DIFF * 6,
+        .text = (char *)"SU",
+    },
+    {
+        .offset = X_SHIFT,
+        .text = (char *)"MO",
+    },
+    {
+        .offset = X_SHIFT + X_DIFF + 2,
+        .text = (char *)"TU",
+    },
+    {
+        .offset = X_SHIFT + X_DIFF * 2,
+        .text = (char *)"WE",
+    },
+    {
+        .offset = X_SHIFT + X_DIFF * 3 + 2,
+        .text = (char *)"TH",
+    },
+    {
+        .offset = X_SHIFT + X_DIFF * 4 + 2,
+        .text = (char *)"FR",
+    },
+    {
+        .offset = X_SHIFT + X_DIFF * 5,
+        .text = (char *)"SA",
+    },
+};
+
 static void render(Component *component, bool forced, TftApi *tftApi)
 {
     LineCalendarContext *context = (LineCalendarContext *)component->state;
     (tftApi->setTextSize)(0);
     (tftApi->setTextFont)(MEDIUM_FONT);
     (tftApi->setTextColor)(COLOR_INTERACTION, COLOR_BLACK);
-    const unsigned short xDiff = 34;
-    const unsigned short xShift = 5;
-    if (context->dayOfWeek == 1)
+    for (int i = 0; i < WEEK_DAY_COUNT; i++)
     {
-        (tftApi->setTextColor)(COLOR_INFORMATION, COLOR_BLACK);
+        if (context->dayOfWeek == i)
+        {
+            (tftApi->setTextColor)(COLOR_INFORMATION, COLOR_BLACK);
+        }
+        else
+        {
+            (tftApi->setTextColor)(COLOR_INTERACTION, COLOR_BLACK);
+        }
+        const WeekDayIcon icon = ICONS[i];
+        (tftApi->drawString)(icon.text, component->x + icon.offset, component->y);
     }
-    else
-    {
-        (tftApi->setTextColor)(COLOR_INTERACTION, COLOR_BLACK);
-    }
-    (tftApi->drawString)("MO", component->x + xShift, component->y);
-    if (context->dayOfWeek == 2)
-    {
-        (tftApi->setTextColor)(COLOR_INFORMATION, COLOR_BLACK);
-    }
-    else
-    {
-        (tftApi->setTextColor)(COLOR_INTERACTION, COLOR_BLACK);
-    }
-    (tftApi->drawString)("TU", component->x + xShift + xDiff + 2, component->y);
-    if (context->dayOfWeek == 3)
-    {
-        (tftApi->setTextColor)(COLOR_INFORMATION, COLOR_BLACK);
-    }
-    else
-    {
-        (tftApi->setTextColor)(COLOR_INTERACTION, COLOR_BLACK);
-    }
-    (tftApi->drawString)("WE", component->x + xShift + xDiff * 2, component->y);
-    if (context->dayOfWeek == 4)
-    {
-        (tftApi->setTextColor)(COLOR_INFORMATION, COLOR_BLACK);
-    }
-    else
-    {
-        (tftApi->setTextColor)(COLOR_INTERACTION, COLOR_BLACK);
-    }
-    (tftApi->drawString)("TH", component->x + xShift + xDiff * 3 + 2, component->y);
-    if (context->dayOfWeek == 5)
-    {
-        (tftApi->setTextColor)(COLOR_INFORMATION, COLOR_BLACK);
-    }
-    else
-    {
-        (tftApi->setTextColor)(COLOR_INTERACTION, COLOR_BLACK);
-    }
-    (tftApi->drawString)("FR", component->x + xShift + xDiff * 4 + 2, component->y);
-    if (context->dayOfWeek == 6)
-    {
-        (tftApi->setTextColor)(COLOR_INFORMATION, COLOR_BLACK);
-    }
-    else
-    {
-        (tftApi->setTextColor)(COLOR_INTERACTION, COLOR_BLACK);
-    }
-    (tftApi->drawString)("SA", component->x + xShift + xDiff * 5, component->y);
-    if (context->dayOfWeek == 0)
-    {
-        (tftApi->setTextColor)(COLOR_INFORMATION, COLOR_BLACK);
-    }
-    else
-    {
-        (tftApi->setTextColor)(COLOR_INTERACTION, COLOR_BLACK);
-    }
-    (tftApi->drawString)("SU", component->x + xShift + xDiff * 6, component->y);
 }
 
 static bool isStateModified(Component *component) // todo create dummies for isStateModified & updateState
