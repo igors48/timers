@@ -50,7 +50,7 @@ static void tryToSleep(SupervisorParameters *p, unsigned long sleepTime)
     }
     else
     {
-        sleepTime = sleepTime - SLEEP_TIME_TRESHOLD; // todo consider the new parameter
+        sleepTime = sleepTime - SLEEP_TIME_TRESHOLD; // todo consider the new parameter #116
         if (sleepTime > 1000)
         {
             cachedWakeUpReason = (p->supervisorSleep)(p, sleepTime);
@@ -82,7 +82,7 @@ WakeUpReason supervisorSleep(void *v, unsigned long sleepTimeMillis)
 
 void supervisor(SupervisorParameters *p)
 {
-    if ((p->systemApi->take)(p->watchMutex, 30)) // todo there was missprint lastEventTimestamp vs lastEventTimestampMutex - tests dont see it
+    if ((p->systemApi->take)(p->watchMutex, 30)) // todo there was missprint lastEventTimestamp vs lastEventTimestampMutex - tests dont see it #115
     {
         cachedNextWakeUpPeriod = calcSleepTime(p);
         if (timeToSleep(p))

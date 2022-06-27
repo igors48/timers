@@ -38,7 +38,7 @@ static void clockAppActivate()
 
 static void clockAppDeactivate()
 {
-    (systemApi->suspend)(backgroundTask); // todo verify that the task really suspended
+    (systemApi->suspend)(backgroundTask);
 }
 
 static Component *clockAppGetActiveTile()
@@ -97,7 +97,7 @@ static void onGesture(Gesture gesture)
     }
     else
     {
-        (manager->switchApp)(gesture == MOVE_UP); // todo should be manager->onGesture let manager decide how to handle
+        (manager->switchApp)(gesture == MOVE_UP); // todo should be manager->onGesture let manager decide how to handle #126
     }
 }
 
@@ -167,7 +167,7 @@ App createClockApp(void *backgroundTaskHandleRef, SystemApi *systemApiRef, RtcAp
     tileNo = 0;
 
     date = {
-        // todo create const
+        // todo create const #125
         .year = 0,
         .month = 0,
         .day = 0,

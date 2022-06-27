@@ -9,7 +9,7 @@
 
 typedef struct Component_ Component;
 
-typedef enum { // todo prefixes to avoid collisions
+typedef enum { // todo prefixes to avoid collisions #123
     NONE,
     MOVE_UP,
     MOVE_LEFT,
@@ -39,12 +39,12 @@ struct Component_
     signed short h;
     Component* (*contains)(Component *component, signed short x, signed short y);
     void (*mount)(Component *component, signed short x, signed short y);
-    void (*onTouch)(Component *component, signed short x, signed short y, unsigned long tickCount); // todo consider interface EventListener 
+    void (*onTouch)(Component *component, signed short x, signed short y, unsigned long tickCount); // todo consider interface EventListener #121
     void (*onMove)(Component *component, signed short x, signed short y, unsigned long tickCount);  
     void (*onRelease)(Component *component, signed short x, signed short y, unsigned long tickCount);  
-    void (*onGesture)(Component *component, Gesture gesture); // todo gesture and button events are tile level events. consider remove handlers from component
+    void (*onGesture)(Component *component, Gesture gesture); // todo gesture and button events are tile level events. consider remove handlers from component #122
     void (*onButton)(Component *component);
-    void (*render)(Component *component, bool forced, TftApi *tftApi);  // todo consider interface Renderable
+    void (*render)(Component *component, bool forced, TftApi *tftApi);  // todo consider interface Renderable #121
     bool (*isStateModified)(Component *component);
     void (*updateState)(Component *component);
     void *state;    

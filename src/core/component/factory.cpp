@@ -87,8 +87,8 @@ static ButtonComponentState* createButtonStateRef(char *title, EventGenerate eve
     state->title = title;
     state->eventGenerate = eventGenerate;
     state->handler = handler;
-    state->delayTick = 1000; // todo pass as a parameter. depends on portTICK_PERIOD_MS
-    state->repeatTick = 250; // todo pass as a parameter. depends on portTICK_PERIOD_MS
+    state->delayTick = 1000; // todo pass as a parameter. depends on portTICK_PERIOD_MS #120
+    state->repeatTick = 250; // todo pass as a parameter. depends on portTICK_PERIOD_MS #120
     state->eventHandlingState = EHS_IDLE;
     state->_eventHandlingState = EHS_INIT;
     state->mode = BM_ENABLED;
@@ -122,7 +122,7 @@ static Component* createButtonComponentRef(signed short x, signed short y, signe
     return component;
 }
 
-char STEPPER_PLUS[] = "+"; // todo find better place
+char STEPPER_PLUS[] = "+"; // todo find better place #119
 char STEPPER_MINUS[] = "-";
 
 static StepperComponentState* createStepperComponentStateRef(signed short min, signed short max, signed short value, OnStepperChange onChange)
@@ -143,7 +143,7 @@ static StepperComponentState* createStepperComponentStateRef(signed short min, s
     state->onChange = onChange;
     state->setValue = stepperSetValue;
 
-    plusButtonState->context = (void *)state; // todo add it to the createButtonStateRef
+    plusButtonState->context = (void *)state; // todo add it to the createButtonStateRef #118
     minusButtonState->context = (void *)state;
 
     return state;

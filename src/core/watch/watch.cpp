@@ -118,7 +118,7 @@ static WakeUpReason goToSleep(unsigned long sleepTimeMicros)
     delay(100); // seen some false wake ups without those delays
     esp_sleep_enable_ext1_wakeup(GPIO_SEL_39, ESP_EXT1_WAKEUP_ANY_HIGH);
     delay(100);
-    esp_sleep_enable_timer_wakeup(sleepTimeMicros); // todo subtract those delays from sleep time
+    esp_sleep_enable_timer_wakeup(sleepTimeMicros); // todo subtract those delays from sleep time #129
     delay(100);
     watch->bma->readInterrupt();
     delay(100);
