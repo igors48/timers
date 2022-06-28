@@ -62,7 +62,7 @@ static void render(Component *component, bool forced, TftApi *tftApi)
     }
 }
 
-static bool isStateModified(Component *component) // todo create dummies for isStateModified & updateState
+static bool isStateModified(Component *component) // todo create dummies for isStateModified & updateState & render
 {
     LineCalendarContext *context = (LineCalendarContext *)(component->state);
     (context->provideContext)(context);
