@@ -1,7 +1,15 @@
+/**
+ * @file 
+ * @author Igor Usenko (github: igors48)
+ * @brief RTC API implementation
+*/
 #include "rtc.hpp"
 #include "ttgo.hpp"
 
-static Date rtcGetDate()
+/**
+ * @copydoc RtcApi.getDate
+ */
+static Date getDate()
 {
     RTC_Date rtcDate = watch->rtc->getDateTime();
 
@@ -25,7 +33,10 @@ static Date rtcGetDate()
     };
 }
 
-static void rtcSetDate(Date date)
+/**
+ * @copydoc RtcApi.setDate
+ */
+static void setDate(Date date)
 {
     RTC_Date rtcDate = RTC_Date(
         date.year,
@@ -41,7 +52,7 @@ static void rtcSetDate(Date date)
 RtcApi watchRtcApi()
 {
     return {
-        .getDate = rtcGetDate,
-        .setDate = rtcSetDate,
+        .getDate = getDate,
+        .setDate = setDate,
     };
 }
