@@ -62,7 +62,7 @@ static void render(Component *component, bool forced, TftApi *tftApi)
     }
 }
 
-static bool isStateModified(Component *component) // todo create dummies for isStateModified & updateState & render
+static bool isStateModified(Component *component) // todo create dummies for isStateModified & updateState & render #132
 {
     LineCalendarContext *context = (LineCalendarContext *)(component->state);
     (context->provideContext)(context);
@@ -87,7 +87,7 @@ LineCalendarContext createLineCalendarContext(ProvideContext provideContext)
 Component createLineCalendarComponent(signed short x, signed short y, LineCalendarContext *context)
 {
     return {
-        // todo create default factory for Component
+        // todo create default factory for Component #133
         .x = x,
         .y = y,
         .w = 240,
