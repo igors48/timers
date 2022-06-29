@@ -154,7 +154,7 @@ void buttonInterruptHandler(void)
  * @param func Pointer to the function
  * @return TickerParameters 
  */
-TickerParameters createTickerParameters(char *name, unsigned int delayMs, void (*func)())
+TickerParameters createTickerParameters(char *name, unsigned int delayMs, void (*func)(unsigned long tick))
 {
     return {
         .name = name,

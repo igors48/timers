@@ -17,7 +17,7 @@ typedef struct {
     void (*onGesture)(Gesture gesture);
 } StepAppApi;
 
-void stepAppTick();
+void stepAppTick(unsigned long tick);
 
 App createStepApp(void *backgroundTaskHandleRef, SystemApi *systemApiRef, BmaApi *bmaApi, Tiler *tilerRef, Manager *managerRef, Factory *factory); 
 

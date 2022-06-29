@@ -119,7 +119,7 @@ static void onButton()
 /**
  * @copydoc Tiler.onTick
  */
-static void onTick()
+static void onTick(unsigned long tick)
 {
    Component *activeTile = (activeApp->getActiveTile)();
    GroupState *groupState = (GroupState *)(activeTile->state);

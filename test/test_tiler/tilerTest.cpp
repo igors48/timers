@@ -211,7 +211,7 @@ void whenOnButtonCalled()
 
 void whenOnTickCalled()
 {
-    tiler.onTick();
+    tiler.onTick(5 /* any value */);
 
     TEST_ASSERT_TRUE(activeTileOnTickCalled);               // THEN active tile tick handler called
     TEST_ASSERT_TRUE(activeTileRendered);                   // THEN active tile rendered

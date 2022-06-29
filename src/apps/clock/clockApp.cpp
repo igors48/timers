@@ -147,7 +147,7 @@ static unsigned long getNextWakeUpPeriod()
     return NW_DONT_CARE;
 }
 
-void clockAppTick()
+void clockAppTick(unsigned long tick)
 {
     update();
     renderApp(false);

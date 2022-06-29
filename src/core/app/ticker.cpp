@@ -15,7 +15,8 @@ static void ticker(void *v)
     TickerParameters *p = (TickerParameters *)v;
     if (p->systemApi->take(p->watchMutex, p->delayMs))
     {
-        (p->func)();
+        const unsigned long tick = (p->systemApi->getTickCount)();
+        (p->func)(tick);
         (p->systemApi->give)(p->watchMutex);
     } 
     else 

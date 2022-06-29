@@ -85,7 +85,7 @@ typedef struct
      * @brief Sends tick event to the active Tile and renders application after
      * 
      */
-    void (*onTick)();
+    void (*onTick)(unsigned long tick);
 } Tiler;
 
 /**

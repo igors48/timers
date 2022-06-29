@@ -24,7 +24,7 @@ typedef struct {
     unsigned long (*getTickCount)();
 } ClockAppApi;
 
-void clockAppTick();
+void clockAppTick(unsigned long tick);
 
 App createClockApp(void *backgroundTaskHandleRef, SystemApi *systemApiRef, RtcApi *rtcApiRef, PowerApi *powerApiRef, BmaApi *bmaApiRef, SupervisorApi *supervisorApiRef, Tiler *tilerRef, Manager *managerRef, Factory *factory);
 

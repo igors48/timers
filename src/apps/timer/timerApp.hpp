@@ -13,7 +13,7 @@ typedef struct
     void (*onGesture)(Gesture gesture);
 } TimerAppApi;
 
-void timerAppTick();
+void timerAppTick(unsigned long tick);
 
 App createTimerApp(void *backgroundTaskHandleRef, SystemApi *systemApiRef, SoundApi *soundApiRef, Tiler *tilerRef, Manager *managerRef, Factory *factoryRef);
 

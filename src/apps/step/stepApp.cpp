@@ -63,7 +63,7 @@ static unsigned long getNextWakeUpPeriod()
     return NW_DONT_CARE;
 }
 
-void stepAppTick()
+void stepAppTick(unsigned long tick)
 {
     update();
     render(false);

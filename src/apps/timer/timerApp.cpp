@@ -77,7 +77,7 @@ static void onGesture(Gesture gesture)
     }
 }
 
-void timerAppTick()
+void timerAppTick(unsigned long tick)
 {
     const unsigned long tickCount = getSimulatedTickCount();
     timerTick(&timer, tickCount);

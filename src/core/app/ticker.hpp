@@ -29,7 +29,7 @@ typedef struct {
     /**
      * @brief Pointer to the function called by ticker
      */
-    void (*func)();
+    void (*func)(unsigned long tick);
     /**
      * @brief Pointer to the system API
      */
