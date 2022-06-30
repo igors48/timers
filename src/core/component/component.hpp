@@ -56,6 +56,12 @@ void componentGestureNoopHandler(Component *component, Gesture gesture);
 
 void componentButtonNoopHandler(Component *component);
 
+void componentRenderNoop(Component *component, bool forced, TftApi *tftApi);
+
+bool componentIsStateModifiedNoop(Component *component);
+
+void componentUpdateStateNoop(Component *component);
+
 Component* componentContains(Component *component, signed short x, signed short y);
 
 void componentMount(Component *component, signed short x, signed short y);
