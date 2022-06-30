@@ -4,6 +4,50 @@
 
 static SystemApi *systemApi;
 
+static void setupComponent(Component component, signed short x, signed short y, signed short w, signed short h, void *state)
+{
+    component.x = x;
+    component.y = y;
+    component.w = w;
+    component.h = h;
+    component.contains = componentContains;
+    component.mount = componentMount;
+    component.onTouch = componentNoopHandler;
+    component.onMove = componentNoopHandler;
+    component.onRelease = componentNoopHandler;
+    component.onGesture = componentGestureNoopHandler;
+    component.onButton = componentButtonNoopHandler;
+    component.render = componentRenderNoop;
+    component.isStateModified = componentIsStateModifiedNoop;
+    component.updateState = componentUpdateStateNoop;
+    component.state = state;    
+}
+
+static Component* createComponentRef(signed short x, signed short y, signed short w, signed short h, void *state)
+{
+    Component *component = (Component *)(systemApi->allocate)(sizeof(Component));
+
+    setupComponent(*component, x, y, w, h, state);
+/*
+    component->x = x;
+    component->y = y;
+    component->w = w;
+    component->h = h;
+    component->contains = componentContains;
+    component->mount = componentMount;
+    component->onTouch = componentNoopHandler;
+    component->onMove = componentNoopHandler;
+    component->onRelease = componentNoopHandler;
+    component->onGesture = componentGestureNoopHandler;
+    component->onButton = componentButtonNoopHandler;
+    component->render = componentRenderNoop;
+    component->isStateModified = componentIsStateModifiedNoop;
+    component->updateState = componentUpdateStateNoop;
+    component->state = state;    
+*/
+    return component;
+}
+
 static GroupState* createGroupStateRef(unsigned char childrenCount, void **children)
 {
     GroupState *state = (GroupState *)(systemApi->allocate)(sizeof(GroupState));    
@@ -17,23 +61,13 @@ static GroupState* createGroupStateRef(unsigned char childrenCount, void **child
 
 static Component* createGroupComponentRef(signed short x, signed short y, GroupState *state)
 {
-    Component *component = (Component *)(systemApi->allocate)(sizeof(Component));
+    Component *component = createComponentRef(x, y, 0, 0, state);
 
-    component->x = x;
-    component->y = y;
-    component->w = 0;
-    component->h = 0;
     component->contains = groupContains;
     component->mount = groupMount;
-    component->onTouch = componentNoopHandler;
-    component->onMove = componentNoopHandler;
-    component->onRelease = componentNoopHandler;
-    component->onGesture = componentGestureNoopHandler;
-    component->onButton = componentButtonNoopHandler;
     component->isStateModified = groupIsStateModified;
     component->updateState = groupUpdateState;
     component->render = groupRender;
-    component->state = state;
 
     return component;    
 }
@@ -59,23 +93,11 @@ static TextState* createTextStateRef(unsigned char font, unsigned char size, uns
 
 static Component* createTextComponentRef(signed short x, signed short y, signed short w, signed short h, TextState *state)
 {
-    Component* ref = (Component *)(systemApi->allocate)(sizeof(Component));
+    Component* ref = createComponentRef(x, y, w, h, state);
 
-    ref->x = x;
-    ref->y = y;
-    ref->w = w;
-    ref->h = h;
-    ref->contains = componentContains;
-    ref->mount = componentMount;
-    ref->onTouch = componentNoopHandler;
-    ref->onMove = componentNoopHandler;
-    ref->onRelease = componentNoopHandler;
-    ref->onGesture = componentGestureNoopHandler;
-    ref->onButton = componentButtonNoopHandler;
     ref->render = textComponentRender;
     ref->isStateModified = textComponentIsStateModified;
     ref->updateState = textComponentUpdateState;
-    ref->state = state;
 
     return ref;
 }
@@ -101,23 +123,14 @@ static ButtonComponentState* createButtonStateRef(char *title, EventGenerate eve
 
 static Component* createButtonComponentRef(signed short x, signed short y, signed short w, signed short h, ButtonComponentState *state)
 {
-    Component *component = (Component *)(systemApi->allocate)(sizeof(Component));
+    Component *component = createComponentRef(x, y, w, h, state);
 
-    component->x = x;
-    component->y = y;
-    component->w = w;
-    component->h = h;
-    component->contains = componentContains;
-    component->mount = componentMount;
     component->onTouch = buttonOnTouch;
     component->onMove = buttonOnMove;
     component->onRelease = buttonOnRelease;
-    component->onGesture = componentGestureNoopHandler;
-    component->onButton = componentButtonNoopHandler;
     component->render = buttonRender;
     component->isStateModified = buttonIsStateModified;
     component->updateState = buttonUpdateState;
-    component->state = state;
 
     return component;
 }
