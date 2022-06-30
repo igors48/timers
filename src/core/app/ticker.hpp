@@ -28,6 +28,8 @@ typedef struct {
     unsigned int delayMs;
     /**
      * @brief Pointer to the function called by ticker
+     * 
+     * @param tick current FreeRTOS tick count
      */
     void (*func)(unsigned long tick);
     /**

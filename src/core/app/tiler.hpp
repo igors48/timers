@@ -84,6 +84,7 @@ typedef struct
     /**
      * @brief Sends tick event to the active Tile and renders application after
      * 
+     * @param tick current FreeRTOS tick count
      */
     void (*onTick)(unsigned long tick);
 } Tiler;
