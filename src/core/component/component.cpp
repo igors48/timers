@@ -1,3 +1,8 @@
+/**
+ * @file 
+ * @author Igor Usenko (github: igors48)
+ * @brief UI Component default functions
+*/
 #include <stddef.h>
 
 #include "component.hpp"

@@ -47,6 +47,11 @@ struct Component_
     void (*render)(Component *component, bool forced, TftApi *tftApi);  // todo consider interface Renderable #121
     bool (*isStateModified)(Component *component);
     void (*updateState)(Component *component);
+    /**
+     * @brief Tick event handler
+     * 
+     * @param tick current FreeRTOS tick
+     */
     void (*onTick)(unsigned long tick);
     void *state;    
 };
@@ -67,6 +72,11 @@ Component* componentContains(Component *component, signed short x, signed short 
 
 void componentMount(Component *component, signed short x, signed short y);
 
+/**
+ * @brief Stub for component tick handler
+ * 
+ * @param tick current FreeRTOS tick 
+ */
 void componentTickNoop(unsigned long tick);
 
 Component createComponent(signed short x, signed short y, signed short w, signed short h, void *state);
