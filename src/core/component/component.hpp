@@ -65,3 +65,5 @@ void componentUpdateStateNoop(Component *component);
 Component* componentContains(Component *component, signed short x, signed short y);
 
 void componentMount(Component *component, signed short x, signed short y);
+
+Component createComponent(signed short x, signed short y, signed short w, signed short h, void *state);

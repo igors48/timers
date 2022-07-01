@@ -46,3 +46,25 @@ void componentMount(Component *component, signed short x, signed short y)
     component->x += x;
     component->y += y;
 }
+
+Component createComponent(signed short x, signed short y, signed short w, signed short h, void *state)
+{
+    return {
+        .x = x,
+        .y = y,
+        .w = w,
+        .h = h,
+        .contains = componentContains,
+        .mount = componentMount,
+        .onTouch = componentNoopHandler,
+        .onMove = componentNoopHandler,
+        .onRelease = componentNoopHandler,
+        .onGesture = componentGestureNoopHandler,
+        .onButton = componentButtonNoopHandler,
+        .render = componentRenderNoop,
+        .isStateModified = componentIsStateModifiedNoop,
+        .updateState = componentUpdateStateNoop,
+        .state = state,
+    };  
+}
+

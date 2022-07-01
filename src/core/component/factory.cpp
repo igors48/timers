@@ -4,47 +4,10 @@
 
 static SystemApi *systemApi;
 
-static void setupComponent(Component component, signed short x, signed short y, signed short w, signed short h, void *state)
-{
-    component.x = x;
-    component.y = y;
-    component.w = w;
-    component.h = h;
-    component.contains = componentContains;
-    component.mount = componentMount;
-    component.onTouch = componentNoopHandler;
-    component.onMove = componentNoopHandler;
-    component.onRelease = componentNoopHandler;
-    component.onGesture = componentGestureNoopHandler;
-    component.onButton = componentButtonNoopHandler;
-    component.render = componentRenderNoop;
-    component.isStateModified = componentIsStateModifiedNoop;
-    component.updateState = componentUpdateStateNoop;
-    component.state = state;    
-}
-
 static Component* createComponentRef(signed short x, signed short y, signed short w, signed short h, void *state)
 {
     Component *component = (Component *)(systemApi->allocate)(sizeof(Component));
-
-    setupComponent(*component, x, y, w, h, state);
-/*
-    component->x = x;
-    component->y = y;
-    component->w = w;
-    component->h = h;
-    component->contains = componentContains;
-    component->mount = componentMount;
-    component->onTouch = componentNoopHandler;
-    component->onMove = componentNoopHandler;
-    component->onRelease = componentNoopHandler;
-    component->onGesture = componentGestureNoopHandler;
-    component->onButton = componentButtonNoopHandler;
-    component->render = componentRenderNoop;
-    component->isStateModified = componentIsStateModifiedNoop;
-    component->updateState = componentUpdateStateNoop;
-    component->state = state;    
-*/
+    *component = createComponent(x, y, w, h, state);
     return component;
 }
 

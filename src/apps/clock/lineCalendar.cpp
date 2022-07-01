@@ -62,7 +62,7 @@ static void render(Component *component, bool forced, TftApi *tftApi)
     }
 }
 
-static bool isStateModified(Component *component) // todo create dummies for isStateModified & updateState & render #132
+static bool isStateModified(Component *component)
 {
     LineCalendarContext *context = (LineCalendarContext *)(component->state);
     (context->provideContext)(context);
@@ -86,22 +86,9 @@ LineCalendarContext createLineCalendarContext(ProvideContext provideContext)
 
 Component createLineCalendarComponent(signed short x, signed short y, LineCalendarContext *context)
 {
-    return {
-        // todo create default factory for Component #133
-        .x = x,
-        .y = y,
-        .w = 240,
-        .h = 50,
-        .contains = componentContains,
-        .mount = componentMount,
-        .onTouch = componentNoopHandler,
-        .onMove = componentNoopHandler,
-        .onRelease = componentNoopHandler,
-        .onGesture = componentGestureNoopHandler,
-        .onButton = componentButtonNoopHandler,
-        .render = render,
-        .isStateModified = isStateModified,
-        .updateState = updateState,
-        .state = context,
-    };
+    Component component = createComponent(x, y, 240, 50, context);
+    component.render = render;
+    component.isStateModified = isStateModified;
+    component.updateState = updateState;
+    return component;
 }
