@@ -47,6 +47,11 @@ void componentMount(Component *component, signed short x, signed short y)
     component->y += y;
 }
 
+void componentTickNoop(unsigned long tick)
+{
+    // empty
+}
+
 Component createComponent(signed short x, signed short y, signed short w, signed short h, void *state)
 {
     return {
@@ -64,6 +69,7 @@ Component createComponent(signed short x, signed short y, signed short w, signed
         .render = componentRenderNoop,
         .isStateModified = componentIsStateModifiedNoop,
         .updateState = componentUpdateStateNoop,
+        .onTick = componentTickNoop,
         .state = state,
     };  
 }

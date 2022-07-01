@@ -47,6 +47,7 @@ struct Component_
     void (*render)(Component *component, bool forced, TftApi *tftApi);  // todo consider interface Renderable #121
     bool (*isStateModified)(Component *component);
     void (*updateState)(Component *component);
+    void (*onTick)(unsigned long tick);
     void *state;    
 };
 
@@ -65,5 +66,7 @@ void componentUpdateStateNoop(Component *component);
 Component* componentContains(Component *component, signed short x, signed short y);
 
 void componentMount(Component *component, signed short x, signed short y);
+
+void componentTickNoop(unsigned long tick);
 
 Component createComponent(signed short x, signed short y, signed short w, signed short h, void *state);
