@@ -13,6 +13,7 @@ typedef struct
 {
     bool rendered;
     bool updated;
+    unsigned long tick;
 } ChildState;
 
 const unsigned char CHILDREN_COUNT = 3;
@@ -52,6 +53,12 @@ void childUpdateStateStub(Component *component)
     state->updated = true;
 }
 
+void childOnTickStub(Component *component, unsigned long tick)
+{
+    ChildState *state = (ChildState *)component->state;
+    state->tick = tick;
+}
+
 void setUp(void)
 {
     SystemApi systemApi = systemApiMock();
@@ -60,6 +67,7 @@ void setUp(void)
     child00State = {
         .rendered = false,
         .updated = false,
+        .tick = 0,
     };
     child00 = {};
     child00.x = 10;
@@ -71,11 +79,13 @@ void setUp(void)
     child00.render = childRenderStub;
     child00.isStateModified = childIsStateModifiedTrueStub;
     child00.updateState = childUpdateStateStub;
+    child00.onTick = childOnTickStub;
     child00.state = &child00State;
 
     child01State = {
         .rendered = false,
         .updated = false,
+        .tick = 0,
     };
     child01 = {};
     child01.x = 30;
@@ -87,11 +97,13 @@ void setUp(void)
     child01.render = childRenderStub;
     child01.isStateModified = childIsStateModifiedTrueStub;
     child01.updateState = childUpdateStateStub;
+    child01.onTick = childOnTickStub;
     child01.state = &child01State;
 
     child02State = {
         .rendered = false,
         .updated = false,
+        .tick = 0,
     };
     child02 = {};
     child02.x = 50;
@@ -103,6 +115,7 @@ void setUp(void)
     child02.render = childRenderStub;
     child02.isStateModified = childIsStateModifiedTrueStub;
     child02.updateState = childUpdateStateStub;
+    child02.onTick = childOnTickStub;
     child02.state = &child02State;
 
     children[0] = &child00;
@@ -236,6 +249,16 @@ void whenGroupUpdatingState()
     TEST_ASSERT_TRUE(child02State.updated); // THEN all children states updated
 }
 
+void whenTick()
+{
+    const unsigned long TICK = 4583;
+    groupOnTick(group, TICK);
+
+    TEST_ASSERT_EQUAL_UINT64(TICK, child00State.tick);
+    TEST_ASSERT_EQUAL_UINT64(TICK, child01State.tick);
+    TEST_ASSERT_EQUAL_UINT64(TICK, child02State.tick);
+}
+
 int main()
 {
     UNITY_BEGIN();
@@ -250,5 +273,6 @@ int main()
     RUN_TEST(whenAllChildrenNewStateReturnedFalse);
     RUN_TEST(whenNotAllChildrenNewStateReturnedFalse);
     RUN_TEST(whenGroupUpdatingState);
+    RUN_TEST(whenTick);
     UNITY_END();
 }
