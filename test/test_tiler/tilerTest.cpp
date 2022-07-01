@@ -19,6 +19,7 @@ bool childOnMoveCalled;
 bool childOnReleaseCalled;
 bool spritePushed;
 Component *eventTarget;
+unsigned long tickValue;
 
 Tiler tiler;
 
@@ -76,9 +77,11 @@ void onButton(Component *component)
     eventTarget = component;
 }
 
-void onTickStub(unsigned long tick)
+void onTickStub(Component* component, unsigned long tick)
 {
     activeTileOnTickCalled = true;
+    eventTarget = component;
+    tickValue = tick;
 }
 
 void childOnTouchStub(Component *component, signed short x, signed short y, unsigned long tickCount)
@@ -114,6 +117,7 @@ void setUp(void)
     childOnReleaseCalled = false;
 
     eventTarget = NULL;
+    tickValue = 0;
 
     child = {
         .onTouch = childOnTouchStub,
@@ -206,9 +210,12 @@ void whenOnButtonCalled()
 
 void whenOnTickCalled()
 {
-    tiler.onTick(5 /* any value */);
+    const unsigned long CURRENT_TICK = 5;
+    tiler.onTick(CURRENT_TICK);
 
     TEST_ASSERT_TRUE(activeTileOnTickCalled);               // THEN active tile tick handler called
+    TEST_ASSERT_EQUAL_UINT64(eventTarget, &activeTileStub); // THEN event target is active tile
+    TEST_ASSERT_EQUAL_UINT64(CURRENT_TICK, tickValue);      // THEN tick value passed to handler
     TEST_ASSERT_TRUE(activeTileRendered);                   // THEN active tile rendered
     TEST_ASSERT_FALSE(activeTileRenderMode);                 // THEN active tile rendered in the not forced mode
     TEST_ASSERT_TRUE(activeTileStateUpdated);               // THEN active tile state updated

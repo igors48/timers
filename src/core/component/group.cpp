@@ -63,3 +63,13 @@ void groupMount(Component *group, signed short x, signed short y)
         (current->mount)(current, group->x, group->y);
     }
 }
+
+void groupOnTick(Component *group, unsigned long tick)
+{
+    GroupState *state = (GroupState *)(group->state);
+    for (int i = 0; i < state->childrenCount; i++)
+    {
+        Component *current = (Component *)(state->children[i]);
+        (current->onTick)(current, tick);
+    }    
+}

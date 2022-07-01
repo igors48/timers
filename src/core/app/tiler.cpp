@@ -122,7 +122,7 @@ static void onButton()
 static void onTick(unsigned long tick)
 {
    Component *activeTile = (activeApp->getActiveTile)();
-   (activeTile->onTick)(tick); 
+   (activeTile->onTick)(activeTile, tick); 
    renderApp(false);
 }
 

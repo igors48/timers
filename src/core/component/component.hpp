@@ -48,11 +48,12 @@ struct Component_
     bool (*isStateModified)(Component *component);
     void (*updateState)(Component *component);
     /**
-     * @brief Tick event handler
+     * @brief component tick event handler
      * 
+     * @param component target component
      * @param tick current FreeRTOS tick
      */
-    void (*onTick)(unsigned long tick);
+    void (*onTick)(Component *component, unsigned long tick);
     void *state;    
 };
 
@@ -75,8 +76,9 @@ void componentMount(Component *component, signed short x, signed short y);
 /**
  * @brief Stub for component tick handler
  * 
- * @param tick current FreeRTOS tick 
+ * @param component target component 
+ * @param tick current FreeRTOS tick
  */
-void componentTickNoop(unsigned long tick);
+void componentTickNoop(Component *component, unsigned long tick);
 
 Component createComponent(signed short x, signed short y, signed short w, signed short h, void *state);

@@ -30,6 +30,7 @@ static Component* createGroupComponentRef(signed short x, signed short y, GroupS
     component->isStateModified = groupIsStateModified;
     component->updateState = groupUpdateState;
     component->render = groupRender;
+    component->onTick = groupOnTick;
 
     return component;    
 }

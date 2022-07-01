@@ -52,7 +52,7 @@ void componentMount(Component *component, signed short x, signed short y)
     component->y += y;
 }
 
-void componentTickNoop(unsigned long tick)
+void componentTickNoop(Component *component, unsigned long tick)
 {
     // empty
 }

@@ -140,7 +140,7 @@ static void fadeAwayEffect(unsigned long start, unsigned long current, unsigned 
     second->fontColor = color565;
 }
 
-static void onTick(unsigned long tick)
+static void onTick(Component *component, unsigned long tick)
 {
     fadeAwayEffect(startEffectTick, tick, 900, second);
 }

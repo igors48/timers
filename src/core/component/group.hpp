@@ -46,3 +46,5 @@ void groupMount(Component *group, signed short x, signed short y);
 bool groupIsStateModified(Component *group);
 
 void groupUpdateState(Component *group);
+
+void groupOnTick(Component *group, unsigned long tick);
