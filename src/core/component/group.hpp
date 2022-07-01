@@ -17,7 +17,6 @@ typedef struct
 {
     unsigned char childrenCount;
     void **children; 
-    void (*onTick)();
 } GroupState;
 
 /**
@@ -47,5 +46,3 @@ void groupMount(Component *group, signed short x, signed short y);
 bool groupIsStateModified(Component *group);
 
 void groupUpdateState(Component *group);
-
-void groupNoopTick();

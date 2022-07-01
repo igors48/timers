@@ -140,10 +140,9 @@ static void fadeAwayEffect(unsigned long start, unsigned long current, unsigned 
     second->fontColor = color565;
 }
 
-static void onTick()
+static void onTick(unsigned long tick)
 {
-    const unsigned long current = (api->getTickCount)();
-    fadeAwayEffect(startEffectTick, current, 900, second);
+    fadeAwayEffect(startEffectTick, tick, 900, second);
 }
 
 Component *createClockAppTile(ClockAppApi *clockAppApi, Factory *factory)
@@ -181,10 +180,10 @@ Component *createClockAppTile(ClockAppApi *clockAppApi, Factory *factory)
     components[8] = &lineCalendar;
 
     state = (factory->createGroupStateRef)(COMPONENTS_COUNT, components);
-    state->onTick = onTick;
 
     group = (factory->createGroupComponentRef)(0, 0, state);
     group->onGesture = onGesture;
+    group->onTick = onTick;
 
     group->mount(group, 0, 0);
 

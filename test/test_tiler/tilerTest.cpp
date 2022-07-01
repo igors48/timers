@@ -5,7 +5,6 @@
 TftApi tftApiStub;
 App appStub;
 Component activeTileStub;
-GroupState activeTileState;
 Component child;
 bool fillRectCalled;
 bool activeTileRendered;
@@ -77,7 +76,7 @@ void onButton(Component *component)
     eventTarget = component;
 }
 
-void onTickStub()
+void onTickStub(unsigned long tick)
 {
     activeTileOnTickCalled = true;
 }
@@ -122,17 +121,13 @@ void setUp(void)
         .onRelease = childOnReleaseStub,
     };
 
-    activeTileState = {
-        .onTick = onTickStub,
-    };
-
     activeTileStub = {
         .contains = contains,
         .onGesture = onGesture,
         .onButton = onButton,
         .render = render,
         .updateState = updateState,
-        .state = &activeTileState,
+        .onTick = onTickStub,
     };
 
     appStub = {
