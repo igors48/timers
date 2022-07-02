@@ -47,4 +47,12 @@ bool groupIsStateModified(Component *group);
 
 void groupUpdateState(Component *group);
 
+/**
+ * @brief Handles tick event
+ * 
+ * Calls tick handler for every child
+ * 
+ * @param group pointer to group
+ * @param tick current FreeRTOS tick
+ */
 void groupOnTick(Component *group, unsigned long tick);
