@@ -143,3 +143,51 @@ void buttonUpdateState(Component *component)
     state->_eventHandlingState = state->eventHandlingState;
     state->_mode = state->mode;
 }
+
+static void buttonOnTick(Component *component, unsigned long tick)
+{
+    ButtonComponentState *state = (ButtonComponentState *)component->state;
+    effectTick(&(state->fadeOnRelease), tick);
+}
+
+static void fadeOnRelease(void *context, float progress)
+{
+    ButtonComponentState *state = (ButtonComponentState *)context;
+    effect context = button state + effect state
+    // COLOR_BUTTON_BACK_PRESSED -> COLOR_BUTTON_BACK_RELEASED
+}
+
+ButtonComponentState createButtonState(char *title, EventGenerate eventGenerate, Handler handler)
+{
+    return
+    {
+        .title = title,
+        .eventGenerate = eventGenerate,
+        .context = NULL,
+        .handler = handler,
+        .delayTick = 1000,     // todo pass as a parameter. depends on portTICK_PERIOD_MS #120
+        .repeatTick = 250, // todo pass as a parameter. depends on portTICK_PERIOD_MS #120
+        .eventHandlingState = EHS_IDLE,
+        ._eventHandlingState = EHS_INIT,
+        .mode = BM_ENABLED,
+        ._mode = BM_INIT,
+        .firstTouchTick = 0,
+        .lastRepeatTick = 0,
+        .fadeOnRelease = effectCreate(1000, NULL, fadeOnRelease), // todo get rid of it
+    };
+}
+
+Component createButtonComponent(signed short x, signed short y, signed short w, signed short h, ButtonComponentState *state)
+{
+    state->fadeOnRelease = effectCreate(1000, state, fadeOnRelease);
+
+    Component component = createComponent(x, y, w, h, state);
+    component.onTouch = buttonOnTouch;
+    component.onMove = buttonOnMove;
+    component.onRelease = buttonOnRelease;
+    component.render = buttonRender;
+    component.isStateModified = buttonIsStateModified;
+    component.updateState = buttonUpdateState; 
+    return component;
+}
+

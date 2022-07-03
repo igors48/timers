@@ -4,16 +4,16 @@
 
 static SystemApi *systemApi;
 
-static Component* createComponentRef(signed short x, signed short y, signed short w, signed short h, void *state)
+static Component *createComponentRef(signed short x, signed short y, signed short w, signed short h, void *state)
 {
     Component *component = (Component *)(systemApi->allocate)(sizeof(Component));
     *component = createComponent(x, y, w, h, state);
     return component;
 }
 
-static GroupState* createGroupStateRef(unsigned char childrenCount, void **children)
+static GroupState *createGroupStateRef(unsigned char childrenCount, void **children)
 {
-    GroupState *state = (GroupState *)(systemApi->allocate)(sizeof(GroupState));    
+    GroupState *state = (GroupState *)(systemApi->allocate)(sizeof(GroupState));
 
     state->childrenCount = childrenCount;
     state->children = children;
@@ -21,7 +21,7 @@ static GroupState* createGroupStateRef(unsigned char childrenCount, void **child
     return state;
 }
 
-static Component* createGroupComponentRef(signed short x, signed short y, GroupState *state)
+static Component *createGroupComponentRef(signed short x, signed short y, GroupState *state)
 {
     Component *component = createComponentRef(x, y, 0, 0, state);
 
@@ -32,10 +32,10 @@ static Component* createGroupComponentRef(signed short x, signed short y, GroupS
     component->render = groupRender;
     component->onTick = groupOnTick;
 
-    return component;    
+    return component;
 }
 
-static TextState* createTextStateRef(unsigned char font, unsigned char size, unsigned int fontColor, Provide provide)
+static TextState *createTextStateRef(unsigned char font, unsigned char size, unsigned int fontColor, Provide provide)
 {
     TextState *ref = (TextState *)(systemApi->allocate)(sizeof(TextState));
 
@@ -54,9 +54,9 @@ static TextState* createTextStateRef(unsigned char font, unsigned char size, uns
     return ref;
 }
 
-static Component* createTextComponentRef(signed short x, signed short y, signed short w, signed short h, TextState *state)
+static Component *createTextComponentRef(signed short x, signed short y, signed short w, signed short h, TextState *state)
 {
-    Component* ref = createComponentRef(x, y, w, h, state);
+    Component *ref = createComponentRef(x, y, w, h, state);
 
     ref->render = textComponentRender;
     ref->isStateModified = textComponentIsStateModified;
@@ -65,43 +65,27 @@ static Component* createTextComponentRef(signed short x, signed short y, signed 
     return ref;
 }
 
-static ButtonComponentState* createButtonStateRef(char *title, EventGenerate eventGenerate, Handler handler)
+// todo refactor factory - button component as an example
+// todo each component should have set of static handler funcs and two factory funcs - for state and component creation
+// todo check before how this approach will work with stepper component
+static ButtonComponentState *createButtonStateRef(char *title, EventGenerate eventGenerate, Handler handler)
 {
     ButtonComponentState *state = (ButtonComponentState *)(systemApi->allocate)(sizeof(ButtonComponentState));
-    
-    state->title = title;
-    state->eventGenerate = eventGenerate;
-    state->handler = handler;
-    state->delayTick = 1000; // todo pass as a parameter. depends on portTICK_PERIOD_MS #120
-    state->repeatTick = 250; // todo pass as a parameter. depends on portTICK_PERIOD_MS #120
-    state->eventHandlingState = EHS_IDLE;
-    state->_eventHandlingState = EHS_INIT;
-    state->mode = BM_ENABLED;
-    state->_mode = BM_INIT;
-    state->firstTouchTick = 0;
-    state->lastRepeatTick = 0;
-    
+    *state = createButtonState(title, eventGenerate, handler);
     return state;
 }
 
-static Component* createButtonComponentRef(signed short x, signed short y, signed short w, signed short h, ButtonComponentState *state)
+static Component *createButtonComponentRef(signed short x, signed short y, signed short w, signed short h, ButtonComponentState *state)
 {
-    Component *component = createComponentRef(x, y, w, h, state);
-
-    component->onTouch = buttonOnTouch;
-    component->onMove = buttonOnMove;
-    component->onRelease = buttonOnRelease;
-    component->render = buttonRender;
-    component->isStateModified = buttonIsStateModified;
-    component->updateState = buttonUpdateState;
-
+    Component *component = (Component *)(systemApi->allocate)(sizeof(Component));
+    *component = createButtonComponent(x, y, w, h, state);
     return component;
 }
 
 char STEPPER_PLUS[] = "+"; // todo find better place #119
 char STEPPER_MINUS[] = "-";
 
-static StepperComponentState* createStepperComponentStateRef(signed short min, signed short max, signed short value, OnStepperChange onChange)
+static StepperComponentState *createStepperComponentStateRef(signed short min, signed short max, signed short value, OnStepperChange onChange)
 {
     ButtonComponentState *plusButtonState = createButtonStateRef(STEPPER_PLUS, EG_REPEAT, stepperOnPlus);
     ButtonComponentState *minusButtonState = createButtonStateRef(STEPPER_MINUS, EG_REPEAT, stepperOnMinus);
@@ -125,13 +109,13 @@ static StepperComponentState* createStepperComponentStateRef(signed short min, s
     return state;
 }
 
-static Component* createStepperComponentRef(signed short x, signed short y, StepperComponentState *state)
+static Component *createStepperComponentRef(signed short x, signed short y, StepperComponentState *state)
 {
-    void** components = (void**)(systemApi->allocate)(2 * sizeof(void*));
+    void **components = (void **)(systemApi->allocate)(2 * sizeof(void *));
     components[0] = state->plusButton;
     components[1] = state->minusButton;
 
-    GroupState* groupState = createGroupStateRef(2, components);
+    GroupState *groupState = createGroupStateRef(2, components);
     return createGroupComponentRef(x, y, groupState);
 }
 

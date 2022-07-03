@@ -1,6 +1,7 @@
 #pragma once
 
 #include "component.hpp"
+#include "effect.hpp"
 
 typedef void (*Handler)(void *context);
 
@@ -37,6 +38,7 @@ typedef struct
     ButtonMode _mode;
     unsigned long firstTouchTick;
     unsigned long lastRepeatTick;
+    Effect fadeOnRelease;
 } ButtonComponentState;
 
 void buttonOnTouch(Component *component, signed short x, signed short y, unsigned long tickCount);
@@ -45,3 +47,6 @@ void buttonOnRelease(Component *component, signed short x, signed short y, unsig
 void buttonRender(Component *component, bool forced, TftApi *tftApi);
 bool buttonIsStateModified(Component *component);
 void buttonUpdateState(Component *component);
+
+ButtonComponentState createButtonState(char *title, EventGenerate eventGenerate, Handler handler);
+Component createButtonComponent(signed short x, signed short y, signed short w, signed short h, ButtonComponentState *state);
